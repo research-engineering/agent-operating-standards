@@ -92,10 +92,10 @@ The repository starts with a minimal governance baseline:
 - `main` is protected by an active pull-request and linear-history ruleset;
 - merged branches are deleted automatically;
 - secret scanning and push protection are enabled;
-- Dependabot is configured for GitHub Actions metadata once workflows exist.
+- Dependabot is configured for GitHub Actions metadata.
 
-Workflow gates and required status checks are intentionally not defined yet.
-They should be added only after the standard for workflow evidence is admitted.
+The initial workflow gate is `Validate`. Required status checks should be
+enabled after the first successful `Validate` run on `main`.
 
 ## Validation
 
@@ -105,3 +105,6 @@ npm run validate
 
 The local validator checks catalog and binding references, standard entrypoint
 references, semantic-rules mirrors, semantic rule ids, and JSON/YAML syntax.
+
+The `Validate` GitHub Actions workflow runs the same command for pull requests
+and pushes to `main`.
