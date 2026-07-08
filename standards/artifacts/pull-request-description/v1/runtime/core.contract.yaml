@@ -1,0 +1,85 @@
+schema_version: "agent-operating-standards.runtime-contract/v1"
+standard: "artifact.pull-request-description.v1"
+contract_type: "normative_core"
+role: "core"
+purpose: "Shared PR-description validity rules for producer and reviewer agents."
+load_policy:
+  required_for: ["producer", "reviewer"]
+  overlays_must_not_add: ["artifact-validity rules absent from this core"]
+required_inputs:
+  - "pull_request_title"
+  - "diff_summary"
+  - "problem_context"
+  - "changed_owner_surfaces"
+  - "change_profiles"
+  - "readiness_state"
+sections:
+  required: ["Summary", "Context"]
+  optional:
+    - "Impact"
+    - "Changes"
+    - "Links"
+    - "Evidence"
+    - "Risk / Rollback"
+    - "Migration / Rollout"
+    - "Security / Privacy"
+    - "Visual Evidence"
+    - "Non-Claims"
+    - "Review Focus"
+tuple_legend:
+  rules: "[id, must]"
+  decision_tree: "[id, trigger, include_sections, omit_when]"
+  review_question: "[id, question, answered_by]"
+  conditional_question: "[id, trigger, question, answered_by]"
+rules:
+  - ["PRD-CORE-001", "All PRs answer what changed and why the change exists."]
+  - ["PRD-CORE-002", "Optional sections render only when their trigger is true."]
+  - ["PRD-CORE-003", "Routine passing checks stay out of the visible body unless evidence changes human review."]
+  - ["PRD-CORE-004", "Use Evidence, not a routine Validation section, when proof must be visible."]
+  - ["PRD-CORE-005", "Every issue link has a relationship."]
+  - ["PRD-CORE-006", "Closing keywords are allowed only for fixes, closes, or resolves relationships."]
+  - ["PRD-CORE-007", "Use Non-Claims when readers could infer stronger readiness, release, runtime, security, or validation claims than the PR proves."]
+  - ["PRD-CORE-008", "PR descriptions do not define requirements, architecture, API contracts, security policy, runtime truth, release facts, or release guarantees."]
+  - ["PRD-CORE-009", "Answer applicable reviewer questions through the smallest accurate visible sections; never render the question list itself."]
+decision_tree:
+  - ["core", "always", ["Summary", "Context"], "never"]
+  - ["impact", "user_business_operator_developer_or_cost_effect", ["Impact"], "no effect beyond reviewed source surface"]
+  - ["changes", "multi_surface_or_non_obvious_diff", ["Changes"], "Summary plus diff identifies review surface"]
+  - ["links", "external_owner_surface_needed", ["Links"], "no external owner surface owns a needed claim"]
+  - ["issue_relationship", "issue_link_needed", ["Links"], "no issue relationship is relevant"]
+  - ["evidence", "proof_bearing_claim_changes_human_review", ["Evidence"], "proof is routine, passing, platform-visible, and needs no reviewer action"]
+  - ["risk", "hard_to_revert_or_non_obvious_failure_mode", ["Risk / Rollback"], "trivially reversible and no non-obvious failure mode"]
+  - ["rollout", "merge_order_data_migration_flags_versions_or_downstream_adoption_matters", ["Migration / Rollout"], "merge order and rollout are irrelevant"]
+  - ["security", "auth_data_secrets_permissions_abuse_or_disclosure_surface_touched", ["Security / Privacy"], "security and privacy posture are not touched"]
+  - ["visual", "visual_or_rendered_output_needs_review", ["Visual Evidence"], "visual output is irrelevant"]
+  - ["overclaim", "predictable_overclaim_exists", ["Non-Claims"], "no reasonable stronger claim can be inferred"]
+  - ["review_focus", "review_path_is_non_obvious", ["Review Focus"], "reviewer should review the diff normally"]
+issue_relationships:
+  neutral: ["relates_to", "references", "depends_on", "blocks", "supersedes", "duplicates"]
+  closing: ["fixes", "closes", "resolves"]
+  rule: "Related issue != resolved issue; closing keywords require true closing relationship and intended platform target-branch semantics."
+review_questions:
+  universal:
+    - ["PRD-RQ-001", "What changed?", ["Summary", "Changes", "review_scope"]]
+    - ["PRD-RQ-002", "Why does this change exist?", ["Context", "Links"]]
+    - ["PRD-RQ-003", "Is the review surface explicit enough?", ["review_scope", "Changes"]]
+    - ["PRD-RQ-004", "Which optional facts are triggered?", ["change_profiles", "decision_tree"]]
+    - ["PRD-RQ-005", "Is the PR overstating what it proves?", ["Non-Claims", "Evidence", "Links"]]
+  conditional:
+    - ["PRD-RQ-010", "user_business_operator_developer_cost_accessibility_compliance_or_support_effect", "What review-relevant impact or value follows?", ["Impact"]]
+    - ["PRD-RQ-011", "business_product_incident_policy_or_requirement_claim_matters", "Which owner surface proves the cause, requirement, or priority?", ["Links"]]
+    - ["PRD-RQ-012", "benefit_readiness_safety_freshness_performance_or_equivalence_is_claimed", "What evidence supports the claim, or what non-claim bounds it?", ["Evidence", "Non-Claims"]]
+    - ["PRD-RQ-013", "hard_to_revert_or_non_obvious_failure_mode", "What can fail and how is it rolled back or forward-fixed?", ["Risk / Rollback"]]
+    - ["PRD-RQ-014", "merge_order_data_migration_flags_versions_or_downstream_adoption_matters", "What sequencing or rollout fact changes review?", ["Migration / Rollout"]]
+    - ["PRD-RQ-015", "auth_data_secrets_permissions_abuse_or_disclosure_surface_touched", "What security or privacy review surface matters without leaking details?", ["Security / Privacy"]]
+    - ["PRD-RQ-016", "visual_or_rendered_output_needs_review", "What visual evidence lets the reviewer inspect the result?", ["Visual Evidence"]]
+    - ["PRD-RQ-017", "review_path_is_non_obvious", "Where should the reviewer focus first?", ["Review Focus"]]
+forbidden_visible_output:
+  - "empty sections"
+  - "placeholder prompts"
+  - "routine checklists"
+  - "routine Validation section"
+  - "not-run commands unless absence changes review"
+  - "promotional language"
+non_claims:
+  - "PR description does not define requirements, architecture, API contracts, security policy, release facts, runtime truth, production readiness, or downstream adoption."

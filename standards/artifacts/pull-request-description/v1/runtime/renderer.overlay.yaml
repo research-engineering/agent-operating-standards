@@ -1,0 +1,21 @@
+schema_version: "agent-operating-standards.runtime-contract/v1"
+standard: "artifact.pull-request-description.v1"
+contract_type: "role_overlay"
+role: "renderer"
+purpose: "Render PR-description drafts as GitHub Markdown."
+requires:
+  core: "standards/artifacts/pull-request-description/v1/runtime/core.contract.yaml"
+output_format: "github_markdown"
+section_order: ["Summary", "Context", "Impact", "Changes", "Links", "Evidence", "Risk / Rollback", "Migration / Rollout", "Security / Privacy", "Visual Evidence", "Non-Claims", "Review Focus"]
+formatting_rules:
+  - "Use ## headings and bullets by default."
+  - "Use tables, details, alerts, or Mermaid only when they reduce review effort."
+  - "Do not render empty sections, placeholders, routine checklists, or reviewer questions."
+issue_link_rendering:
+  neutral: "No platform closing keywords."
+  closing: "Use Fixes, Closes, or Resolves only for matching closing relationships."
+evidence_rendering:
+  hide_when: "routine passing platform-visible proof"
+  show_when: "failed, skipped, missing, manual, sensitive, runtime, release, migration, generated-freshness, or reviewer-action proof changes review"
+non_claims:
+  - "This overlay changes rendering only, not artifact validity."

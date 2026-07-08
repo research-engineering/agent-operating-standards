@@ -30,6 +30,24 @@ The recommended GitHub projection is:
 When agents draft a PR outside GitHub, they SHOULD use the structured draft
 model defined by `schema.json` before rendering Markdown.
 
+## Runtime Contracts
+
+Routine adapters SHOULD load runtime contracts instead of the full
+`standard.yaml` model context:
+
+- producer: `runtime/core.contract.yaml`, `runtime/producer.overlay.yaml`,
+  and `runtime/renderer.overlay.yaml`;
+- reviewer: `runtime/core.contract.yaml`, `runtime/reviewer.overlay.yaml`, and
+  `semantic-rules.yaml`;
+- renderer: `runtime/core.contract.yaml` and `runtime/renderer.overlay.yaml`.
+
+Adapters SHOULD use `schema.json` for deterministic validation outside model
+context when possible.
+
+Producer and reviewer roles MUST share the same `core` contract. Role overlays
+MUST NOT add artifact-validity rules absent from `core`, `standard.yaml`, or
+`semantic-rules.yaml`.
+
 ## Theorem
 
 A pull request description is sufficient if and only if a reviewer can answer:

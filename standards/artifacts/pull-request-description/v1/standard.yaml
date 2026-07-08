@@ -202,6 +202,14 @@ agent_contract:
     include_standard_proof_in_output: false
     include_artifact_evidence: "Record evidence when proof-bearing claims need it; render visible Evidence only when it changes the human review decision."
     proof_location: "standards/artifacts/pull-request-description/v1/standard.md and standards/artifacts/pull-request-description/v1/semantic-rules.yaml"
+runtime_contracts:
+  method: "shared_core_plus_role_overlays"
+  invariant: "Producer and reviewer roles load the same normative core; role overlays do not add artifact-validity rules absent from core."
+  core: "standards/artifacts/pull-request-description/v1/runtime/core.contract.yaml"
+  roles:
+    producer: "standards/artifacts/pull-request-description/v1/runtime/producer.overlay.yaml"
+    reviewer: "standards/artifacts/pull-request-description/v1/runtime/reviewer.overlay.yaml"
+    renderer: "standards/artifacts/pull-request-description/v1/runtime/renderer.overlay.yaml"
 validation:
   schema: "standards/artifacts/pull-request-description/v1/schema.json"
   semantic_rules: "standards/artifacts/pull-request-description/v1/semantic-rules.yaml"

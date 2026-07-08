@@ -36,6 +36,7 @@ standard.md
 standard.yaml
 schema.json
 semantic-rules.yaml
+runtime/
 template.yaml or template.md
 agent-policy.md
 examples/
@@ -50,6 +51,28 @@ examples/
 
 `semantic-rules.yaml` declares cross-field, authority, or evidence rules that
 are not practical to express in JSON Schema.
+
+`runtime/` MAY contain role-specific contracts derived from `standard.yaml`.
+Runtime contracts are optimized for agent context loading. They MUST NOT add
+artifact-validity rules that are absent from the canonical standard package.
+
+When a package defines runtime contracts, `standard.yaml` SHOULD declare:
+
+```text
+runtime_contracts.core
+runtime_contracts.roles.<role>
+```
+
+The `core` contract MUST contain every normative artifact-validity rule shared
+by producer and reviewer agents. A role overlay MAY add role workflow,
+diagnostics, rendering instructions, or severity guidance. A reviewer overlay
+MUST NOT reject an artifact using a validity rule that is absent from `core`.
+A producer overlay MUST NOT omit a validity rule that a reviewer overlay can
+enforce.
+
+Adapters MAY parse `standard.yaml` outside the model context to select runtime
+contracts. The model context for routine use SHOULD contain `core` plus the
+minimum role overlays required for the task.
 
 `template.*` files are starter artifacts only. They MUST NOT introduce rules
 that are absent from `standard.md`, `standard.yaml`, `schema.json`, or
@@ -86,6 +109,11 @@ An agent entrypoint MUST define:
 The final instruction for routine use is the `agent_contract` object in
 `standard.yaml` plus the schema and semantic rules named by that contract.
 
+When `runtime_contracts` exists, the final routine model context MAY be the
+shared `core` contract plus role overlays instead of the full `agent_contract`,
+provided the loaded runtime contracts preserve all normative artifact-validity
+rules.
+
 Formal proof of the standard itself SHOULD stay outside generated artifacts.
 Generated artifacts SHOULD include only evidence required by their own claim
 type.
@@ -95,6 +123,9 @@ type.
 - Agents MUST select standard packages through `standards.catalog.yaml`.
 - Agents MUST load `standard.yaml` before `standard.md` when the catalog entry
   declares `agent_entrypoint`.
+- Agents MAY load declared runtime contracts instead of the full `agent_contract`
+  for routine use when `core` is included and role overlays do not change
+  artifact validity.
 - Agents MUST load `standard.md` when changing the standard itself, resolving a
   conflict, creating an exception, or auditing the proof.
 - Agents MUST validate structured generated artifacts against `schema.json`

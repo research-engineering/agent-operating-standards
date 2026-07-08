@@ -25,6 +25,7 @@ standard.md
 standard.yaml
 schema.json
 semantic-rules.yaml
+runtime/
 template.yaml or template.md
 agent-policy.md
 examples/
@@ -36,3 +37,9 @@ catalog declares `agent_entrypoint`. `schema.json` validates structure when the
 artifact is machine-readable. `semantic-rules.yaml` declares cross-field or
 authority rules that do not fit JSON Schema. Templates accelerate creation but
 do not define additional rules.
+
+Packages MAY declare `runtime_contracts` in `standard.yaml` and store those
+contracts under `runtime/`. Runtime contracts split routine model context into a
+shared normative `core` plus role overlays such as producer, reviewer, or
+renderer. Producer and reviewer roles MUST share the same core so creation and
+review use the same artifact-validity rules.

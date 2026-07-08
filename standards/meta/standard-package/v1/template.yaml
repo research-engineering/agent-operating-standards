@@ -25,6 +25,13 @@ agent_contract:
     include_standard_proof_in_output: false
     include_artifact_evidence: "State what evidence the generated artifact must include."
     proof_location: "standard.md"
+runtime_contracts:
+  method: "shared_core_plus_role_overlays"
+  invariant: "Producer and reviewer roles load the same normative core; role overlays do not add artifact-validity rules absent from core."
+  core: "standards/<category>/<name>/v1/runtime/core.contract.yaml"
+  roles:
+    producer: "standards/<category>/<name>/v1/runtime/producer.overlay.yaml"
+    reviewer: "standards/<category>/<name>/v1/runtime/reviewer.overlay.yaml"
 validation:
   schema: null
   semantic_rules: null

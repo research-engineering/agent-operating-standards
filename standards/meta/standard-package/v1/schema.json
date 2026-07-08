@@ -162,6 +162,33 @@
         }
       }
     },
+    "runtime_contracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "core", "roles"],
+      "properties": {
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "invariant": {
+          "type": "string",
+          "minLength": 1
+        },
+        "core": {
+          "type": "string",
+          "minLength": 1
+        },
+        "roles": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
     "validation": {
       "type": "object",
       "additionalProperties": false,

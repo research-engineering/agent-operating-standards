@@ -63,6 +63,8 @@ const prdDisplayPolicies = new Set([
   "show_when_failed_or_missing",
   "show_when_review_action_needed",
 ]);
+const runtimeContractTypes = new Set(["normative_core", "role_overlay"]);
+const runtimeRoles = new Set(["core", "producer", "reviewer", "renderer", "maintainer"]);
 const prdQuestionAnswerSurfaces = new Set([
   "title",
   "Summary",
@@ -275,6 +277,117 @@ function validatePrdReviewQuestions(agentContract, owner) {
           fail(`${label} has invalid omit_when`);
         }
       }
+    }
+  }
+}
+
+function validateRuntimeContract(path, manifest, expectedRole) {
+  const contract = readYaml(path);
+  const owner = rel(path);
+  rejectUnexpectedKeys(
+    contract,
+    [
+      "schema_version",
+      "standard",
+      "contract_type",
+      "role",
+      "purpose",
+      "load_policy",
+      "required_inputs",
+      "sections",
+      "tuple_legend",
+      "rules",
+      "decision_tree",
+      "issue_relationships",
+      "review_questions",
+      "forbidden_visible_output",
+      "requires",
+      "instruction",
+      "workflow",
+      "completion_gate",
+      "audit_steps",
+      "severity",
+      "diagnostics",
+      "output_format",
+      "section_order",
+      "formatting_rules",
+      "issue_link_rendering",
+      "evidence_rendering",
+      "non_claims",
+    ],
+    owner,
+  );
+  if (contract.schema_version !== "agent-operating-standards.runtime-contract/v1") {
+    fail(`${owner} has invalid schema_version`);
+  }
+  if (contract.standard !== manifest.id) {
+    fail(`${owner} standard does not match ${manifest.id}`);
+  }
+  if (!runtimeContractTypes.has(contract.contract_type)) {
+    fail(`${owner} has invalid contract_type: ${contract.contract_type}`);
+  }
+  if (!runtimeRoles.has(contract.role)) {
+    fail(`${owner} has invalid role: ${contract.role}`);
+  }
+  if (expectedRole && contract.role !== expectedRole) {
+    fail(`${owner} has role ${contract.role}, expected ${expectedRole}`);
+  }
+  if (!isNonEmptyString(contract.purpose)) {
+    fail(`${owner} has invalid purpose`);
+  }
+  if (contract.role === "core") {
+    if (contract.contract_type !== "normative_core") {
+      fail(`${owner} core role must use normative_core contract_type`);
+    }
+    if (!Array.isArray(contract.rules) || contract.rules.length === 0) {
+      fail(`${owner} core contract must declare normative rules`);
+    }
+  } else {
+    if (contract.contract_type !== "role_overlay") {
+      fail(`${owner} role overlay must use role_overlay contract_type`);
+    }
+    if (contract.rules !== undefined) {
+      fail(`${owner} role overlay must not add artifact-validity rules`);
+    }
+    if (contract.requires?.core !== manifest.runtime_contracts?.core) {
+      fail(`${owner} does not require the manifest core contract`);
+    }
+  }
+  for (const [key, value] of Object.entries(contract.requires ?? {})) {
+    if (typeof value === "string") {
+      pathExists(value, `${owner}.requires.${key}`);
+    }
+  }
+}
+
+function validateRuntimeContracts(manifest, owner) {
+  if (manifest.runtime_contracts === undefined) return;
+  const runtime = manifest.runtime_contracts;
+  rejectUnexpectedKeys(runtime, ["method", "invariant", "core", "roles"], `${owner}.runtime_contracts`);
+  for (const key of ["method", "invariant", "core"]) {
+    if (!isNonEmptyString(runtime[key])) {
+      fail(`${owner}.runtime_contracts has invalid ${key}`);
+    }
+  }
+  if (!runtime.roles || typeof runtime.roles !== "object" || Array.isArray(runtime.roles)) {
+    fail(`${owner}.runtime_contracts.roles must be an object`);
+    return;
+  }
+  pathExists(runtime.core, `${owner}.runtime_contracts.core`);
+  if (existsSync(join(root, runtime.core))) {
+    validateRuntimeContract(join(root, runtime.core), manifest, "core");
+  }
+  for (const [role, pathValue] of Object.entries(runtime.roles)) {
+    if (!runtimeRoles.has(role)) {
+      fail(`${owner}.runtime_contracts.roles has invalid role: ${role}`);
+    }
+    if (!isNonEmptyString(pathValue)) {
+      fail(`${owner}.runtime_contracts.roles.${role} has invalid path`);
+      continue;
+    }
+    pathExists(pathValue, `${owner}.runtime_contracts.roles.${role}`);
+    if (existsSync(join(root, pathValue))) {
+      validateRuntimeContract(join(root, pathValue), manifest, role);
     }
   }
 }
@@ -573,6 +686,7 @@ for (const standardPath of standardManifests) {
   for (const key of ["schema", "semantic_rules", "template"]) {
     pathExists(manifest.validation?.[key], `${owner}.validation.${key}`);
   }
+  validateRuntimeContracts(manifest, owner);
 
   const catalogEntry = (catalog.standards ?? []).find((entry) => entry.id === manifest.id);
   if (!catalogEntry) {

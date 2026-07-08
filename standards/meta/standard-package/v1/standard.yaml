@@ -19,7 +19,7 @@ authority:
     - "release_guarantee"
   precedence: "The catalog selects the package; standard.yaml instructs routine use; standard.md owns proof and disputes."
 agent_contract:
-  final_instruction: "When applying a standard, load the catalog entry, then load its agent_entrypoint standard.yaml as the default instruction. Load standard.md only for proof, dispute, exception, or standard maintenance."
+  final_instruction: "When applying a standard, load the catalog entry, then load its agent_entrypoint standard.yaml as the routing manifest. If runtime_contracts exist, load core plus the required role overlays for routine model context. Load standard.md only for proof, dispute, exception, or standard maintenance."
   required_inputs:
     - "catalog_entry"
     - "target_artifact"
