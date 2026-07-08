@@ -10,7 +10,8 @@ this directory is not a standard until the catalog admits it.
 
 - `authority/` defines cross-artifact authority, claim, proof, and exception
   rules.
-- `meta/` defines repository binding and catalog-level contracts.
+- `meta/` defines the operating kernel, repository binding, and catalog-level
+  contracts.
 - `artifacts/` defines individual artifact contracts such as roadmaps and pull
   request descriptions.
 

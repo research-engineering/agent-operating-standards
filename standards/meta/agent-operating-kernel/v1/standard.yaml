@@ -1,0 +1,63 @@
+schema_version: "agent-operating-standards.standard-package/v1"
+id: "meta.agent-operating-kernel.v1"
+title: "Agent Operating Kernel"
+lifecycle: "active"
+owner_surface: "standards/meta/agent-operating-kernel/v1/standard.md"
+agent_entrypoint: "standards/meta/agent-operating-kernel/v1/standard.yaml"
+artifact:
+  type: "agent_operating_kernel"
+  canonical_surface: "standards/meta/agent-operating-kernel/v1/standard.md"
+  generated_projection: null
+  scope: "repository-wide agent operating invariants"
+authority:
+  owned_claim_types:
+    - "agent_instruction"
+    - "orientation"
+  forbidden_claim_types:
+    - "requirement"
+    - "architecture"
+    - "decision"
+    - "api_contract"
+    - "security"
+    - "runtime_fact"
+    - "release_fact"
+    - "release_guarantee"
+  precedence: "The kernel defines cross-standard operating invariants. Artifact standards define artifact-specific structures but must not violate the kernel."
+agent_contract:
+  final_instruction: "Before applying an admitted standard, preserve the kernel invariants: use standard.yaml agent_contract for routine instructions, keep proof in owner standards and evidence artifacts, use deterministic gates for structure, use semantic review for meaning, reject hidden authority, and bound exceptions."
+  required_inputs:
+    - "repository_binding"
+    - "standards_catalog"
+    - "selected_standard"
+    - "target_artifact_or_operation"
+  required_sections:
+    - "schema_version"
+    - "artifact_type"
+    - "invariants"
+    - "non_claims"
+  optional_sections:
+    - "exceptions"
+  decision_tree:
+    - trigger: "always"
+      include_sections:
+        - "invariants"
+        - "non_claims"
+      omit_when: "never"
+    - trigger: "standard_exception_requested"
+      include_sections:
+        - "exceptions"
+      omit_when: "the standard can be followed without exception"
+  output_format: "kernel_invariant_ledger"
+  proof_policy:
+    include_standard_proof_in_output: false
+    include_artifact_evidence: "Generated artifacts should include only evidence required by the artifact's own claim type."
+    proof_location: "standards/meta/agent-operating-kernel/v1/standard.md and standards/meta/agent-operating-kernel/v1/semantic-rules.yaml"
+validation:
+  schema: "standards/meta/agent-operating-kernel/v1/schema.json"
+  semantic_rules: "standards/meta/agent-operating-kernel/v1/semantic-rules.yaml"
+  template: "standards/meta/agent-operating-kernel/v1/template.yaml"
+non_claims:
+  - "The kernel does not define product requirements."
+  - "The kernel does not define application architecture, API contracts, security policy, runtime facts, release facts, or release guarantees."
+  - "The kernel does not make downstream repositories compliant."
+  - "The kernel does not define a CI, GitHub App, renderer, or harness implementation."

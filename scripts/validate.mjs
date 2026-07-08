@@ -52,6 +52,16 @@ const prdDisplayPolicies = new Set([
   "show_when_failed_or_missing",
   "show_when_review_action_needed",
 ]);
+const kernelClasses = new Set(["kernel", "artifact", "adoption", "validation", "semantic"]);
+const kernelEnforcementTypes = new Set([
+  "normative_standard",
+  "schema",
+  "ci",
+  "semantic_review",
+  "producer_skill",
+  "human_review",
+  "exception_protocol",
+]);
 
 function fail(message) {
   console.error(message);
@@ -319,6 +329,95 @@ function validatePrdDraft(path) {
   validatePrdEvidence(draft.evidence, owner);
 }
 
+function validateStringArray(value, allowedSet, owner, field, { minItems = 1, unique = true } = {}) {
+  if (!Array.isArray(value) || value.length < minItems) {
+    fail(`${owner}.${field} must be an array with at least ${minItems} item(s)`);
+    return;
+  }
+  const seen = new Set();
+  for (const item of value) {
+    if (!isNonEmptyString(item)) {
+      fail(`${owner}.${field} has a non-string or empty item`);
+      continue;
+    }
+    if (allowedSet && !allowedSet.has(item)) {
+      fail(`${owner}.${field} has invalid item: ${item}`);
+    }
+    if (unique && seen.has(item)) {
+      fail(`${owner}.${field} has duplicate item: ${item}`);
+    }
+    seen.add(item);
+  }
+}
+
+function validateKernelLedger(path) {
+  const ledger = readYaml(path);
+  const owner = rel(path);
+  rejectUnexpectedKeys(ledger, ["schema_version", "artifact_type", "invariants", "exceptions", "non_claims"], owner);
+  if (ledger.schema_version !== "agent-operating-standards.agent-operating-kernel/v1") {
+    fail(`${owner} has invalid schema_version`);
+  }
+  if (ledger.artifact_type !== "agent_operating_kernel") {
+    fail(`${owner} has invalid artifact_type`);
+  }
+  validateStringArray(ledger.non_claims, null, owner, "non_claims");
+  if (!Array.isArray(ledger.invariants) || ledger.invariants.length === 0) {
+    fail(`${owner} has no invariants`);
+    return;
+  }
+  const ids = new Set();
+  for (const [index, invariant] of ledger.invariants.entries()) {
+    const label = `${owner}.invariants[${index}]`;
+    rejectUnexpectedKeys(
+      invariant,
+      [
+        "id",
+        "class",
+        "statement",
+        "owner_surface",
+        "enforcement",
+        "applies_to",
+        "agent_effect",
+        "failure_mode",
+        "proof_location",
+      ],
+      label,
+    );
+    if (!/^KERNEL-[0-9]{3,}$/.test(invariant.id ?? "")) {
+      fail(`${label} has invalid id: ${invariant.id}`);
+    }
+    if (ids.has(invariant.id)) {
+      fail(`${label} has duplicate id: ${invariant.id}`);
+    }
+    ids.add(invariant.id);
+    validateStringArray(invariant.class, kernelClasses, label, "class");
+    validateStringArray(invariant.enforcement, kernelEnforcementTypes, label, "enforcement");
+    validateStringArray(invariant.applies_to, null, label, "applies_to");
+    for (const key of ["statement", "owner_surface", "agent_effect", "failure_mode"]) {
+      if (!isNonEmptyString(invariant[key])) {
+        fail(`${label} has invalid ${key}`);
+      }
+    }
+    pathExists(invariant.owner_surface, `${label}.owner_surface`);
+  }
+  if (ledger.exceptions !== undefined) {
+    if (!Array.isArray(ledger.exceptions)) {
+      fail(`${owner}.exceptions must be an array`);
+    } else {
+      for (const [index, exception] of ledger.exceptions.entries()) {
+        const label = `${owner}.exceptions[${index}]`;
+        rejectUnexpectedKeys(exception, ["id", "scope", "owner_surface"], label);
+        for (const key of ["id", "scope", "owner_surface"]) {
+          if (!isNonEmptyString(exception[key])) {
+            fail(`${label} has invalid ${key}`);
+          }
+        }
+        pathExists(exception.owner_surface, `${label}.owner_surface`);
+      }
+    }
+  }
+}
+
 function markdownHeadings(path) {
   return readText(path)
     .split("\n")
@@ -442,6 +541,17 @@ for (const prdDraftPath of [
 ]) {
   if (existsSync(prdDraftPath)) {
     validatePrdDraft(prdDraftPath);
+  }
+}
+
+for (const kernelLedgerPath of [
+  join(root, "standards/meta/agent-operating-kernel/v1/template.yaml"),
+  ...walkFiles(join(root, "standards/meta/agent-operating-kernel/v1/examples"), (path) =>
+    path.endsWith(".yaml") || path.endsWith(".yml"),
+  ),
+]) {
+  if (existsSync(kernelLedgerPath)) {
+    validateKernelLedger(kernelLedgerPath);
   }
 }
 

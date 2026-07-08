@@ -42,6 +42,8 @@ The repository uses an explicit catalog-and-binding model:
 
 - `standards.catalog.yaml` admits versioned standards.
 - `docs/DOCS_CONTRACT.yaml` binds this repository to admitted standards.
+- `standards/meta/agent-operating-kernel/v1/standard.yaml` defines global
+  agent operating invariants when the binding adopts the kernel.
 - `docs/AGENT_CONSUMPTION.md` defines the external-agent load path.
 - `standards/**/standard.yaml` is the preferred token-efficient agent contract
   when present.

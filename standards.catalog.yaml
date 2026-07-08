@@ -17,6 +17,18 @@ standards:
     semantic_rules: null
     applies_to:
       - "standards/*/*/v*/"
+  - id: "meta.agent-operating-kernel.v1"
+    title: "Agent Operating Kernel"
+    path: "standards/meta/agent-operating-kernel/v1/standard.md"
+    status: "active"
+    owner_surface: "standards/meta/agent-operating-kernel/v1/standard.md"
+    canonical_schema: "standards/meta/agent-operating-kernel/v1/schema.json"
+    agent_entrypoint: "standards/meta/agent-operating-kernel/v1/standard.yaml"
+    semantic_rules: "standards/meta/agent-operating-kernel/v1/semantic-rules.yaml"
+    applies_to:
+      - "all admitted standards"
+      - "external agent consumption"
+      - "consumer repository bindings"
   - id: "meta.semantic-rules.v1"
     title: "Semantic Rules"
     path: "standards/meta/semantic-rules/v1/standard.md"

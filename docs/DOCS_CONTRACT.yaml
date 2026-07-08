@@ -12,6 +12,12 @@ adopted_standards:
     owner_surface: "standards/meta/standard-package/v1/standard.md"
     applies_to:
       - "standards/*/*/v*/"
+  - standard: "meta.agent-operating-kernel.v1"
+    owner_surface: "standards/meta/agent-operating-kernel/v1/standard.md"
+    applies_to:
+      - "all admitted standards"
+      - "external agent consumption"
+      - "consumer repository bindings"
   - standard: "meta.semantic-rules.v1"
     owner_surface: "standards/meta/semantic-rules/v1/standard.md"
     applies_to:
