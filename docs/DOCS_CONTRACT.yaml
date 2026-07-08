@@ -8,6 +8,14 @@ default_policy:
   admitted_catalog_entries_only: true
   generated_markdown_is_not_normative_unless_declared: true
 adopted_standards:
+  - standard: "meta.standard-package.v1"
+    owner_surface: "standards/meta/standard-package/v1/standard.md"
+    applies_to:
+      - "standards/*/*/v*/"
+  - standard: "meta.semantic-rules.v1"
+    owner_surface: "standards/meta/semantic-rules/v1/standard.md"
+    applies_to:
+      - "standards/**/v*/semantic-rules.yaml"
   - standard: "meta.standards-catalog.v1"
     owner_surface: "standards/meta/standards-catalog/v1/standard.md"
     canonical_artifact: "standards.catalog.yaml"
@@ -30,6 +38,11 @@ adopted_standards:
   - standard: "artifact.pull-request-description.v1"
     owner_surface: "standards/artifacts/pull-request-description/v1/standard.md"
     generated_projection: ".github/pull_request_template.md"
+  - standard: "artifact.rendered-view.v1"
+    owner_surface: "standards/artifacts/rendered-view/v1/standard.md"
+    applies_to:
+      - "generated Markdown projections"
+      - "generated HTML projections"
 non_claims:
   - "This binding does not require CI gates."
   - "This binding does not define release approval."

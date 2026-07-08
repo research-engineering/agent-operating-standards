@@ -44,6 +44,10 @@ Agents must edit canonical machine-readable artifacts before generated
 projections. Generated Markdown is not authoritative unless the repository
 binding explicitly says so.
 
+When a catalog entry declares `agent_entrypoint`, agents must load that
+`standard.yaml` before `standard.md` for routine artifact creation. Use
+`standard.md` for rationale, disputes, exceptions, or maintenance.
+
 ## Pull Request Expectations
 
 A pull request should describe the problem, the standard or governance surface

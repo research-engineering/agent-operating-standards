@@ -1,0 +1,35 @@
+schema_version: "agent-operating-standards.standard-package/v1"
+id: "artifact.example.v1"
+title: "Example Artifact"
+lifecycle: "draft"
+owner_surface: "standards/artifacts/example/v1/standard.md"
+agent_entrypoint: "standards/artifacts/example/v1/standard.yaml"
+artifact:
+  type: "example"
+  canonical_surface: "docs/example.yaml"
+  generated_projection: "EXAMPLE.md"
+  scope: "repository"
+authority:
+  owned_claim_types:
+    - "orientation"
+  forbidden_claim_types:
+    - "release_fact"
+  precedence: "Typed owner surfaces override example orientation."
+agent_contract:
+  final_instruction: "Create or update the example artifact from the required inputs."
+  required_inputs:
+    - "source"
+  required_sections:
+    - "Summary"
+  optional_sections: []
+  output_format: "markdown_projection"
+  proof_policy:
+    include_standard_proof_in_output: false
+    include_artifact_evidence: "Include only evidence required by the example artifact."
+    proof_location: "standard.md"
+validation:
+  schema: "schema.json"
+  semantic_rules: null
+  template: "template.yaml"
+non_claims:
+  - "This example does not define requirements."

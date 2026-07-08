@@ -33,6 +33,9 @@ runtime facts, release facts, release guarantees, or evidence.
 | --- | --- | --- | --- |
 | `RM-005` | Add validator and renderer tooling | exploring | low |
 
+`RM-005` depends on `artifact.rendered-view.v1`; it remains exploratory until a
+validator or renderer is admitted.
+
 ## Non-Claims
 
 - This roadmap does not define requirements, release commitments, workflow

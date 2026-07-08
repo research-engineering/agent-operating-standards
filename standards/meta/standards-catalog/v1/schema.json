@@ -84,6 +84,12 @@
         "canonical_schema": {
           "type": ["string", "null"]
         },
+        "agent_entrypoint": {
+          "type": ["string", "null"]
+        },
+        "semantic_rules": {
+          "type": ["string", "null"]
+        },
         "applies_to": {
           "type": "array",
           "minItems": 1,

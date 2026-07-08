@@ -7,12 +7,34 @@ non_claims:
   - "The catalog does not make any adopting repository compliant by itself."
   - "The catalog does not define workflow gates unless a workflow standard is admitted."
 standards:
+  - id: "meta.standard-package.v1"
+    title: "Standard Package"
+    path: "standards/meta/standard-package/v1/standard.md"
+    status: "active"
+    owner_surface: "standards/meta/standard-package/v1/standard.md"
+    canonical_schema: "standards/meta/standard-package/v1/schema.json"
+    agent_entrypoint: "standards/meta/standard-package/v1/standard.yaml"
+    semantic_rules: null
+    applies_to:
+      - "standards/*/*/v*/"
+  - id: "meta.semantic-rules.v1"
+    title: "Semantic Rules"
+    path: "standards/meta/semantic-rules/v1/standard.md"
+    status: "active"
+    owner_surface: "standards/meta/semantic-rules/v1/standard.md"
+    canonical_schema: "standards/meta/semantic-rules/v1/schema.json"
+    agent_entrypoint: "standards/meta/semantic-rules/v1/standard.yaml"
+    semantic_rules: null
+    applies_to:
+      - "standards/**/v*/semantic-rules.yaml"
   - id: "meta.standards-catalog.v1"
     title: "Standards Catalog"
     path: "standards/meta/standards-catalog/v1/standard.md"
     status: "active"
     owner_surface: "standards/meta/standards-catalog/v1/standard.md"
     canonical_schema: "standards/meta/standards-catalog/v1/schema.json"
+    agent_entrypoint: null
+    semantic_rules: null
     applies_to:
       - "standards.catalog.yaml"
   - id: "authority.claim-types.v1"
@@ -21,6 +43,8 @@ standards:
     status: "active"
     owner_surface: "standards/authority/claim-types/v1/standard.md"
     canonical_schema: null
+    agent_entrypoint: null
+    semantic_rules: null
     applies_to:
       - "all artifacts"
   - id: "authority.exception-protocol.v1"
@@ -29,6 +53,8 @@ standards:
     status: "active"
     owner_surface: "standards/authority/exception-protocol/v1/standard.md"
     canonical_schema: "standards/authority/exception-protocol/v1/schema.json"
+    agent_entrypoint: null
+    semantic_rules: null
     applies_to:
       - "artifact standards"
       - "repository bindings"
@@ -38,6 +64,8 @@ standards:
     status: "active"
     owner_surface: "standards/meta/repository-binding/v1/standard.md"
     canonical_schema: "standards/meta/repository-binding/v1/schema.json"
+    agent_entrypoint: null
+    semantic_rules: null
     applies_to:
       - "docs/DOCS_CONTRACT.yaml"
   - id: "artifact.roadmap.v1"
@@ -46,6 +74,8 @@ standards:
     status: "active"
     owner_surface: "standards/artifacts/roadmap/v1/standard.md"
     canonical_schema: "standards/artifacts/roadmap/v1/schema.json"
+    agent_entrypoint: "standards/artifacts/roadmap/v1/standard.yaml"
+    semantic_rules: null
     applies_to:
       - "roadmap.yaml"
       - "ROADMAP.md projections"
@@ -55,6 +85,20 @@ standards:
     status: "active"
     owner_surface: "standards/artifacts/pull-request-description/v1/standard.md"
     canonical_schema: "standards/artifacts/pull-request-description/v1/schema.json"
+    agent_entrypoint: "standards/artifacts/pull-request-description/v1/standard.yaml"
+    semantic_rules: "standards/artifacts/pull-request-description/v1/semantic-rules.yaml"
     applies_to:
       - "pull request descriptions"
       - ".github/pull_request_template.md projections"
+  - id: "artifact.rendered-view.v1"
+    title: "Rendered View Artifact"
+    path: "standards/artifacts/rendered-view/v1/standard.md"
+    status: "active"
+    owner_surface: "standards/artifacts/rendered-view/v1/standard.md"
+    canonical_schema: "standards/artifacts/rendered-view/v1/schema.json"
+    agent_entrypoint: "standards/artifacts/rendered-view/v1/standard.yaml"
+    semantic_rules: null
+    applies_to:
+      - "generated Markdown projections"
+      - "generated HTML projections"
+      - "rendered views"

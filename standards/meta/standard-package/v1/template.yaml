@@ -1,0 +1,32 @@
+schema_version: "agent-operating-standards.standard-package/v1"
+id: "namespace.standard-name.v1"
+title: "Standard Title"
+lifecycle: "draft"
+owner_surface: "standards/<category>/<name>/v1/standard.md"
+agent_entrypoint: "standards/<category>/<name>/v1/standard.yaml"
+artifact:
+  type: "artifact_type"
+  canonical_surface: "canonical/path/or/platform/surface"
+  generated_projection: null
+  scope: "repository"
+authority:
+  owned_claim_types:
+    - "orientation"
+  forbidden_claim_types: []
+  precedence: "State which stronger owner surfaces override this artifact."
+agent_contract:
+  final_instruction: "State the concise instruction an external agent must execute."
+  required_inputs: []
+  required_sections: []
+  optional_sections: []
+  output_format: "machine_readable_or_markdown"
+  proof_policy:
+    include_standard_proof_in_output: false
+    include_artifact_evidence: "State what evidence the generated artifact must include."
+    proof_location: "standard.md"
+validation:
+  schema: null
+  semantic_rules: null
+  template: null
+non_claims:
+  - "State what this standard does not prove."

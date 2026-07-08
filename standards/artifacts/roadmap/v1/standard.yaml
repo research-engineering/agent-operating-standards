@@ -1,0 +1,67 @@
+schema_version: "agent-operating-standards.standard-package/v1"
+id: "artifact.roadmap.v1"
+title: "Roadmap Artifact"
+lifecycle: "active"
+owner_surface: "standards/artifacts/roadmap/v1/standard.md"
+agent_entrypoint: "standards/artifacts/roadmap/v1/standard.yaml"
+artifact:
+  type: "roadmap"
+  canonical_surface: "docs/planning/roadmap.yaml"
+  generated_projection: "ROADMAP.md"
+  scope: "repository planning"
+authority:
+  owned_claim_types:
+    - "plan"
+    - "priority"
+    - "horizon"
+    - "intent"
+    - "sequencing"
+    - "uncertainty"
+  forbidden_claim_types:
+    - "requirement"
+    - "architecture"
+    - "decision"
+    - "api_contract"
+    - "security"
+    - "runtime_fact"
+    - "evidence"
+    - "release_fact"
+    - "release_guarantee"
+  precedence: "Roadmap planning is weaker than requirements, architecture, API contracts, security policy, evidence, releases, and runtime facts."
+agent_contract:
+  final_instruction: "Use the roadmap only for planning orientation. Edit docs/planning/roadmap.yaml first, regenerate ROADMAP.md as a projection, and follow authority_links before treating any item as implementable truth."
+  required_inputs:
+    - "repository_binding"
+    - "canonical_roadmap"
+    - "authority_links"
+  required_sections:
+    - "schema_version"
+    - "doc_type"
+    - "canonical"
+    - "scope"
+    - "owner"
+    - "last_reviewed"
+    - "review_cadence"
+    - "authority"
+    - "items"
+    - "non_claims"
+  optional_sections:
+    - "themes"
+    - "local_roadmaps"
+    - "risks"
+    - "dependencies"
+    - "exceptions"
+    - "rendering"
+  output_format: "yaml_canonical_with_markdown_projection"
+  proof_policy:
+    include_standard_proof_in_output: false
+    include_artifact_evidence: "Roadmap items must link to stronger owner surfaces or exit evidence; the roadmap itself is not proof."
+    proof_location: "standards/artifacts/roadmap/v1/standard.md"
+validation:
+  schema: "standards/artifacts/roadmap/v1/schema.json"
+  semantic_rules: null
+  template: "standards/artifacts/roadmap/v1/template.yaml"
+non_claims:
+  - "The roadmap does not define requirements."
+  - "The roadmap does not prove architecture, runtime state, release state, or security posture."
+  - "The roadmap does not create delivery commitments unless a stronger owner surface says so."

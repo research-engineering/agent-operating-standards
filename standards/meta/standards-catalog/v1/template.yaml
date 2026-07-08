@@ -12,5 +12,7 @@ standards:
     status: "active"
     owner_surface: "standards/meta/standards-catalog/v1/standard.md"
     canonical_schema: "standards/meta/standards-catalog/v1/schema.json"
+    agent_entrypoint: null
+    semantic_rules: null
     applies_to:
       - "standards.catalog.yaml"

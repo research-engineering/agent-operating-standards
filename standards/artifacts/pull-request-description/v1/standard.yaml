@@ -1,0 +1,60 @@
+schema_version: "agent-operating-standards.standard-package/v1"
+id: "artifact.pull-request-description.v1"
+title: "Pull Request Description Artifact"
+lifecycle: "active"
+owner_surface: "standards/artifacts/pull-request-description/v1/standard.md"
+agent_entrypoint: "standards/artifacts/pull-request-description/v1/standard.yaml"
+artifact:
+  type: "pull_request_description"
+  canonical_surface: "platform_pull_request_body"
+  generated_projection: ".github/pull_request_template.md"
+  scope: "pull request review"
+authority:
+  owned_claim_types:
+    - "orientation"
+    - "task_detail"
+    - "evidence"
+    - "agent_instruction"
+  forbidden_claim_types:
+    - "requirement"
+    - "architecture"
+    - "decision"
+    - "api_contract"
+    - "security"
+    - "release_fact"
+    - "release_guarantee"
+    - "runtime_fact"
+  precedence: "A pull request body orients review and reports checks actually run; stronger owner surfaces define requirements, architecture, contracts, security, releases, and runtime truth."
+agent_contract:
+  final_instruction: "Create a concise GitHub pull request body from a structured draft. Include authority links, changed owner surfaces, validation actually run, risk, rollback, non-claims, and review focus. Do not include the proof of this standard in the pull request body."
+  required_inputs:
+    - "diff_summary"
+    - "changed_owner_surfaces"
+    - "authority_links"
+    - "validation_results"
+    - "risk_and_rollback"
+    - "non_claims"
+    - "review_focus"
+  required_sections:
+    - "Summary"
+    - "Problem"
+    - "Authority Links"
+    - "Changes"
+    - "Validation"
+    - "Risk and Rollback"
+    - "Non-Claims"
+    - "Review Focus"
+  optional_sections: []
+  output_format: "github_markdown"
+  proof_policy:
+    include_standard_proof_in_output: false
+    include_artifact_evidence: "Include only validation, evidence links, and non-claims that are true for this pull request."
+    proof_location: "standards/artifacts/pull-request-description/v1/standard.md and standards/artifacts/pull-request-description/v1/semantic-rules.yaml"
+validation:
+  schema: "standards/artifacts/pull-request-description/v1/schema.json"
+  semantic_rules: "standards/artifacts/pull-request-description/v1/semantic-rules.yaml"
+  template: "standards/artifacts/pull-request-description/v1/template.yaml"
+non_claims:
+  - "A pull request description does not define requirements."
+  - "A pull request description does not define architecture or API contracts."
+  - "A pull request description does not prove release readiness, production readiness, or downstream adoption unless explicit evidence is linked."

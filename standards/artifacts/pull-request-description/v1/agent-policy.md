@@ -3,6 +3,11 @@
 Agents MUST use this standard when opening or updating a pull request in a
 repository that adopts `artifact.pull-request-description.v1`.
 
+For routine PR creation, agents MUST load `standard.yaml` as the final
+instruction surface and use `schema.json` plus `semantic-rules.yaml` for
+validation. Load `standard.md` only for rationale, dispute, exception, or
+standard maintenance.
+
 Before opening the pull request, agents MUST:
 
 1. Inspect the diff.

@@ -1,0 +1,41 @@
+schema_version: "agent-operating-standards.semantic-rules/v1"
+standard: "artifact.pull-request-description.v1"
+scope: "pull_request_description"
+rules:
+  - id: "PRD-SEM-001"
+    invariant: "Validation claims must match checks actually run for this pull request."
+    applies_to:
+      - "validation"
+    check: "Every validation entry must include a command, result, and enough note text to distinguish local, CI, manual, or not_run state."
+    failure_mode: "The PR body claims evidence that does not exist."
+  - id: "PRD-SEM-002"
+    invariant: "A not_run validation entry must not be worded as success."
+    applies_to:
+      - "validation"
+    check: "If result is not_run, the rendered line must state that the check was not run and why."
+    failure_mode: "Readers infer a passed gate from a skipped gate."
+  - id: "PRD-SEM-003"
+    invariant: "Authority links must point to owner surfaces, not only summaries."
+    applies_to:
+      - "authority_links"
+    check: "Each authority link must target a standard, issue, spec, schema, policy, or evidence surface that can own the referenced claim type."
+    failure_mode: "The PR description promotes convenient context into authority."
+  - id: "PRD-SEM-004"
+    invariant: "Review focus is an instruction to reviewers, not a hidden requirement."
+    applies_to:
+      - "review_focus"
+    check: "Review focus entries must identify inspectable surfaces or risks and must not introduce new acceptance criteria."
+    failure_mode: "The PR body creates requirements outside the owning standard or issue."
+  - id: "PRD-SEM-005"
+    invariant: "Non-claims must block predictable overclaims."
+    applies_to:
+      - "non_claims"
+    check: "If the change touches release, production, CI, security, downstream adoption, or runtime behavior without proof, the PR body must include an explicit non-claim."
+    failure_mode: "Readers infer readiness from an implementation-only or documentation-only change."
+  - id: "PRD-SEM-006"
+    invariant: "Summary and problem statements must be factual."
+    applies_to:
+      - "summary"
+      - "problem"
+    check: "The rendered text must avoid promotional adjectives and must state what changed and what failure mode is addressed."
+    failure_mode: "The PR body becomes a marketing summary instead of a review contract."

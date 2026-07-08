@@ -1,0 +1,19 @@
+{
+  "name": "@research-engineering/agent-operating-standards",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Agent-readable operating standards, schemas, templates, and validation contracts.",
+  "scripts": {
+    "validate": "node scripts/validate.mjs"
+  },
+  "files": [
+    "docs",
+    "standards",
+    "standards.catalog.yaml",
+    "scripts"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}

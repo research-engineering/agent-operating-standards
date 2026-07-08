@@ -42,8 +42,13 @@ The repository uses an explicit catalog-and-binding model:
 
 - `standards.catalog.yaml` admits versioned standards.
 - `docs/DOCS_CONTRACT.yaml` binds this repository to admitted standards.
+- `docs/AGENT_CONSUMPTION.md` defines the external-agent load path.
+- `standards/**/standard.yaml` is the preferred token-efficient agent contract
+  when present.
 - `standards/**/standard.md` owns normative prose for a standard.
 - `standards/**/schema.json` validates structured artifacts when available.
+- `standards/**/semantic-rules.yaml` declares cross-field or authority rules
+  that are not practical to express in JSON Schema.
 - `standards/**/agent-policy.md` tells agents how to apply the standard.
 - Generated Markdown projections are not canonical unless the repository
   binding explicitly declares them canonical.
@@ -67,3 +72,12 @@ The repository starts with a minimal governance baseline:
 
 Workflow gates and required status checks are intentionally not defined yet.
 They should be added only after the standard for workflow evidence is admitted.
+
+## Validation
+
+```sh
+npm run validate
+```
+
+The local validator checks catalog and binding references, standard entrypoint
+references, semantic-rules mirrors, semantic rule ids, and JSON/YAML syntax.

@@ -21,12 +21,17 @@ artifact:
 
 ```text
 standard.md
+standard.yaml
 schema.json
+semantic-rules.yaml
 template.yaml or template.md
 agent-policy.md
 examples/
 ```
 
-`standard.md` is the normative human-readable owner surface. `schema.json`
-validates structure when the artifact is machine-readable. Templates accelerate
-creation but do not define additional rules.
+`standard.md` is the normative prose owner surface and proof location.
+`standard.yaml` is the preferred token-efficient agent entrypoint when the
+catalog declares `agent_entrypoint`. `schema.json` validates structure when the
+artifact is machine-readable. `semantic-rules.yaml` declares cross-field or
+authority rules that do not fit JSON Schema. Templates accelerate creation but
+do not define additional rules.

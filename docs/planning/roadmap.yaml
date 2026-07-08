@@ -99,10 +99,13 @@ items:
     horizon: "later"
     confidence: "low"
     owner: "standards maintainer"
-    planning_claim: "Explore generated Markdown projections and schema validation tooling after initial standards stabilize."
+    planning_claim: "Explore generated Markdown and HTML projections plus schema validation tooling after initial standards stabilize."
     authority_links:
       - relation: "depends_on"
         target: "standards/meta/repository-binding/v1/standard.md"
+        required_status: "active"
+      - relation: "depends_on"
+        target: "standards/artifacts/rendered-view/v1/standard.md"
         required_status: "active"
     exit_evidence:
       - type: "review"

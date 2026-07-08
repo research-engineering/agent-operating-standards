@@ -47,6 +47,11 @@ Each catalog entry MUST define:
 - `canonical_schema`;
 - `applies_to`.
 
+Each catalog entry MAY define:
+
+- `agent_entrypoint`;
+- `semantic_rules`.
+
 ## Rules
 
 - Agents MUST read the catalog before treating any standards package as
@@ -56,6 +61,11 @@ Each catalog entry MUST define:
   catalog entry.
 - Agents MUST treat `canonical_schema: null` as an explicit statement that the
   standard has no structured schema in the current version.
+- Agents MUST treat `agent_entrypoint` as the preferred token-efficient
+  instruction surface for routine artifact creation.
+- Agents MUST treat `semantic_rules` as a routing mirror for
+  `standard.yaml.validation.semantic_rules`, not as a second owner. When both
+  fields are present, they MUST match.
 - Agents MUST preserve unique standard ids.
 - Agents SHOULD keep catalog entries concise and avoid restating standard rules.
 
