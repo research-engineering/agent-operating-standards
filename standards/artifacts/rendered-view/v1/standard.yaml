@@ -1,0 +1,63 @@
+schema_version: "agent-operating-standards.standard-package/v1"
+id: "artifact.rendered-view.v1"
+title: "Rendered View Artifact"
+lifecycle: "active"
+owner_surface: "standards/artifacts/rendered-view/v1/standard.md"
+agent_entrypoint: "standards/artifacts/rendered-view/v1/standard.yaml"
+artifact:
+  type: "rendered_view"
+  canonical_surface: "source artifact plus render manifest"
+  generated_projection: null
+  scope: "generated human-facing views"
+authority:
+  owned_claim_types:
+    - "orientation"
+    - "evidence"
+  forbidden_claim_types:
+    - "requirement"
+    - "architecture"
+    - "decision"
+    - "api_contract"
+    - "security"
+    - "runtime_fact"
+    - "release_fact"
+    - "release_guarantee"
+    - "plan"
+    - "priority"
+    - "horizon"
+    - "intent"
+    - "sequencing"
+    - "uncertainty"
+    - "task_detail"
+    - "agent_instruction"
+  precedence: "Canonical source artifacts, schemas, and repository bindings override rendered views."
+agent_contract:
+  final_instruction: "Treat rendered Markdown, HTML, PDF, or other views as generated projections. Edit the canonical source first, regenerate the view, and cite the source artifact rather than the rendered view when asserting truth."
+  required_inputs:
+    - "source_artifacts"
+    - "renderer_identity"
+    - "output_paths"
+    - "freshness_state"
+  required_sections:
+    - "schema_version"
+    - "artifact_type"
+    - "generated"
+    - "sources"
+    - "renderer"
+    - "outputs"
+    - "freshness"
+    - "non_claims"
+  optional_sections: []
+  output_format: "render_manifest"
+  proof_policy:
+    include_standard_proof_in_output: false
+    include_artifact_evidence: "Include source and output freshness metadata only when claiming a rendered view is current."
+    proof_location: "standards/artifacts/rendered-view/v1/standard.md"
+validation:
+  schema: "standards/artifacts/rendered-view/v1/schema.json"
+  semantic_rules: null
+  template: "standards/artifacts/rendered-view/v1/template.yaml"
+non_claims:
+  - "A rendered view is not canonical by default."
+  - "A rendered view does not define requirements, plans, architecture, releases, runtime facts, or security posture."
+  - "A rendered view does not prove freshness without a render manifest or equivalent evidence."

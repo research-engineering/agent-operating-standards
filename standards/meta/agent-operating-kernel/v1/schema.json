@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://research-engineering.github.io/agent-operating-standards/schemas/meta/agent-operating-kernel/v1/schema.json",
+  "title": "Agent Operating Kernel Invariant Ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifact_type", "invariants", "non_claims"],
+  "properties": {
+    "schema_version": {
+      "const": "agent-operating-standards.agent-operating-kernel/v1"
+    },
+    "artifact_type": {
+      "const": "agent_operating_kernel"
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/invariant"
+      }
+    },
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/exception_reference"
+      }
+    },
+    "non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "invariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "class",
+        "statement",
+        "owner_surface",
+        "enforcement",
+        "applies_to",
+        "agent_effect",
+        "failure_mode"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^KERNEL-[0-9]{3,}$"
+        },
+        "class": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["kernel", "artifact", "adoption", "validation", "semantic"]
+          }
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_surface": {
+          "type": "string",
+          "minLength": 1
+        },
+        "enforcement": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "normative_standard",
+              "schema",
+              "ci",
+              "semantic_review",
+              "producer_skill",
+              "human_review",
+              "exception_protocol"
+            ]
+          }
+        },
+        "applies_to": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "agent_effect": {
+          "type": "string",
+          "minLength": 1
+        },
+        "failure_mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "proof_location": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "exception_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "scope", "owner_surface"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_surface": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

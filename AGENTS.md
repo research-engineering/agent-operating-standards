@@ -34,6 +34,20 @@ Every normative rule should identify:
 Reject a proposed standard when it is only a style preference, project-specific
 habit, or implementation detail that cannot generalize across repositories.
 
+## Standards Binding
+
+Agents must load `docs/DOCS_CONTRACT.yaml` before creating or changing governed
+artifacts. The binding points to the admitted standards in
+`standards.catalog.yaml`.
+
+Agents must edit canonical machine-readable artifacts before generated
+projections. Generated Markdown is not authoritative unless the repository
+binding explicitly says so.
+
+When a catalog entry declares `agent_entrypoint`, agents must load that
+`standard.yaml` before `standard.md` for routine artifact creation. Use
+`standard.md` for rationale, disputes, exceptions, or maintenance.
+
 ## Pull Request Expectations
 
 A pull request should describe the problem, the standard or governance surface

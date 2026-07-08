@@ -1,0 +1,11 @@
+schema_version: "agent-operating-standards.pull-request-description/v1"
+artifact_type: "pull_request_description"
+title: "Summarize the change."
+summary: "State what changed in one or two sentences."
+context: "State why this change exists."
+review_scope:
+  - surface: "path/or/owner-surface"
+    change_type: "other"
+change_profiles:
+  - "other"
+readiness_state: "ready_for_review"

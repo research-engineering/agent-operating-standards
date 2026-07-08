@@ -1,0 +1,220 @@
+schema_version: "agent-operating-standards.standard-package/v1"
+id: "artifact.pull-request-description.v1"
+title: "Pull Request Description Artifact"
+lifecycle: "active"
+owner_surface: "standards/artifacts/pull-request-description/v1/standard.md"
+agent_entrypoint: "standards/artifacts/pull-request-description/v1/standard.yaml"
+artifact:
+  type: "pull_request_description"
+  canonical_surface: "platform_pull_request_title_and_body"
+  generated_projection: ".github/pull_request_template.md"
+  scope: "pull request review"
+authority:
+  owned_claim_types:
+    - "orientation"
+    - "task_detail"
+    - "evidence"
+    - "agent_instruction"
+  forbidden_claim_types:
+    - "requirement"
+    - "architecture"
+    - "decision"
+    - "api_contract"
+    - "security"
+    - "runtime_fact"
+    - "release_fact"
+    - "release_guarantee"
+  precedence: "A pull request description orients review and may cite evidence; stronger owner surfaces define requirements, architecture, contracts, security, releases, and runtime truth."
+agent_contract:
+  final_instruction: "Create a concise GitHub pull request title and body. Always answer what changed and why it exists. Add optional sections only when their trigger is true. Classify every issue link relationship; render platform closing keywords only for true fixes, closes, or resolves claims. Do not include a routine Validation section; include Evidence only when a proof-bearing claim needs it."
+  required_inputs:
+    - "pull_request_title"
+    - "diff_summary"
+    - "problem_context"
+    - "changed_owner_surfaces"
+    - "change_profiles"
+    - "readiness_state"
+  required_sections:
+    - "Summary"
+    - "Context"
+  optional_sections:
+    - "Impact"
+    - "Changes"
+    - "Links"
+    - "Evidence"
+    - "Risk / Rollback"
+    - "Migration / Rollout"
+    - "Security / Privacy"
+    - "Visual Evidence"
+    - "Non-Claims"
+    - "Review Focus"
+  decision_tree:
+    - trigger: "always"
+      include_sections:
+        - "Summary"
+        - "Context"
+      omit_when: "never"
+    - trigger: "user_business_operator_developer_or_cost_effect"
+      include_sections:
+        - "Impact"
+      omit_when: "the change has no effect beyond the reviewed source surface"
+    - trigger: "multi_surface_or_non_obvious_diff"
+      include_sections:
+        - "Changes"
+      omit_when: "Summary plus diff is enough to identify the review surface"
+    - trigger: "external_owner_surface_needed"
+      include_sections:
+        - "Links"
+      omit_when: "no issue, standard, spec, policy, schema, incident, or evidence artifact owns a needed claim"
+    - trigger: "issue_link_needed"
+      include_sections:
+        - "Links"
+      omit_when: "no issue relationship is relevant"
+      obligation: "Every issue link must classify relationship as relates_to, references, depends_on, blocks, supersedes, duplicates, fixes, closes, or resolves; only fixes, closes, and resolves may render platform closing keywords."
+    - trigger: "proof_bearing_claim_changes_human_review"
+      include_sections:
+        - "Evidence"
+      omit_when: "proof is routine, passing, already visible in platform checks, and no reviewer action is needed"
+    - trigger: "hard_to_revert_or_non_obvious_failure_mode"
+      include_sections:
+        - "Risk / Rollback"
+      omit_when: "the change is trivially reversible and has no non-obvious failure mode"
+    - trigger: "merge_order_data_migration_flags_versions_or_downstream_adoption_matters"
+      include_sections:
+        - "Migration / Rollout"
+      omit_when: "merge order and rollout are irrelevant"
+    - trigger: "auth_data_secrets_permissions_abuse_or_disclosure_surface_touched"
+      include_sections:
+        - "Security / Privacy"
+      omit_when: "security and privacy posture are not touched"
+    - trigger: "draft_blocked_or_not_ready_for_review"
+      include_sections:
+        - "Non-Claims"
+        - "Review Focus"
+      omit_when: "the PR is ready for ordinary review"
+    - trigger: "visual_or_rendered_output_needs_review"
+      include_sections:
+        - "Visual Evidence"
+      omit_when: "visual output is irrelevant"
+    - trigger: "predictable_overclaim_exists"
+      include_sections:
+        - "Non-Claims"
+      omit_when: "no reasonable reader would infer a stronger claim than the PR proves"
+    - trigger: "review_path_is_non_obvious"
+      include_sections:
+        - "Review Focus"
+      omit_when: "reviewer should simply review the diff normally"
+  reviewer_instruction: "Evaluate pull request descriptions by asking universal questions first and conditional questions only when their trigger is true. Do not require business-cause or advantage claims unless a business owner surface or review-relevant impact exists."
+  review_questions:
+    universal:
+      - id: "PRD-RQ-001"
+        question: "What changed?"
+        answered_by:
+          - "Summary"
+          - "Changes"
+          - "review_scope"
+        failure_mode: "The reviewer cannot identify the reviewed change."
+      - id: "PRD-RQ-002"
+        question: "Why does this change exist?"
+        answered_by:
+          - "Context"
+          - "Links"
+        failure_mode: "The reviewer cannot decide whether the change should exist."
+      - id: "PRD-RQ-003"
+        question: "Is the review surface explicit enough?"
+        answered_by:
+          - "review_scope"
+          - "Changes"
+        failure_mode: "The reviewer cannot find the owner surfaces that need review."
+      - id: "PRD-RQ-004"
+        question: "Which optional facts are triggered by this change?"
+        answered_by:
+          - "change_profiles"
+          - "decision_tree"
+        failure_mode: "Impact, risk, evidence, rollout, security, or review-focus obligations are hidden."
+      - id: "PRD-RQ-005"
+        question: "Is the pull request overstating what it proves?"
+        answered_by:
+          - "Non-Claims"
+          - "Evidence"
+          - "Links"
+        failure_mode: "Readers infer stronger readiness, release, security, runtime, or validation claims than the PR owns."
+    conditional:
+      - id: "PRD-RQ-010"
+        trigger: "user_business_operator_developer_cost_accessibility_compliance_or_support_effect"
+        question: "What review-relevant impact or value follows from this change?"
+        answered_by:
+          - "Impact"
+        omit_when: "the change has no effect beyond the reviewed source surface"
+        failure_mode: "The reviewer cannot evaluate product, business, operational, developer, support, cost, accessibility, or compliance impact."
+      - id: "PRD-RQ-011"
+        trigger: "business_product_incident_policy_or_requirement_claim_matters"
+        question: "Which owner surface proves the cause, requirement, or priority?"
+        answered_by:
+          - "Links"
+        omit_when: "no external owner surface owns a relevant cause, requirement, incident, policy, or priority claim"
+        failure_mode: "The PR body promotes convenient business context into authority."
+      - id: "PRD-RQ-012"
+        trigger: "benefit_readiness_safety_freshness_performance_or_equivalence_is_claimed"
+        question: "What evidence supports the claim, or what non-claim bounds it?"
+        answered_by:
+          - "Evidence"
+          - "Non-Claims"
+        omit_when: "no proof-bearing or overclaim-prone claim is made"
+        failure_mode: "The PR implies value, readiness, safety, freshness, performance, or equivalence without proof or bounds."
+      - id: "PRD-RQ-013"
+        trigger: "hard_to_revert_or_non_obvious_failure_mode"
+        question: "What can fail and how is it rolled back or forward-fixed?"
+        answered_by:
+          - "Risk / Rollback"
+        omit_when: "the change is trivially reversible and has no non-obvious failure mode"
+        failure_mode: "The reviewer cannot evaluate operational failure or reversal risk."
+      - id: "PRD-RQ-014"
+        trigger: "merge_order_data_migration_flags_versions_or_downstream_adoption_matters"
+        question: "What sequencing or rollout fact changes the review decision?"
+        answered_by:
+          - "Migration / Rollout"
+        omit_when: "merge order and rollout are irrelevant"
+        failure_mode: "The reviewer cannot evaluate deploy, compatibility, migration, or downstream adoption risk."
+      - id: "PRD-RQ-015"
+        trigger: "auth_data_secrets_permissions_abuse_or_disclosure_surface_touched"
+        question: "What security or privacy review surface is relevant, without leaking sensitive details?"
+        answered_by:
+          - "Security / Privacy"
+        omit_when: "security and privacy posture are not touched"
+        failure_mode: "Security-sensitive change is reviewed as ordinary implementation detail or leaks sensitive context."
+      - id: "PRD-RQ-016"
+        trigger: "visual_or_rendered_output_needs_review"
+        question: "What visual evidence lets the reviewer inspect the result?"
+        answered_by:
+          - "Visual Evidence"
+        omit_when: "visual output is irrelevant"
+        failure_mode: "The reviewer cannot inspect user-visible or rendered output."
+      - id: "PRD-RQ-017"
+        trigger: "review_path_is_non_obvious"
+        question: "Where should the reviewer focus first?"
+        answered_by:
+          - "Review Focus"
+        omit_when: "reviewer should simply review the diff normally"
+        failure_mode: "Reviewer attention is spent on low-risk surfaces while the actual risk is hidden."
+  output_format: "github_markdown"
+  proof_policy:
+    include_standard_proof_in_output: false
+    include_artifact_evidence: "Record evidence when proof-bearing claims need it; render visible Evidence only when it changes the human review decision."
+    proof_location: "standards/artifacts/pull-request-description/v1/standard.md and standards/artifacts/pull-request-description/v1/semantic-rules.yaml"
+runtime_contracts:
+  method: "shared_core_plus_role_overlays"
+  invariant: "Producer and reviewer roles load the same normative core; role overlays do not add artifact-validity rules absent from core."
+  core: "standards/artifacts/pull-request-description/v1/runtime/core.contract.yaml"
+  roles:
+    producer: "standards/artifacts/pull-request-description/v1/runtime/producer.overlay.yaml"
+    reviewer: "standards/artifacts/pull-request-description/v1/runtime/reviewer.overlay.yaml"
+    renderer: "standards/artifacts/pull-request-description/v1/runtime/renderer.overlay.yaml"
+validation:
+  schema: "standards/artifacts/pull-request-description/v1/schema.json"
+  semantic_rules: "standards/artifacts/pull-request-description/v1/semantic-rules.yaml"
+  template: "standards/artifacts/pull-request-description/v1/template.yaml"
+non_claims:
+  - "A pull request description does not define requirements."
+  - "A pull request description does not define architecture, API contracts, or security policy."
+  - "A pull request description does not prove release readiness, production readiness, or downstream adoption unless it cites owner evidence."

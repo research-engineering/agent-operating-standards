@@ -1,0 +1,16 @@
+id: "EX-001"
+type: "early_stage_no_spec"
+scope: "artifact or item id"
+reason: "Explain why the standard path cannot be followed yet."
+allowed_claim_types:
+  - "intent"
+  - "uncertainty"
+forbidden_claim_types:
+  - "requirement"
+  - "architecture"
+  - "api_contract"
+review_trigger: "Create the missing owner artifact or drop the claim."
+promotion_gate: "Promote the claim into the proper owner surface before implementation."
+owner: "standard owner"
+non_claims:
+  - "This exception does not approve implementation."

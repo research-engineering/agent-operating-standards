@@ -1,0 +1,33 @@
+schema_version: "agent-operating-standards.runtime-contract/v1"
+standard: "artifact.pull-request-description.v1"
+contract_type: "role_overlay"
+role: "reviewer"
+purpose: "Audit overlay for agents that review pull request descriptions."
+requires:
+  core: "standards/artifacts/pull-request-description/v1/runtime/core.contract.yaml"
+  semantic_rules: "standards/artifacts/pull-request-description/v1/semantic-rules.yaml"
+instruction: "Audit the PR description against core first, then use semantic rules for diagnostics. Do not reject an artifact using a validity rule absent from core or semantic-rules.yaml."
+audit_steps:
+  - "Ask every universal core.review_questions item."
+  - "Ask each conditional question only when its trigger is true."
+  - "Check that optional sections are present only when triggered."
+  - "Check that issue relationships and closing keywords agree."
+  - "Check evidence visibility and non-claim boundaries."
+  - "Report findings against core rule ids, review question ids, or semantic rule ids."
+severity:
+  blocker: "A missing universal answer, false closing relationship, leaked sensitive detail, or unsupported readiness/release/security claim."
+  major: "A triggered optional section is missing or a visible section creates review noise that can change reviewer behavior."
+  minor: "Formatting or wording reduces clarity without changing artifact validity."
+diagnostics:
+  - id: "PRD-DIAG-001"
+    source: "core.review_questions"
+    use: "Explain which question is unanswered."
+  - id: "PRD-DIAG-002"
+    source: "core.decision_tree"
+    use: "Explain which trigger is true or false."
+  - id: "PRD-DIAG-003"
+    source: "semantic-rules.yaml"
+    use: "Explain the violated semantic invariant."
+non_claims:
+  - "This overlay does not add artifact-validity rules beyond core and semantic-rules.yaml."
+  - "This overlay does not define merge approval."

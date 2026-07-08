@@ -1,0 +1,53 @@
+schema_version: "agent-operating-standards.standard-package/v1"
+id: "meta.standard-package.v1"
+title: "Standard Package"
+lifecycle: "active"
+owner_surface: "standards/meta/standard-package/v1/standard.md"
+agent_entrypoint: "standards/meta/standard-package/v1/standard.yaml"
+artifact:
+  type: "standard_package"
+  canonical_surface: "standards/*/*/v*/standard.md"
+  generated_projection: null
+  scope: "admitted operating standards"
+authority:
+  owned_claim_types:
+    - "agent_instruction"
+    - "orientation"
+  forbidden_claim_types:
+    - "runtime_fact"
+    - "release_fact"
+    - "release_guarantee"
+  precedence: "The catalog selects the package; standard.yaml instructs routine use; standard.md owns proof and disputes."
+agent_contract:
+  final_instruction: "When applying a standard, load the catalog entry, then load its agent_entrypoint standard.yaml as the routing manifest. If runtime_contracts exist, load core plus the required role overlays for routine model context. Load standard.md only for proof, dispute, exception, or standard maintenance."
+  required_inputs:
+    - "catalog_entry"
+    - "target_artifact"
+    - "repository_binding"
+  required_sections:
+    - "schema_version"
+    - "id"
+    - "title"
+    - "lifecycle"
+    - "owner_surface"
+    - "agent_entrypoint"
+    - "artifact"
+    - "authority"
+    - "agent_contract"
+    - "validation"
+    - "non_claims"
+  optional_sections: []
+  decision_tree: []
+  output_format: "machine_readable_standard_manifest"
+  proof_policy:
+    include_standard_proof_in_output: false
+    include_artifact_evidence: "Only include evidence required by the artifact being produced."
+    proof_location: "standard.md and semantic-rules.yaml"
+validation:
+  schema: "standards/meta/standard-package/v1/schema.json"
+  semantic_rules: null
+  template: "standards/meta/standard-package/v1/template.yaml"
+non_claims:
+  - "This entrypoint does not define consumer project policy."
+  - "This entrypoint does not make templates authoritative."
+  - "This entrypoint does not define a renderer implementation."

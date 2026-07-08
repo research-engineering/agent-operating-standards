@@ -1,0 +1,10 @@
+schema_version: "agent-operating-standards.semantic-rules/v1"
+standard: "artifact.example.v1"
+scope: "example_artifact"
+rules:
+  - id: "EXAMPLE-SEM-001"
+    invariant: "State the invariant this rule protects."
+    applies_to:
+      - "field_name"
+    check: "State the deterministic review or validator check."
+    failure_mode: "State the failure prevented by this rule."

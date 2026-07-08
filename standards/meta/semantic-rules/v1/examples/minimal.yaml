@@ -1,0 +1,10 @@
+schema_version: "agent-operating-standards.semantic-rules/v1"
+standard: "artifact.pull-request-description.v1"
+scope: "pull_request_description"
+rules:
+  - id: "PRD-SEM-001"
+    invariant: "Validation claims must match checks actually run."
+    applies_to:
+      - "validation"
+    check: "Every validation entry must identify the command and result."
+    failure_mode: "The artifact claims evidence that does not exist."

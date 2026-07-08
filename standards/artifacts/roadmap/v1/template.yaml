@@ -1,0 +1,45 @@
+schema_version: "agent-operating-standards.roadmap/v1"
+doc_type: "roadmap"
+canonical: true
+scope: "repository"
+owner: "standards-owner"
+last_reviewed: "YYYY-MM-DD"
+review_cadence: "monthly"
+generated_projection: "ROADMAP.md"
+authority:
+  owns_claim_types:
+    - "plan"
+    - "priority"
+    - "horizon"
+    - "intent"
+    - "sequencing"
+    - "uncertainty"
+  must_not_define:
+    - "requirement"
+    - "architecture"
+    - "decision"
+    - "api_contract"
+    - "security"
+    - "runtime_fact"
+    - "evidence"
+    - "release_fact"
+    - "release_guarantee"
+  conflict_rule: "typed authority wins over roadmap"
+items:
+  - id: "RM-001"
+    title: "Example initiative"
+    status: "exploring"
+    horizon: "next"
+    confidence: "medium"
+    owner: "initiative-owner"
+    planning_claim: "Explore the initiative before admitting a requirement."
+    authority_links:
+      - relation: "depends_on"
+        target: "SPEC.md#example"
+        required_status: "accepted"
+    exit_evidence:
+      - type: "review"
+        target: "Pull request that admits or drops the initiative."
+        required: true
+non_claims:
+  - "This roadmap does not define requirements."

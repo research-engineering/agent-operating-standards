@@ -1,0 +1,51 @@
+schema_version: "agent-operating-standards.standard-package/v1"
+id: "meta.semantic-rules.v1"
+title: "Semantic Rules"
+lifecycle: "active"
+owner_surface: "standards/meta/semantic-rules/v1/standard.md"
+agent_entrypoint: "standards/meta/semantic-rules/v1/standard.yaml"
+artifact:
+  type: "semantic_rules"
+  canonical_surface: "standards/**/v*/semantic-rules.yaml"
+  generated_projection: null
+  scope: "cross-field and authority validation"
+authority:
+  owned_claim_types:
+    - "agent_instruction"
+    - "evidence"
+    - "orientation"
+  forbidden_claim_types:
+    - "requirement"
+    - "architecture"
+    - "decision"
+    - "api_contract"
+    - "security"
+    - "release_fact"
+    - "release_guarantee"
+    - "runtime_fact"
+  precedence: "Semantic rules validate artifacts for the standard that names them; they do not replace owner surfaces for requirements, architecture, security, runtime facts, or releases."
+agent_contract:
+  final_instruction: "When a selected standard names semantic-rules.yaml, apply each rule by id after structural schema validation. Report failures with the rule id, violated invariant, and affected artifact field."
+  required_inputs:
+    - "selected_standard"
+    - "structured_artifact"
+    - "semantic_rules"
+  required_sections:
+    - "schema_version"
+    - "standard"
+    - "scope"
+    - "rules"
+  optional_sections: []
+  output_format: "semantic_rules_yaml"
+  proof_policy:
+    include_standard_proof_in_output: false
+    include_artifact_evidence: "Validation output may cite rule ids and affected fields."
+    proof_location: "standards/meta/semantic-rules/v1/standard.md"
+validation:
+  schema: "standards/meta/semantic-rules/v1/schema.json"
+  semantic_rules: null
+  template: "standards/meta/semantic-rules/v1/template.yaml"
+non_claims:
+  - "Semantic rules do not replace JSON Schema."
+  - "Semantic rules do not define product requirements or architecture."
+  - "Semantic rules do not define a validator implementation."

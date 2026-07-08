@@ -1,0 +1,23 @@
+schema_version: "agent-operating-standards.rendered-view/v1"
+artifact_type: "rendered_view"
+generated: true
+sources:
+  - path: "docs/planning/roadmap.yaml"
+    role: "canonical"
+    digest: null
+renderer:
+  name: "example-renderer"
+  version: "0.1.0"
+  command: "example-renderer docs/planning/roadmap.yaml --out ROADMAP.md"
+outputs:
+  - path: "ROADMAP.md"
+    format: "markdown"
+    digest: null
+freshness:
+  status: "unknown"
+  checked_at: null
+  source_digest: null
+  output_digest: null
+  note: "Example omits real digest evidence, so freshness is unknown."
+non_claims:
+  - "This rendered view is not canonical."
