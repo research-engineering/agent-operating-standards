@@ -18,6 +18,10 @@ Before opening the pull request, agents MUST:
 6. Add optional sections only when their triggers are true.
 7. Remove empty sections, placeholder comments, and routine checklist text.
 
+Reviewer agents MUST use `review_questions` from `standard.yaml` as the audit
+surface for pull request descriptions. Universal questions always apply.
+Conditional questions apply only when their trigger is true.
+
 Agents MUST NOT include a visible `Validation` section by default.
 
 Agents MUST include `Evidence` only when the pull request makes a proof-bearing

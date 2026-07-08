@@ -63,6 +63,25 @@ const prdDisplayPolicies = new Set([
   "show_when_failed_or_missing",
   "show_when_review_action_needed",
 ]);
+const prdQuestionAnswerSurfaces = new Set([
+  "title",
+  "Summary",
+  "Context",
+  "Changes",
+  "Impact",
+  "Links",
+  "Evidence",
+  "Risk / Rollback",
+  "Migration / Rollout",
+  "Security / Privacy",
+  "Visual Evidence",
+  "Non-Claims",
+  "Review Focus",
+  "review_scope",
+  "change_profiles",
+  "readiness_state",
+  "decision_tree",
+]);
 const kernelClasses = new Set(["kernel", "artifact", "adoption", "validation", "semantic"]);
 const kernelEnforcementTypes = new Set([
   "normative_standard",
@@ -199,6 +218,62 @@ function validatePrdEvidence(evidence, owner) {
     if (item.required_by !== undefined) {
       if (!Array.isArray(item.required_by) || item.required_by.some((entry) => !isNonEmptyString(entry))) {
         fail(`${label} has invalid required_by`);
+      }
+    }
+  }
+}
+
+function validatePrdReviewQuestions(agentContract, owner) {
+  const questions = agentContract?.review_questions;
+  if (questions === undefined) return;
+  rejectUnexpectedKeys(questions, ["universal", "conditional"], `${owner}.agent_contract.review_questions`);
+  const seen = new Set();
+  for (const group of ["universal", "conditional"]) {
+    if (!Array.isArray(questions[group]) || questions[group].length === 0) {
+      fail(`${owner}.agent_contract.review_questions.${group} must be a non-empty array`);
+      continue;
+    }
+    for (const [index, item] of questions[group].entries()) {
+      const label = `${owner}.agent_contract.review_questions.${group}[${index}]`;
+      const allowedKeys =
+        group === "universal"
+          ? ["id", "question", "answered_by", "failure_mode"]
+          : ["id", "trigger", "question", "answered_by", "omit_when", "failure_mode"];
+      rejectUnexpectedKeys(item, allowedKeys, label);
+      if (!/^PRD-RQ-[0-9]{3,}$/.test(item.id ?? "")) {
+        fail(`${label} has invalid id: ${item.id}`);
+      }
+      if (seen.has(item.id)) {
+        fail(`${label} has duplicate id: ${item.id}`);
+      }
+      seen.add(item.id);
+      if (!isNonEmptyString(item.question) || !item.question.endsWith("?")) {
+        fail(`${label} has invalid question`);
+      }
+      if (!Array.isArray(item.answered_by) || item.answered_by.length === 0) {
+        fail(`${label} has no answered_by surfaces`);
+      } else {
+        const surfaces = new Set();
+        for (const surface of item.answered_by) {
+          if (!prdQuestionAnswerSurfaces.has(surface)) {
+            fail(`${label} has invalid answered_by surface: ${surface}`);
+          }
+          if (surfaces.has(surface)) {
+            fail(`${label} has duplicate answered_by surface: ${surface}`);
+          }
+          surfaces.add(surface);
+        }
+      }
+      if (!isNonEmptyString(item.failure_mode)) {
+        fail(`${label} has invalid failure_mode`);
+      }
+      if (group === "conditional") {
+        if (!isNonEmptyString(item.trigger)) {
+          fail(`${label} has invalid trigger`);
+        }
+        if (!isNonEmptyString(item.omit_when)) {
+          fail(`${label} has invalid omit_when`);
+        }
       }
     }
   }
@@ -508,6 +583,9 @@ for (const standardPath of standardManifests) {
 
   if (catalogEntry?.semantic_rules && manifest.validation?.semantic_rules !== catalogEntry.semantic_rules) {
     fail(`${owner} semantic_rules does not match catalog routing mirror`);
+  }
+  if (manifest.id === "artifact.pull-request-description.v1") {
+    validatePrdReviewQuestions(manifest.agent_contract, owner);
   }
 }
 

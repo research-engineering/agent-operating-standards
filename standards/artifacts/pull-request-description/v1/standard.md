@@ -43,6 +43,40 @@ A pull request description is sufficient if and only if a reviewer can answer:
 Therefore only the first two answers are mandatory for every pull request. All
 other sections are conditional.
 
+## Reviewer Question Contract
+
+Reviewer agents MUST evaluate a pull request description by asking universal
+questions first and conditional questions only when their trigger is true.
+
+Universal reviewer questions:
+
+| Question | Answer surface |
+| --- | --- |
+| What changed? | `Summary`, `Changes`, `review_scope` |
+| Why does this change exist? | `Context`, `Links` |
+| Is the review surface explicit enough? | `review_scope`, `Changes` |
+| Which optional facts are triggered? | `change_profiles`, decision tree |
+| Is the pull request overstating what it proves? | `Non-Claims`, `Evidence`, owner links |
+
+Conditional reviewer questions:
+
+| Trigger | Question | Answer surface |
+| --- | --- | --- |
+| The change affects users, business behavior, operators, developers, cost, accessibility, compliance, or support. | What review-relevant impact or value follows from this change? | `Impact` |
+| A business, product, incident, policy, or requirement claim matters. | Which owner surface proves the cause, requirement, or priority? | `Links` |
+| The PR claims benefit, readiness, safety, freshness, performance, or equivalence. | What evidence supports the claim, or what non-claim bounds it? | `Evidence`, `Non-Claims` |
+| The change has non-obvious failure or reversal behavior. | What can fail and how is it rolled back or forward-fixed? | `Risk / Rollback` |
+| Merge order, migration, flags, versions, or downstream adoption matters. | What sequencing or rollout fact changes the review decision? | `Migration / Rollout` |
+| Security or privacy posture is touched. | What security or privacy review surface is relevant, without leaking sensitive details? | `Security / Privacy` |
+| Visual or rendered output matters. | What visual evidence lets the reviewer inspect the result? | `Visual Evidence` |
+| Review path is non-obvious. | Where should the reviewer focus first? | `Review Focus` |
+
+`Why are we working on this?` is universal and belongs in `Context`.
+`What is the root business cause?` is conditional and belongs in `Links` or
+`Impact` only when a business owner surface or business effect exists.
+`What advantages do we have from this PR?` is conditional; agents SHOULD express
+it as review-relevant impact or expected effect, not promotional language.
+
 ## Universal Mandatory Content
 
 Every pull request description MUST include:

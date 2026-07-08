@@ -50,6 +50,11 @@ collect, `agent_contract.required_sections` as the output completeness gate, and
 `agent_contract.proof_policy` as the boundary between standard proof and
 artifact evidence.
 
+When `agent_contract.review_questions` exists, producer agents MUST use it as an
+answer-completeness check and reviewer agents MUST use it as the audit question
+set. Universal questions always apply. Conditional questions apply only when
+their trigger is true.
+
 Templates MUST NOT contain formal proofs. Templates are starter artifacts.
 
 Formal proof, rationale, and dominance arguments belong in `standard.md`,
