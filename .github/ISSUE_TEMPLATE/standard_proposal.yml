@@ -1,0 +1,48 @@
+name: Standard proposal
+description: Propose a reusable operating standard.
+title: "[standard] "
+labels:
+  - standard-proposal
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Documentation
+        - Artifacts
+        - Issues
+        - Pull requests
+        - Repository governance
+        - Workflow evidence
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What recurring failure or ambiguity should this standard prevent?
+    validations:
+      required: true
+  - type: textarea
+    id: invariant
+    attributes:
+      label: Proposed invariant
+      description: State the reusable rule in falsifiable form.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence or adoption path
+      description: What proof, review, or rollout path should make the standard trustworthy?
+    validations:
+      required: true
+  - type: textarea
+    id: non_claims
+    attributes:
+      label: Non-claims
+      description: What does this proposed standard intentionally not decide?
+    validations:
+      required: true
