@@ -1,0 +1,41 @@
+name: Standard defect
+description: Report a contradiction, gap, or unsafe standard.
+title: "[defect] "
+labels:
+  - defect
+body:
+  - type: textarea
+    id: surface
+    attributes:
+      label: Affected surface
+      description: Which file, template, or setting owns the behavior?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected invariant
+      description: What should be true?
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed problem
+      description: What contradicts the invariant?
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: What failure mode can this cause?
+    validations:
+      required: true
+  - type: textarea
+    id: fix
+    attributes:
+      label: Suggested fix
+      description: Optional owner-scoped fix direction.
+    validations:
+      required: false
