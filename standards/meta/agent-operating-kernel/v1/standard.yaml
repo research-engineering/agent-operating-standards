@@ -60,4 +60,4 @@ non_claims:
   - "The kernel does not define product requirements."
   - "The kernel does not define application architecture, API contracts, security policy, runtime facts, release facts, or release guarantees."
   - "The kernel does not make downstream repositories compliant."
-  - "The kernel does not define a CI, GitHub App, renderer, or harness implementation."
+  - "The kernel does not define a CI, GitHub App, renderer, executable skill, or harness implementation."

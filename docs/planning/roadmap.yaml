@@ -54,7 +54,7 @@ items:
     horizon: "now"
     confidence: "high"
     owner: "standards maintainer"
-    planning_claim: "Create a PR description standard that forces authority links, validation, risk, and non-claims."
+    planning_claim: "Create a PR description standard with universal Summary and Context, triggered optional sections, and Evidence only when proof changes review."
     authority_links:
       - relation: "depends_on"
         target: "standards/authority/claim-types/v1/standard.md"

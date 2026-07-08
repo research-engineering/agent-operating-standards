@@ -18,9 +18,9 @@ This repository owns standards for:
 - repository baseline settings and governance hygiene;
 - workflow evidence shape, when a workflow standard is explicitly admitted.
 
-This repository does not own product behavior, consumer project policy, merge
-approval, release approval, security triage authority, or production readiness
-for repositories that adopt these standards.
+This repository does not own product behavior, consumer project policy,
+executable harness skills, merge approval, release approval, security triage
+authority, or production readiness for repositories that adopt these standards.
 
 ## Repository Model
 

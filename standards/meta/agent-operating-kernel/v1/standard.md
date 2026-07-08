@@ -93,6 +93,11 @@ Agents that create artifacts SHOULD use skills, renderers, or harness adapters
 to produce compliant artifacts before review. Consumer repositories SHOULD still
 enforce deterministic checks so compliance does not depend on the producer path.
 
+Standards repositories own normative contracts. Executable skills, plugins,
+hooks, and harness adapters own execution behavior and SHOULD live in the
+appropriate harness or capability repository unless an admitted standard defines
+their package shape.
+
 ### KERNEL-007: Generated Projections Are Not Canonical By Default
 
 Markdown, HTML, PDF, GitHub templates, and other rendered outputs are generated
@@ -141,5 +146,5 @@ Markdown to truth, or treat prior chat decisions as durable policy.
 
 This standard does not define product requirements, application architecture,
 API contracts, security policy, runtime facts, release facts, release
-guarantees, merge approval, CI implementation, GitHub App implementation, or
-downstream repository compliance.
+guarantees, merge approval, CI implementation, GitHub App implementation,
+executable skill implementation, or downstream repository compliance.
