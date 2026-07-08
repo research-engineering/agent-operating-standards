@@ -35,6 +35,17 @@ const prdReviewSurfaceTypes = new Set([
   "other",
 ]);
 const prdLinkTypes = new Set(["issue", "standard", "spec", "schema", "evidence", "policy", "incident", "design", "other"]);
+const prdIssueRelationships = new Set([
+  "relates_to",
+  "references",
+  "depends_on",
+  "blocks",
+  "supersedes",
+  "duplicates",
+  "fixes",
+  "closes",
+  "resolves",
+]);
 const prdEvidenceClasses = new Set([
   "platform_check",
   "local_command",
@@ -129,9 +140,16 @@ function validatePrdLinks(links, owner) {
   if (!Array.isArray(links)) return;
   for (const [index, link] of links.entries()) {
     const label = `${owner}.links[${index}]`;
-    rejectUnexpectedKeys(link, ["type", "target", "note"], label);
+    rejectUnexpectedKeys(link, ["type", "relationship", "target", "note"], label);
     if (!prdLinkTypes.has(link.type)) {
       fail(`${label} has invalid type: ${link.type}`);
+    }
+    if (link.type === "issue") {
+      if (!prdIssueRelationships.has(link.relationship)) {
+        fail(`${label} has invalid or missing issue relationship: ${link.relationship}`);
+      }
+    } else if (link.relationship !== undefined) {
+      fail(`${label} has relationship but type is not issue`);
     }
     if (!isNonEmptyString(link.target)) {
       fail(`${label} has invalid target`);

@@ -94,6 +94,33 @@ when the hosting platform already displays them. Missing, failed, skipped,
 manual, security, runtime, release, migration, or reviewer-action evidence MUST
 be visible when it changes the review decision.
 
+## Issue Link Relationships
+
+Every structured `Links` entry with `type: issue` MUST classify the relationship
+between the pull request and the issue.
+
+Allowed issue relationships are:
+
+- `relates_to`: the issue provides context, but the PR does not claim to close
+  or resolve it.
+- `references`: the issue is a useful reference, but the PR has no lifecycle
+  effect on it.
+- `depends_on`: the PR depends on the issue or work tracked by it.
+- `blocks`: the PR blocks the issue or work tracked by it.
+- `supersedes`: the PR replaces the issue's proposed approach or tracked work.
+- `duplicates`: the PR identifies the issue as a duplicate context surface.
+- `fixes`: merging the PR is intended to fix the issue.
+- `closes`: merging the PR is intended to close the issue.
+- `resolves`: merging the PR is intended to resolve the issue.
+
+`fixes`, `closes`, and `resolves` are closing relationships. Agents MUST use
+platform closing keywords such as `Fixes #123`, `Closes #123`, or
+`Resolves #123` only when the relationship is closing, the PR actually satisfies
+the target issue, and the platform's target-branch semantics are intended.
+
+Agents MUST use neutral wording for non-closing issue relationships. A related
+issue is not the same claim as a resolved issue.
+
 ## Variant Graph
 
 The decision tree starts from the universal core and adds triggered sections:
@@ -104,6 +131,7 @@ all PRs
   -> if user/business/operator/developer effect: Impact
   -> if multi-surface or non-obvious diff: Changes
   -> if external owner surface matters: Links
+  -> if issue link matters: classify issue relationship
   -> if proof-bearing claim changes human review: Evidence
   -> if risk or hard rollback exists: Risk / Rollback
   -> if sequencing matters: Migration / Rollout
@@ -168,6 +196,8 @@ become the owner surface.
 - Do not include unchecked checklists as proof.
 - Do not include a visible `Validation` section by default.
 - Use `Evidence`, not `Validation`, when proof must be visible.
+- Do not use issue closing keywords unless the PR is intended to close or
+  resolve the referenced issue.
 - Do not list commands that were not run unless the absence of evidence changes
   the review decision.
 - Do not use promotional language.

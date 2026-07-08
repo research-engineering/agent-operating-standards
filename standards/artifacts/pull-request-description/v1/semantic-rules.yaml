@@ -44,7 +44,7 @@ rules:
     invariant: "Links must point to owner surfaces when an external claim owner matters."
     applies_to:
       - "links"
-    check: "If a PR depends on an issue, standard, spec, schema, incident, policy, design, or evidence artifact, include Links to those owner surfaces."
+    check: "If a PR depends on an issue, standard, spec, schema, incident, policy, design, or evidence artifact, include Links to those owner surfaces. Issue links must classify their relationship."
     failure_mode: "The PR body promotes convenient context into authority."
   - id: "PRD-SEM-006"
     invariant: "Risk and rollback are required only when failure or reversal is non-obvious."
@@ -126,3 +126,9 @@ rules:
       - "risk_and_rollback"
     check: "If readiness_state is draft or blocked, make non-readiness visible when review is requested; if readiness_state is emergency, include risk, rollback, and available evidence without implying full validation."
     failure_mode: "Reviewers mistake unfinished or expedited work for ordinary merge-ready work."
+  - id: "PRD-SEM-017"
+    invariant: "Issue links must distinguish contextual reference from lifecycle-changing closure."
+    applies_to:
+      - "links"
+    check: "Every link with type issue must include relationship. Use fixes, closes, or resolves only when merging this PR is intended to satisfy and close or resolve the target issue under the hosting platform's target-branch semantics. Use relates_to, references, depends_on, blocks, supersedes, or duplicates when no closure claim is intended."
+    failure_mode: "A neutral issue reference is rendered as Fixes or Closes, causing an accidental lifecycle claim or issue closure."

@@ -26,7 +26,7 @@ authority:
     - "release_guarantee"
   precedence: "A pull request description orients review and may cite evidence; stronger owner surfaces define requirements, architecture, contracts, security, releases, and runtime truth."
 agent_contract:
-  final_instruction: "Create a concise GitHub pull request title and body. Always answer what changed and why it exists. Add optional sections only when their trigger is true. Do not include a routine Validation section; include Evidence only when a proof-bearing claim needs it."
+  final_instruction: "Create a concise GitHub pull request title and body. Always answer what changed and why it exists. Add optional sections only when their trigger is true. Classify every issue link relationship; render platform closing keywords only for true fixes, closes, or resolves claims. Do not include a routine Validation section; include Evidence only when a proof-bearing claim needs it."
   required_inputs:
     - "pull_request_title"
     - "diff_summary"
@@ -66,6 +66,11 @@ agent_contract:
       include_sections:
         - "Links"
       omit_when: "no issue, standard, spec, policy, schema, incident, or evidence artifact owns a needed claim"
+    - trigger: "issue_link_needed"
+      include_sections:
+        - "Links"
+      omit_when: "no issue relationship is relevant"
+      obligation: "Every issue link must classify relationship as relates_to, references, depends_on, blocks, supersedes, duplicates, fixes, closes, or resolves; only fixes, closes, and resolves may render platform closing keywords."
     - trigger: "proof_bearing_claim_changes_human_review"
       include_sections:
         - "Evidence"

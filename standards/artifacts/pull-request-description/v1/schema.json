@@ -320,6 +320,19 @@
         "type": {
           "enum": ["issue", "standard", "spec", "schema", "evidence", "policy", "incident", "design", "other"]
         },
+        "relationship": {
+          "enum": [
+            "relates_to",
+            "references",
+            "depends_on",
+            "blocks",
+            "supersedes",
+            "duplicates",
+            "fixes",
+            "closes",
+            "resolves"
+          ]
+        },
         "target": {
           "type": "string",
           "minLength": 1
@@ -327,7 +340,27 @@
         "note": {
           "type": "string"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "issue"
+              }
+            },
+            "required": ["type"]
+          },
+          "then": {
+            "required": ["relationship"]
+          },
+          "else": {
+            "not": {
+              "required": ["relationship"]
+            }
+          }
+        }
+      ]
     },
     "evidence": {
       "type": "object",
