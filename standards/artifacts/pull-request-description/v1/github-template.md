@@ -2,30 +2,30 @@
 
 <!-- What changed? -->
 
-## Problem
+## Context
 
-<!-- What failure mode, missing standard, or governance gap does this address? -->
+<!-- Why does this change exist? -->
 
-## Authority Links
+<!-- Add only triggered sections below. Remove this comment before publishing. -->
 
-<!-- Link standards, specs, schemas, issues, or evidence that justify the change. -->
+<!--
+## Impact
 
 ## Changes
 
-<!-- List changed owner surfaces. -->
+## Links
 
-## Validation
+## Evidence
 
-<!-- State checks actually run. Do not claim checks that were not run. -->
+## Risk / Rollback
 
-## Risk and Rollback
+## Migration / Rollout
 
-<!-- State residual risk and the smallest safe rollback path. -->
+## Security / Privacy
+
+## Visual Evidence
 
 ## Non-Claims
 
-<!-- State what this PR does not prove. -->
-
 ## Review Focus
-
-<!-- Tell reviewers what deserves attention. -->
+-->

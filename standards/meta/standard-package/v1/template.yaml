@@ -19,6 +19,7 @@ agent_contract:
   required_inputs: []
   required_sections: []
   optional_sections: []
+  decision_tree: []
   output_format: "machine_readable_or_markdown"
   proof_policy:
     include_standard_proof_in_output: false

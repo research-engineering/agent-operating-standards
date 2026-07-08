@@ -4,6 +4,54 @@ import { join, relative } from "node:path";
 
 const root = process.cwd();
 let failed = false;
+const prdProfiles = new Set([
+  "code_behavior",
+  "documentation",
+  "configuration",
+  "ci",
+  "dependency",
+  "generated",
+  "refactor",
+  "test",
+  "release",
+  "migration",
+  "security",
+  "visual",
+  "formatting",
+  "emergency",
+  "other",
+]);
+const prdReadinessStates = new Set(["draft", "ready_for_review", "blocked", "emergency"]);
+const prdReviewSurfaceTypes = new Set([
+  "code",
+  "documentation",
+  "schema",
+  "workflow",
+  "configuration",
+  "dependency",
+  "generated",
+  "test",
+  "release",
+  "other",
+]);
+const prdLinkTypes = new Set(["issue", "standard", "spec", "schema", "evidence", "policy", "incident", "design", "other"]);
+const prdEvidenceClasses = new Set([
+  "platform_check",
+  "local_command",
+  "manual_review",
+  "screenshot",
+  "benchmark",
+  "linked_report",
+  "render_manifest",
+  "not_available",
+]);
+const prdEvidenceResults = new Set(["passed", "failed", "observed", "linked", "skipped", "not_run", "not_available"]);
+const prdDisplayPolicies = new Set([
+  "hide_when_passed",
+  "show_always",
+  "show_when_failed_or_missing",
+  "show_when_review_action_needed",
+]);
 
 function fail(message) {
   console.error(message);
@@ -44,6 +92,252 @@ function walkFiles(dir, predicate, out = []) {
 function pathExists(pathValue, owner) {
   if (typeof pathValue === "string" && !existsSync(join(root, pathValue))) {
     fail(`${owner} points to missing path: ${pathValue}`);
+  }
+}
+
+function readText(path) {
+  return readFileSync(path, "utf8");
+}
+
+function isNonEmptyString(value) {
+  return typeof value === "string" && value.length > 0;
+}
+
+function rejectUnexpectedKeys(value, allowedKeys, owner) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    fail(`${owner} is not an object`);
+    return;
+  }
+  for (const key of Object.keys(value)) {
+    if (!allowedKeys.includes(key)) {
+      fail(`${owner} has unexpected key: ${key}`);
+    }
+  }
+}
+
+function validatePrdLinks(links, owner) {
+  if (!Array.isArray(links)) return;
+  for (const [index, link] of links.entries()) {
+    const label = `${owner}.links[${index}]`;
+    rejectUnexpectedKeys(link, ["type", "target", "note"], label);
+    if (!prdLinkTypes.has(link.type)) {
+      fail(`${label} has invalid type: ${link.type}`);
+    }
+    if (!isNonEmptyString(link.target)) {
+      fail(`${label} has invalid target`);
+    }
+  }
+}
+
+function validatePrdEvidence(evidence, owner) {
+  if (!Array.isArray(evidence)) return;
+  for (const [index, item] of evidence.entries()) {
+    const label = `${owner}.evidence[${index}]`;
+    rejectUnexpectedKeys(
+      item,
+      [
+        "gate_id",
+        "evidence_class",
+        "claim",
+        "result",
+        "scope",
+        "command",
+        "evidence_ref",
+        "required_by",
+        "display_policy",
+        "blocker",
+        "note",
+      ],
+      label,
+    );
+    for (const key of ["gate_id", "claim"]) {
+      if (!isNonEmptyString(item[key])) {
+        fail(`${label} has invalid ${key}`);
+      }
+    }
+    if (!prdEvidenceClasses.has(item.evidence_class)) {
+      fail(`${label} has invalid evidence_class: ${item.evidence_class}`);
+    }
+    if (!prdEvidenceResults.has(item.result)) {
+      fail(`${label} has invalid result: ${item.result}`);
+    }
+    if (!prdDisplayPolicies.has(item.display_policy)) {
+      fail(`${label} has invalid display_policy: ${item.display_policy}`);
+    }
+    rejectUnexpectedKeys(item.scope, ["head_ref", "base_ref", "head_sha"], `${label}.scope`);
+    if (!isNonEmptyString(item.scope?.head_ref)) {
+      fail(`${label}.scope has invalid head_ref`);
+    }
+    if (item.required_by !== undefined) {
+      if (!Array.isArray(item.required_by) || item.required_by.some((entry) => !isNonEmptyString(entry))) {
+        fail(`${label} has invalid required_by`);
+      }
+    }
+  }
+}
+
+function validatePrdDraft(path) {
+  const draft = readYaml(path);
+  const owner = rel(path);
+  rejectUnexpectedKeys(
+    draft,
+    [
+      "schema_version",
+      "artifact_type",
+      "title",
+      "summary",
+      "context",
+      "review_scope",
+      "change_profiles",
+      "readiness_state",
+      "impact",
+      "changes",
+      "links",
+      "evidence",
+      "risk_and_rollback",
+      "migration_rollout",
+      "security_privacy",
+      "visual_evidence",
+      "non_claims",
+      "review_focus",
+    ],
+    owner,
+  );
+  for (const key of ["schema_version", "artifact_type", "title", "summary", "context"]) {
+    if (!isNonEmptyString(draft[key])) {
+      fail(`${owner} has invalid ${key}`);
+    }
+  }
+  if (draft.schema_version !== "agent-operating-standards.pull-request-description/v1") {
+    fail(`${owner} has invalid schema_version`);
+  }
+  if (draft.artifact_type !== "pull_request_description") {
+    fail(`${owner} has invalid artifact_type`);
+  }
+  if (!Array.isArray(draft.review_scope) || draft.review_scope.length === 0) {
+    fail(`${owner} has no review_scope`);
+  } else {
+    for (const surface of draft.review_scope) {
+      rejectUnexpectedKeys(surface, ["surface", "change_type", "note"], `${owner}.review_scope entry`);
+      if (!isNonEmptyString(surface.surface) || !prdReviewSurfaceTypes.has(surface.change_type)) {
+        fail(`${owner} has invalid review_scope entry`);
+      }
+    }
+  }
+  if (!Array.isArray(draft.change_profiles) || draft.change_profiles.length === 0) {
+    fail(`${owner} has no change_profiles`);
+  } else {
+    const seenProfiles = new Set();
+    for (const profile of draft.change_profiles) {
+      if (!prdProfiles.has(profile)) {
+        fail(`${owner} has invalid change_profile: ${profile}`);
+      }
+      if (seenProfiles.has(profile)) {
+        fail(`${owner} has duplicate change_profile: ${profile}`);
+      }
+      seenProfiles.add(profile);
+    }
+  }
+  if (!prdReadinessStates.has(draft.readiness_state)) {
+    fail(`${owner} has invalid readiness_state`);
+  }
+  if (draft.impact !== undefined) {
+    rejectUnexpectedKeys(draft.impact, ["audience", "description"], `${owner}.impact`);
+    if (!Array.isArray(draft.impact.audience) || draft.impact.audience.length === 0) {
+      fail(`${owner}.impact has invalid audience`);
+    } else {
+      const seenAudience = new Set();
+      const allowedAudience = new Set(["users", "business", "operators", "developers", "support"]);
+      for (const audience of draft.impact.audience) {
+        if (!allowedAudience.has(audience)) {
+          fail(`${owner}.impact has invalid audience: ${audience}`);
+        }
+        if (seenAudience.has(audience)) {
+          fail(`${owner}.impact has duplicate audience: ${audience}`);
+        }
+        seenAudience.add(audience);
+      }
+    }
+    if (!isNonEmptyString(draft.impact.description)) {
+      fail(`${owner}.impact has invalid description`);
+    }
+  }
+  if (draft.risk_and_rollback !== undefined) {
+    rejectUnexpectedKeys(draft.risk_and_rollback, ["risk", "rollback"], `${owner}.risk_and_rollback`);
+    if (!isNonEmptyString(draft.risk_and_rollback.risk) || !isNonEmptyString(draft.risk_and_rollback.rollback)) {
+      fail(`${owner}.risk_and_rollback has invalid risk or rollback`);
+    }
+  }
+  if (draft.change_profiles?.includes("security") && !isNonEmptyString(draft.security_privacy)) {
+    fail(`${owner} security profile requires security_privacy`);
+  }
+  if (draft.change_profiles?.includes("migration")) {
+    if (!isNonEmptyString(draft.migration_rollout)) {
+      fail(`${owner} migration profile requires migration_rollout`);
+    }
+    if (!draft.risk_and_rollback?.risk || !draft.risk_and_rollback?.rollback) {
+      fail(`${owner} migration profile requires risk_and_rollback`);
+    }
+  }
+  if (draft.change_profiles?.includes("generated")) {
+    if (!Array.isArray(draft.links) || draft.links.length === 0) {
+      fail(`${owner} generated profile requires links`);
+    }
+    if ((!Array.isArray(draft.evidence) || draft.evidence.length === 0) && (!Array.isArray(draft.non_claims) || draft.non_claims.length === 0)) {
+      fail(`${owner} generated profile requires evidence or non_claims`);
+    }
+  }
+  if (draft.change_profiles?.includes("release")) {
+    if (!isNonEmptyString(draft.migration_rollout)) {
+      fail(`${owner} release profile requires migration_rollout`);
+    }
+    if (!draft.risk_and_rollback?.risk || !draft.risk_and_rollback?.rollback) {
+      fail(`${owner} release profile requires risk_and_rollback`);
+    }
+    if ((!Array.isArray(draft.evidence) || draft.evidence.length === 0) && (!Array.isArray(draft.non_claims) || draft.non_claims.length === 0)) {
+      fail(`${owner} release profile requires evidence or non_claims`);
+    }
+  }
+  if (draft.readiness_state === "emergency") {
+    if (!draft.risk_and_rollback?.risk || !draft.risk_and_rollback?.rollback) {
+      fail(`${owner} emergency readiness requires risk_and_rollback`);
+    }
+    if ((!Array.isArray(draft.evidence) || draft.evidence.length === 0) && (!Array.isArray(draft.non_claims) || draft.non_claims.length === 0)) {
+      fail(`${owner} emergency readiness requires evidence or non_claims`);
+    }
+  }
+  if (draft.readiness_state === "blocked" || draft.readiness_state === "draft") {
+    if (!Array.isArray(draft.review_focus) || draft.review_focus.length === 0) {
+      fail(`${owner} ${draft.readiness_state} readiness requires review_focus`);
+    }
+    if (!Array.isArray(draft.non_claims) || draft.non_claims.length === 0) {
+      fail(`${owner} ${draft.readiness_state} readiness requires non_claims`);
+    }
+  }
+  validatePrdLinks(draft.links, owner);
+  validatePrdLinks(draft.visual_evidence, owner);
+  validatePrdEvidence(draft.evidence, owner);
+}
+
+function markdownHeadings(path) {
+  return readText(path)
+    .split("\n")
+    .map((line) => line.match(/^## (.+)$/)?.[1]?.trim())
+    .filter(Boolean);
+}
+
+function compareSets(actual, expected, owner) {
+  const actualSet = new Set(actual);
+  const expectedSet = new Set(expected);
+  for (const value of expectedSet) {
+    if (!actualSet.has(value)) {
+      fail(`${owner} missing heading: ${value}`);
+    }
+  }
+  for (const value of actualSet) {
+    if (!expectedSet.has(value)) {
+      fail(`${owner} has unexpected heading: ${value}`);
+    }
   }
 }
 
@@ -122,6 +416,32 @@ for (const rulesPath of walkFiles(join(root, "standards"), (path) => path.endsWi
     if (!Array.isArray(rule.applies_to) || rule.applies_to.length === 0) {
       fail(`${rel(rulesPath)} rule ${rule.id} has no applies_to fields`);
     }
+  }
+}
+
+const prTemplateSource = join(root, "standards/artifacts/pull-request-description/v1/github-template.md");
+const prTemplateProjection = join(root, ".github/pull_request_template.md");
+if (existsSync(prTemplateSource) && existsSync(prTemplateProjection)) {
+  if (readText(prTemplateSource) !== readText(prTemplateProjection)) {
+    fail(".github/pull_request_template.md is stale against pull-request-description github-template.md");
+  }
+  const prdStandard = readYaml(join(root, "standards/artifacts/pull-request-description/v1/standard.yaml"));
+  const expectedHeadings = [
+    ...(prdStandard.agent_contract?.required_sections ?? []),
+    ...(prdStandard.agent_contract?.optional_sections ?? []),
+  ];
+  compareSets(markdownHeadings(prTemplateSource), expectedHeadings, rel(prTemplateSource));
+  compareSets(markdownHeadings(prTemplateProjection), expectedHeadings, rel(prTemplateProjection));
+}
+
+for (const prdDraftPath of [
+  join(root, "standards/artifacts/pull-request-description/v1/template.yaml"),
+  ...walkFiles(join(root, "standards/artifacts/pull-request-description/v1/examples"), (path) =>
+    path.endsWith(".yaml") || path.endsWith(".yml"),
+  ),
+]) {
+  if (existsSync(prdDraftPath)) {
+    validatePrdDraft(prdDraftPath);
   }
 }
 

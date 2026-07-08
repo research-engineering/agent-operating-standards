@@ -22,6 +22,7 @@ agent_contract:
   required_sections:
     - "Summary"
   optional_sections: []
+  decision_tree: []
   output_format: "markdown_projection"
   proof_policy:
     include_standard_proof_in_output: false

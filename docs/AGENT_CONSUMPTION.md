@@ -59,8 +59,10 @@ standards/artifacts/pull-request-description/v1/semantic-rules.yaml
 
 The agent then creates a structured pull request draft, validates it, and
 renders the GitHub body. The pull request body does not need to include the
-standard's proof. It must include the validation actually performed, authority
-links, risk, rollback, non-claims, and review focus.
+standard's proof. It MUST render `Summary` and `Context`, then render only the
+sections selected by `agent_contract.decision_tree` and `semantic-rules.yaml`.
+Routine passing validation should not be rendered as a visible section unless
+evidence visibility is triggered.
 
 ## Non-Claims
 

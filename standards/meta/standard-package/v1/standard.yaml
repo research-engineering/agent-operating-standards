@@ -37,6 +37,7 @@ agent_contract:
     - "validation"
     - "non_claims"
   optional_sections: []
+  decision_tree: []
   output_format: "machine_readable_standard_manifest"
   proof_policy:
     include_standard_proof_in_output: false

@@ -11,13 +11,17 @@ standard maintenance.
 Before opening the pull request, agents MUST:
 
 1. Inspect the diff.
-2. Identify the owner surfaces changed.
-3. Identify the standards or issues that justify the change.
-4. List checks actually run.
-5. Add non-claims for readiness, release, CI, downstream adoption, and
-   production behavior when not proven by the pull request.
+2. Write a concise title.
+3. State what changed in `Summary`.
+4. State why the change exists in `Context`.
+5. Classify the change against the decision tree.
+6. Add optional sections only when their triggers are true.
+7. Remove empty sections, placeholder comments, and routine checklist text.
 
-Agents MUST NOT use filler text, hidden assumptions, or generated praise.
+Agents MUST NOT include a visible `Validation` section by default.
 
-Agents SHOULD keep the PR body concise, but MUST NOT omit authority links,
-validation, risk, rollback, or non-claims.
+Agents MUST include `Evidence` only when the pull request makes a proof-bearing
+claim that changes the review decision.
+
+Agents MUST NOT use filler text, hidden assumptions, generated praise, or
+evidence-shaped statements for checks that were not run.

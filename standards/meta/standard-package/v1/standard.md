@@ -55,6 +55,10 @@ are not practical to express in JSON Schema.
 that are absent from `standard.md`, `standard.yaml`, `schema.json`, or
 `semantic-rules.yaml`.
 
+`agent_contract.decision_tree` MAY define trigger-based section selection for
+artifacts whose visible output changes by case. Decision trees MUST reduce
+boilerplate; they MUST NOT hide required evidence.
+
 `agent-policy.md` MAY provide harness-neutral workflow guidance. It MUST NOT
 override `standard.yaml`.
 

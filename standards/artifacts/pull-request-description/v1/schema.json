@@ -7,14 +7,12 @@
   "required": [
     "schema_version",
     "artifact_type",
+    "title",
     "summary",
-    "problem",
-    "authority_links",
-    "changes",
-    "validation",
-    "risk_and_rollback",
-    "non_claims",
-    "review_focus"
+    "context",
+    "review_scope",
+    "change_profiles",
+    "readiness_state"
   ],
   "properties": {
     "schema_version": {
@@ -23,20 +21,54 @@
     "artifact_type": {
       "const": "pull_request_description"
     },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
     "summary": {
       "type": "string",
       "minLength": 1
     },
-    "problem": {
+    "context": {
       "type": "string",
       "minLength": 1
     },
-    "authority_links": {
+    "review_scope": {
       "type": "array",
       "minItems": 1,
       "items": {
-        "$ref": "#/$defs/link"
+        "$ref": "#/$defs/review_surface"
       }
+    },
+    "change_profiles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "code_behavior",
+          "documentation",
+          "configuration",
+          "ci",
+          "dependency",
+          "generated",
+          "refactor",
+          "test",
+          "release",
+          "migration",
+          "security",
+          "visual",
+          "formatting",
+          "emergency",
+          "other"
+        ]
+      }
+    },
+    "readiness_state": {
+      "enum": ["draft", "ready_for_review", "blocked", "emergency"]
+    },
+    "impact": {
+      "$ref": "#/$defs/impact"
     },
     "changes": {
       "type": "array",
@@ -46,11 +78,18 @@
         "minLength": 1
       }
     },
-    "validation": {
+    "links": {
       "type": "array",
       "minItems": 1,
       "items": {
-        "$ref": "#/$defs/validation"
+        "$ref": "#/$defs/link"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidence"
       }
     },
     "risk_and_rollback": {
@@ -66,6 +105,21 @@
           "type": "string",
           "minLength": 1
         }
+      }
+    },
+    "migration_rollout": {
+      "type": "string",
+      "minLength": 1
+    },
+    "security_privacy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "visual_evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/link"
       }
     },
     "non_claims": {
@@ -85,14 +139,186 @@
       }
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "change_profiles": {
+            "contains": {
+              "const": "security"
+            }
+          }
+        },
+        "required": ["change_profiles"]
+      },
+      "then": {
+        "required": ["security_privacy"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "change_profiles": {
+            "contains": {
+              "const": "migration"
+            }
+          }
+        },
+        "required": ["change_profiles"]
+      },
+      "then": {
+        "required": ["migration_rollout", "risk_and_rollback"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "change_profiles": {
+            "contains": {
+              "const": "release"
+            }
+          }
+        },
+        "required": ["change_profiles"]
+      },
+      "then": {
+        "required": ["migration_rollout", "risk_and_rollback"],
+        "anyOf": [
+          {
+            "required": ["evidence"]
+          },
+          {
+            "required": ["non_claims"]
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "change_profiles": {
+            "contains": {
+              "const": "generated"
+            }
+          }
+        },
+        "required": ["change_profiles"]
+      },
+      "then": {
+        "required": ["links"],
+        "anyOf": [
+          {
+            "required": ["evidence"]
+          },
+          {
+            "required": ["non_claims"]
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "readiness_state": {
+            "const": "draft"
+          }
+        },
+        "required": ["readiness_state"]
+      },
+      "then": {
+        "required": ["review_focus", "non_claims"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "readiness_state": {
+            "const": "blocked"
+          }
+        },
+        "required": ["readiness_state"]
+      },
+      "then": {
+        "required": ["review_focus", "non_claims"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "readiness_state": {
+            "const": "emergency"
+          }
+        },
+        "required": ["readiness_state"]
+      },
+      "then": {
+        "required": ["risk_and_rollback"],
+        "anyOf": [
+          {
+            "required": ["evidence"]
+          },
+          {
+            "required": ["non_claims"]
+          }
+        ]
+      }
+    }
+  ],
   "$defs": {
+    "review_surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["surface", "change_type"],
+      "properties": {
+        "surface": {
+          "type": "string",
+          "minLength": 1
+        },
+        "change_type": {
+          "enum": [
+            "code",
+            "documentation",
+            "schema",
+            "workflow",
+            "configuration",
+            "dependency",
+            "generated",
+            "test",
+            "release",
+            "other"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["audience", "description"],
+      "properties": {
+        "audience": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["users", "business", "operators", "developers", "support"]
+          }
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
     "link": {
       "type": "object",
       "additionalProperties": false,
       "required": ["type", "target"],
       "properties": {
         "type": {
-          "enum": ["standard", "issue", "spec", "schema", "evidence", "policy", "other"]
+          "enum": ["issue", "standard", "spec", "schema", "evidence", "policy", "incident", "design", "other"]
         },
         "target": {
           "type": "string",
@@ -103,20 +329,71 @@
         }
       }
     },
-    "validation": {
+    "evidence": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["command", "result"],
+      "required": ["gate_id", "evidence_class", "claim", "result", "scope", "display_policy"],
       "properties": {
-        "command": {
+        "gate_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_class": {
+          "enum": ["platform_check", "local_command", "manual_review", "screenshot", "benchmark", "linked_report", "render_manifest", "not_available"]
+        },
+        "claim": {
           "type": "string",
           "minLength": 1
         },
         "result": {
-          "enum": ["passed", "failed", "not_run"]
+          "enum": ["passed", "failed", "observed", "linked", "skipped", "not_run", "not_available"]
+        },
+        "scope": {
+          "$ref": "#/$defs/evidence_scope"
+        },
+        "command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required_by": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "display_policy": {
+          "enum": ["hide_when_passed", "show_always", "show_when_failed_or_missing", "show_when_review_action_needed"]
+        },
+        "blocker": {
+          "type": ["string", "null"]
         },
         "note": {
           "type": "string"
+        }
+      }
+    },
+    "evidence_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["head_ref"],
+      "properties": {
+        "head_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "base_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "head_sha": {
+          "type": "string",
+          "minLength": 1
         }
       }
     }

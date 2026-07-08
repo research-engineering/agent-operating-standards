@@ -6,7 +6,7 @@ owner_surface: "standards/artifacts/pull-request-description/v1/standard.md"
 agent_entrypoint: "standards/artifacts/pull-request-description/v1/standard.yaml"
 artifact:
   type: "pull_request_description"
-  canonical_surface: "platform_pull_request_body"
+  canonical_surface: "platform_pull_request_title_and_body"
   generated_projection: ".github/pull_request_template.md"
   scope: "pull request review"
 authority:
@@ -21,34 +21,88 @@ authority:
     - "decision"
     - "api_contract"
     - "security"
+    - "runtime_fact"
     - "release_fact"
     - "release_guarantee"
-    - "runtime_fact"
-  precedence: "A pull request body orients review and reports checks actually run; stronger owner surfaces define requirements, architecture, contracts, security, releases, and runtime truth."
+  precedence: "A pull request description orients review and may cite evidence; stronger owner surfaces define requirements, architecture, contracts, security, releases, and runtime truth."
 agent_contract:
-  final_instruction: "Create a concise GitHub pull request body from a structured draft. Include authority links, changed owner surfaces, validation actually run, risk, rollback, non-claims, and review focus. Do not include the proof of this standard in the pull request body."
+  final_instruction: "Create a concise GitHub pull request title and body. Always answer what changed and why it exists. Add optional sections only when their trigger is true. Do not include a routine Validation section; include Evidence only when a proof-bearing claim needs it."
   required_inputs:
+    - "pull_request_title"
     - "diff_summary"
+    - "problem_context"
     - "changed_owner_surfaces"
-    - "authority_links"
-    - "validation_results"
-    - "risk_and_rollback"
-    - "non_claims"
-    - "review_focus"
+    - "change_profiles"
+    - "readiness_state"
   required_sections:
     - "Summary"
-    - "Problem"
-    - "Authority Links"
+    - "Context"
+  optional_sections:
+    - "Impact"
     - "Changes"
-    - "Validation"
-    - "Risk and Rollback"
+    - "Links"
+    - "Evidence"
+    - "Risk / Rollback"
+    - "Migration / Rollout"
+    - "Security / Privacy"
+    - "Visual Evidence"
     - "Non-Claims"
     - "Review Focus"
-  optional_sections: []
+  decision_tree:
+    - trigger: "always"
+      include_sections:
+        - "Summary"
+        - "Context"
+      omit_when: "never"
+    - trigger: "user_business_operator_developer_or_cost_effect"
+      include_sections:
+        - "Impact"
+      omit_when: "the change has no effect beyond the reviewed source surface"
+    - trigger: "multi_surface_or_non_obvious_diff"
+      include_sections:
+        - "Changes"
+      omit_when: "Summary plus diff is enough to identify the review surface"
+    - trigger: "external_owner_surface_needed"
+      include_sections:
+        - "Links"
+      omit_when: "no issue, standard, spec, policy, schema, incident, or evidence artifact owns a needed claim"
+    - trigger: "proof_bearing_claim_changes_human_review"
+      include_sections:
+        - "Evidence"
+      omit_when: "proof is routine, passing, already visible in platform checks, and no reviewer action is needed"
+    - trigger: "hard_to_revert_or_non_obvious_failure_mode"
+      include_sections:
+        - "Risk / Rollback"
+      omit_when: "the change is trivially reversible and has no non-obvious failure mode"
+    - trigger: "merge_order_data_migration_flags_versions_or_downstream_adoption_matters"
+      include_sections:
+        - "Migration / Rollout"
+      omit_when: "merge order and rollout are irrelevant"
+    - trigger: "auth_data_secrets_permissions_abuse_or_disclosure_surface_touched"
+      include_sections:
+        - "Security / Privacy"
+      omit_when: "security and privacy posture are not touched"
+    - trigger: "draft_blocked_or_not_ready_for_review"
+      include_sections:
+        - "Non-Claims"
+        - "Review Focus"
+      omit_when: "the PR is ready for ordinary review"
+    - trigger: "visual_or_rendered_output_needs_review"
+      include_sections:
+        - "Visual Evidence"
+      omit_when: "visual output is irrelevant"
+    - trigger: "predictable_overclaim_exists"
+      include_sections:
+        - "Non-Claims"
+      omit_when: "no reasonable reader would infer a stronger claim than the PR proves"
+    - trigger: "review_path_is_non_obvious"
+      include_sections:
+        - "Review Focus"
+      omit_when: "reviewer should simply review the diff normally"
   output_format: "github_markdown"
   proof_policy:
     include_standard_proof_in_output: false
-    include_artifact_evidence: "Include only validation, evidence links, and non-claims that are true for this pull request."
+    include_artifact_evidence: "Record evidence when proof-bearing claims need it; render visible Evidence only when it changes the human review decision."
     proof_location: "standards/artifacts/pull-request-description/v1/standard.md and standards/artifacts/pull-request-description/v1/semantic-rules.yaml"
 validation:
   schema: "standards/artifacts/pull-request-description/v1/schema.json"
@@ -56,5 +110,5 @@ validation:
   template: "standards/artifacts/pull-request-description/v1/template.yaml"
 non_claims:
   - "A pull request description does not define requirements."
-  - "A pull request description does not define architecture or API contracts."
-  - "A pull request description does not prove release readiness, production readiness, or downstream adoption unless explicit evidence is linked."
+  - "A pull request description does not define architecture, API contracts, or security policy."
+  - "A pull request description does not prove release readiness, production readiness, or downstream adoption unless it cites owner evidence."

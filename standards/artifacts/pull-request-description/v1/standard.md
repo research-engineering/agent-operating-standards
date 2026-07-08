@@ -10,20 +10,129 @@ standard.
 
 ## Purpose
 
-This standard defines the pull request description shape agents MUST use when
+This standard defines the pull request title and body shape agents MUST use when
 opening or updating pull requests for repositories that adopt this standard.
+
+The standard optimizes for review decisions, future search, and bounded
+authority. It does not optimize for exhaustive status reporting.
 
 ## Canonical Artifact
 
-The canonical artifact is the pull request body stored by the hosting platform.
+The canonical artifact is the pull request title and body stored by the hosting
+platform.
+
 The recommended GitHub projection is:
 
 ```text
 .github/pull_request_template.md
 ```
 
-When agents draft a PR body outside GitHub, they SHOULD use the structured
-draft model defined by `schema.json` before rendering Markdown.
+When agents draft a PR outside GitHub, they SHOULD use the structured draft
+model defined by `schema.json` before rendering Markdown.
+
+## Theorem
+
+A pull request description is sufficient if and only if a reviewer can answer:
+
+1. What changed?
+2. Why should this change exist?
+3. Which optional review facts are needed because this specific change creates
+   impact, risk, dependency, evidence, rollout, security, or review-focus
+   obligations?
+
+Therefore only the first two answers are mandatory for every pull request. All
+other sections are conditional.
+
+## Universal Mandatory Content
+
+Every pull request description MUST include:
+
+- `Summary`: the smallest accurate statement of what changed.
+- `Context`: the reason, problem, intent, or correction that makes the change
+  worth reviewing.
+
+The structured draft MUST also include `review_scope`, which identifies the
+changed owner surfaces. The visible body SHOULD render this as `Changes` only
+when the review scope is not obvious from `Summary` and the platform diff.
+
+The structured draft MUST include `change_profiles` and `readiness_state`.
+Profiles are composable: a pull request can be both `security`, `dependency`,
+`configuration`, and `emergency`.
+
+The pull request title MUST be a short imperative or noun-phrase summary that
+can stand alone in history views.
+
+For trivial documentation, typo, formatting, or generated-only pull requests,
+`Context` MAY be short, but it MUST still state why the change exists or why no
+behavior claim is being made.
+
+## Optional Triggered Sections
+
+Agents MUST include an optional section only when its trigger is true.
+
+| Section | Trigger |
+| --- | --- |
+| `Impact` | The change affects users, business behavior, operators, developers, cost, performance, accessibility, compliance, or support. |
+| `Changes` | The reviewer cannot understand the review surface from `Summary` and diff alone, or the PR touches multiple logical surfaces. |
+| `Links` | The PR depends on an issue, standard, spec, design, incident, policy, schema, or evidence artifact that owns a relevant claim. |
+| `Evidence` | Human review depends on proof that is not already obvious from platform checks, or a failed/skipped/missing/manual/runtime/security/release/generated-freshness claim needs attention. |
+| `Risk / Rollback` | The change is hard to revert, changes data, changes deployment, changes security posture, affects users, or has non-obvious failure modes. |
+| `Migration / Rollout` | Merge order, data migration, feature flags, version compatibility, deployment sequence, or downstream adoption matters. |
+| `Security / Privacy` | The change touches auth, authorization, secrets, sensitive data, logging, permissions, abuse controls, or disclosure surfaces. |
+| `Visual Evidence` | The change is UI, visual, document-rendering, or media-facing and reviewers need screenshots, recordings, or rendered output. |
+| `Non-Claims` | A reader could reasonably infer a stronger claim than the PR proves. |
+| `Review Focus` | The reviewer should inspect a specific risk, boundary, generated surface, migration, or design tradeoff. |
+
+Agents MUST omit optional sections whose trigger is false.
+
+Agents MUST NOT publish empty sections, placeholder prompts, or routine
+checklists in the final pull request body.
+
+Evidence MAY exist as structured metadata without rendering a visible
+`Evidence` section. Routine passing checks SHOULD stay out of the visible body
+when the hosting platform already displays them. Missing, failed, skipped,
+manual, security, runtime, release, migration, or reviewer-action evidence MUST
+be visible when it changes the review decision.
+
+## Variant Graph
+
+The decision tree starts from the universal core and adds triggered sections:
+
+```text
+all PRs
+  -> Summary + Context
+  -> if user/business/operator/developer effect: Impact
+  -> if multi-surface or non-obvious diff: Changes
+  -> if external owner surface matters: Links
+  -> if proof-bearing claim changes human review: Evidence
+  -> if risk or hard rollback exists: Risk / Rollback
+  -> if sequencing matters: Migration / Rollout
+  -> if auth/data/secrets/security touched: Security / Privacy
+  -> if visual output matters: Visual Evidence
+  -> if predictable overclaim exists: Non-Claims
+  -> if reviewer path is non-obvious: Review Focus
+```
+
+Common variants:
+
+- draft or blocked: add `Non-Claims` and `Review Focus` so reviewers do not
+  mistake it for merge-ready work.
+- documentation-only: `Summary`, `Context`; add `Impact` only if reader,
+  support, legal, or docs-routing behavior changes.
+- code behavior: add `Impact` and `Evidence` when behavior is asserted.
+- refactor: add `Risk / Rollback` only if boundaries, generated contracts,
+  performance, or behavior equivalence are non-obvious.
+- dependency/config/CI: add `Impact`, `Risk / Rollback`, or `Evidence` when
+  runtime, deploy, supply-chain, or developer-workflow behavior changes.
+- generated artifacts: add `Links` to source and `Evidence` for freshness when
+  freshness is claimed.
+- security/privacy: add `Security / Privacy` and bounded non-claims; do not
+  include secrets, credentials, exploit instructions, sensitive repository data,
+  or disclosure details that belong in a private security channel.
+- release or migration: add `Migration / Rollout`, `Risk / Rollback`, and
+  evidence if readiness is claimed.
+- emergency hotfix: include the emergency context, risk, rollback, and evidence
+  that is actually available; do not imply full validation.
 
 ## Owned Claim Types
 
@@ -31,7 +140,7 @@ A pull request description MAY own only:
 
 - `orientation`;
 - `task_detail`;
-- `evidence` when tied to checks actually run for the pull request;
+- `evidence` when tied to evidence actually available for the pull request;
 - `agent_instruction` only for reviewer focus inside the pull request.
 
 ## Forbidden Claim Types
@@ -43,62 +152,36 @@ A pull request description MUST NOT create or override:
 - `decision`;
 - `api_contract`;
 - `security`;
+- `runtime_fact`;
 - `release_fact`;
-- `release_guarantee`;
-- `runtime_fact` unless backed by explicit evidence.
+- `release_guarantee`.
 
-## Required Sections
+A pull request MAY cite owner surfaces for these claim types, but it MUST NOT
+become the owner surface.
 
-A pull request description MUST include:
+## Formatting Rules
 
-- `Summary`;
-- `Problem`;
-- `Authority Links`;
-- `Changes`;
-- `Validation`;
-- `Risk and Rollback`;
-- `Non-Claims`;
-- `Review Focus`.
-
-## Rules
-
-- Agents MUST use factual, reviewable statements.
-- Agents MUST link to standards, issues, specs, schemas, or evidence when the PR
-  depends on them.
-- Agents MUST NOT claim validation that was not run.
-- Agents MUST separate local checks from CI, production, release, and downstream
-  compliance claims.
-- Agents MUST include explicit non-claims when a reader could infer a stronger
-  claim than the PR proves.
-- Agents SHOULD keep the description short enough for review while preserving
-  the required evidence surface.
-
-## Section Semantics
-
-`Summary` states what changed.
-
-`Problem` states why the change is needed and what failure mode it prevents.
-
-`Authority Links` names the standards or owner surfaces that justify the
-change.
-
-`Changes` lists the changed surfaces without restating the full diff.
-
-`Validation` states checks actually performed and their results.
-
-`Risk and Rollback` states residual risk and the smallest safe rollback path.
-
-`Non-Claims` states what the pull request does not prove.
-
-`Review Focus` tells reviewers what deserves attention.
+- Use GitHub Markdown.
+- Use `##` headings for included body sections.
+- Keep `Summary` and `Context` concise.
+- Prefer bullets for lists of changes, links, risks, and evidence.
+- Do not include unchecked checklists as proof.
+- Do not include a visible `Validation` section by default.
+- Use `Evidence`, not `Validation`, when proof must be visible.
+- Do not list commands that were not run unless the absence of evidence changes
+  the review decision.
+- Do not use promotional language.
 
 ## Failure Mode
 
-Unstructured PR descriptions become marketing summaries. Agents then overclaim
-readiness, hide missing validation, or omit the owner surface that should be
-reviewed.
+Mandatory templates with many sections create unreadable pull request bodies.
+Reviewers then skim past the description, agents fill placeholders, and the
+standard loses authority. The correct invariant is not "every PR has every
+section"; it is "every PR contains exactly the facts needed for the review
+decision, no fewer and no more."
 
 ## Non-Claims
 
 This standard does not define merge approval, release approval, CI requirements,
-or reviewer assignment policy.
+reviewer assignment policy, product requirements, architecture, or security
+policy.
