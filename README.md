@@ -60,6 +60,28 @@ descriptions, issue bodies, release notes, roadmaps, evidence reports, and
 documentation files can all be governed artifacts when admitted through the
 catalog.
 
+## Standard Portfolio
+
+Badges describe implementation status in this repository, not downstream
+adoption status.
+
+| Artifact standard | Governs | Status | Agent runtime | Validation | Model context | Signal |
+| --- | --- | --- | --- | --- | --- | --- |
+| [Pull request description](standards/artifacts/pull-request-description/v1/standard.md) | GitHub pull request title and body | ![runtime ready](https://img.shields.io/badge/status-runtime--ready-brightgreen) | Shared `core` plus producer, reviewer, and renderer overlays | JSON Schema, semantic rules, runtime-contract validator | ~2.1k producer / ~2.0k reviewer tokens | Review questions, issue-link semantics, no routine `Validation` noise |
+| [Roadmap](standards/artifacts/roadmap/v1/standard.md) | `docs/planning/roadmap.yaml` with `ROADMAP.md` projection | ![active](https://img.shields.io/badge/status-active-blue) | `standard.yaml` | JSON Schema | ~0.6k tokens | Planning authority only; links to stronger owner surfaces |
+| [Rendered view](standards/artifacts/rendered-view/v1/standard.md) | Generated Markdown, HTML, PDF, or other human-facing projections | ![active](https://img.shields.io/badge/status-active-blue) | `standard.yaml` | JSON Schema | ~0.6k tokens | Rendered views are projections, not authority |
+
+Candidate rows below are intentionally non-normative until admitted through
+`standards.catalog.yaml`.
+
+| Candidate artifact | Intended scope | Status | Why it matters |
+| --- | --- | --- | --- |
+| Issue description | GitHub issue bodies and triage metadata | ![planned](https://img.shields.io/badge/status-planned-lightgrey) | Converts issue text into stable problem, scope, and ownership signals |
+| Release notes | Human-facing release text and changelog entries | ![planned](https://img.shields.io/badge/status-planned-lightgrey) | Separates release communication from PR evidence and implementation detail |
+| Architecture document | Architecture owner surfaces such as `ARCHITECTURE.md` | ![planned](https://img.shields.io/badge/status-planned-lightgrey) | Prevents PRs, roadmaps, and comments from becoming hidden architecture authority |
+| Security document | Security policy, disclosure, and sensitive-surface rules | ![planned](https://img.shields.io/badge/status-planned-lightgrey) | Keeps security claims, disclosure paths, and public text boundaries explicit |
+| Agent instructions | Repository-local agent routing such as `AGENTS.md` | ![planned](https://img.shields.io/badge/status-planned-lightgrey) | Makes harness instructions auditable instead of relying on chat memory |
+
 ## Current Baseline
 
 The repository starts with a minimal governance baseline:
