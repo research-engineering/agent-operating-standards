@@ -1,0 +1,23 @@
+schema_version: "agent-operating-standards.pull-request-description/v1"
+artifact_type: "pull_request_description"
+summary: "Adds the initial roadmap and pull request description standards."
+problem: "Agents need a durable contract for creating planning and pull request artifacts without overclaiming authority."
+authority_links:
+  - type: "standard"
+    target: "standards/authority/claim-types/v1/standard.md"
+  - type: "standard"
+    target: "standards/artifacts/roadmap/v1/standard.md"
+changes:
+  - "Adds standards catalog entries."
+  - "Adds roadmap and pull request description artifact standards."
+validation:
+  - command: "json schema parse"
+    result: "passed"
+    note: "All schema files parse as JSON."
+risk_and_rollback:
+  risk: "Initial standards may need migration as more artifact types are admitted."
+  rollback: "Revert the standards package and catalog entries."
+non_claims:
+  - "This pull request does not define issue, release, or CI standards."
+review_focus:
+  - "Check authority boundaries and required fields."

@@ -1,0 +1,36 @@
+schema_version: "agent-operating-standards.repository-binding/v1"
+repository: "agent-operating-standards"
+catalog: "standards.catalog.yaml"
+canonical: true
+binding_owner: "docs/DOCS_CONTRACT.yaml"
+default_policy:
+  canonical_artifacts_win_over_generated_projections: true
+  admitted_catalog_entries_only: true
+  generated_markdown_is_not_normative_unless_declared: true
+adopted_standards:
+  - standard: "meta.standards-catalog.v1"
+    owner_surface: "standards/meta/standards-catalog/v1/standard.md"
+    canonical_artifact: "standards.catalog.yaml"
+  - standard: "authority.claim-types.v1"
+    owner_surface: "standards/authority/claim-types/v1/standard.md"
+    applies_to:
+      - "all artifacts in this repository"
+  - standard: "authority.exception-protocol.v1"
+    owner_surface: "standards/authority/exception-protocol/v1/standard.md"
+    applies_to:
+      - "standards/*/*/v*/standard.md"
+      - "docs/DOCS_CONTRACT.yaml"
+  - standard: "meta.repository-binding.v1"
+    owner_surface: "standards/meta/repository-binding/v1/standard.md"
+    canonical_artifact: "docs/DOCS_CONTRACT.yaml"
+  - standard: "artifact.roadmap.v1"
+    owner_surface: "standards/artifacts/roadmap/v1/standard.md"
+    canonical_artifact: "docs/planning/roadmap.yaml"
+    generated_projection: "ROADMAP.md"
+  - standard: "artifact.pull-request-description.v1"
+    owner_surface: "standards/artifacts/pull-request-description/v1/standard.md"
+    generated_projection: ".github/pull_request_template.md"
+non_claims:
+  - "This binding does not require CI gates."
+  - "This binding does not define release approval."
+  - "This binding does not make downstream repositories compliant."

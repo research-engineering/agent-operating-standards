@@ -1,0 +1,113 @@
+schema_version: "agent-operating-standards.roadmap/v1"
+doc_type: "roadmap"
+canonical: true
+scope: "repository"
+owner: "standards maintainer"
+last_reviewed: "2026-07-08"
+review_cadence: "monthly"
+generated_projection: "ROADMAP.md"
+authority:
+  owns_claim_types:
+    - "plan"
+    - "priority"
+    - "horizon"
+    - "intent"
+    - "sequencing"
+    - "uncertainty"
+  must_not_define:
+    - "requirement"
+    - "architecture"
+    - "decision"
+    - "api_contract"
+    - "security"
+    - "runtime_fact"
+    - "evidence"
+    - "release_fact"
+    - "release_guarantee"
+  conflict_rule: "typed authority wins over roadmap"
+themes:
+  - "artifact standards"
+  - "agent policy"
+  - "validation"
+items:
+  - id: "RM-001"
+    title: "Admit roadmap artifact standard"
+    status: "active"
+    horizon: "now"
+    confidence: "high"
+    owner: "standards maintainer"
+    planning_claim: "Create a canonical roadmap standard that prevents planning artifacts from defining requirements or evidence."
+    authority_links:
+      - relation: "depends_on"
+        target: "standards/authority/claim-types/v1/standard.md"
+        required_status: "active"
+      - relation: "depends_on"
+        target: "standards/authority/exception-protocol/v1/standard.md"
+        required_status: "active"
+    exit_evidence:
+      - type: "review"
+        target: "Pull request admitting artifact.roadmap.v1."
+        required: true
+  - id: "RM-002"
+    title: "Admit pull request description artifact standard"
+    status: "active"
+    horizon: "now"
+    confidence: "high"
+    owner: "standards maintainer"
+    planning_claim: "Create a PR description standard that forces authority links, validation, risk, and non-claims."
+    authority_links:
+      - relation: "depends_on"
+        target: "standards/authority/claim-types/v1/standard.md"
+        required_status: "active"
+    exit_evidence:
+      - type: "review"
+        target: "Pull request admitting artifact.pull-request-description.v1."
+        required: true
+  - id: "RM-003"
+    title: "Define issue body artifact standard"
+    status: "planned"
+    horizon: "next"
+    confidence: "medium"
+    owner: "standards maintainer"
+    planning_claim: "Standardize issue bodies without mixing bug reports, proposals, questions, and governance contradictions."
+    authority_links:
+      - relation: "depends_on"
+        target: "standards/artifacts/pull-request-description/v1/standard.md"
+        required_status: "active"
+    exit_evidence:
+      - type: "review"
+        target: "Pull request admitting artifact.issue-body.v1."
+        required: true
+  - id: "RM-004"
+    title: "Define release notes artifact standard"
+    status: "planned"
+    horizon: "next"
+    confidence: "medium"
+    owner: "standards maintainer"
+    planning_claim: "Standardize release text separately from changelog history and release approval."
+    authority_links:
+      - relation: "depends_on"
+        target: "standards/authority/claim-types/v1/standard.md"
+        required_status: "active"
+    exit_evidence:
+      - type: "review"
+        target: "Pull request admitting artifact.release-notes.v1."
+        required: true
+  - id: "RM-005"
+    title: "Add validator and renderer tooling"
+    status: "exploring"
+    horizon: "later"
+    confidence: "low"
+    owner: "standards maintainer"
+    planning_claim: "Explore generated Markdown projections and schema validation tooling after initial standards stabilize."
+    authority_links:
+      - relation: "depends_on"
+        target: "standards/meta/repository-binding/v1/standard.md"
+        required_status: "active"
+    exit_evidence:
+      - type: "review"
+        target: "Pull request admitting validation tooling or explicitly deferring it."
+        required: true
+non_claims:
+  - "This roadmap does not define requirements, release commitments, workflow gates, or downstream repository compliance."
+  - "This roadmap does not prove that planned standards are accepted before their catalog entries exist."

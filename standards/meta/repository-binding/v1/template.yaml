@@ -1,0 +1,16 @@
+schema_version: "agent-operating-standards.repository-binding/v1"
+repository: "repository-name"
+catalog: "standards.catalog.yaml"
+canonical: true
+binding_owner: "docs/DOCS_CONTRACT.yaml"
+default_policy:
+  canonical_artifacts_win_over_generated_projections: true
+  admitted_catalog_entries_only: true
+  generated_markdown_is_not_normative_unless_declared: true
+adopted_standards:
+  - standard: "artifact.roadmap.v1"
+    owner_surface: "standards/artifacts/roadmap/v1/standard.md"
+    canonical_artifact: "docs/planning/roadmap.yaml"
+    generated_projection: "ROADMAP.md"
+non_claims:
+  - "This binding does not define project-specific product behavior."

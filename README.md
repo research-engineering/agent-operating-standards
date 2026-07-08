@@ -36,6 +36,23 @@ Normative changes should enter through pull requests and identify:
 Templates in `.github/` are repository workflow aids. They are not standards by
 themselves unless a normative standards document points to them.
 
+## Standards Model
+
+The repository uses an explicit catalog-and-binding model:
+
+- `standards.catalog.yaml` admits versioned standards.
+- `docs/DOCS_CONTRACT.yaml` binds this repository to admitted standards.
+- `standards/**/standard.md` owns normative prose for a standard.
+- `standards/**/schema.json` validates structured artifacts when available.
+- `standards/**/agent-policy.md` tells agents how to apply the standard.
+- Generated Markdown projections are not canonical unless the repository
+  binding explicitly declares them canonical.
+
+Artifact standards are a subset of agent operating standards. Pull request
+descriptions, issue bodies, release notes, roadmaps, evidence reports, and
+documentation files can all be governed artifacts when admitted through the
+catalog.
+
 ## Current Baseline
 
 The repository starts with a minimal governance baseline:

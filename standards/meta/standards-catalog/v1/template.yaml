@@ -1,0 +1,16 @@
+schema_version: "agent-operating-standards.catalog/v1"
+name: "Agent Operating Standards"
+canonical: true
+catalog_owner: "standards.catalog.yaml"
+admission_rule: "Only entries listed in this catalog are admitted standards."
+non_claims:
+  - "The catalog does not make any adopting repository compliant by itself."
+standards:
+  - id: "meta.standards-catalog.v1"
+    title: "Standards Catalog"
+    path: "standards/meta/standards-catalog/v1/standard.md"
+    status: "active"
+    owner_surface: "standards/meta/standards-catalog/v1/standard.md"
+    canonical_schema: "standards/meta/standards-catalog/v1/schema.json"
+    applies_to:
+      - "standards.catalog.yaml"

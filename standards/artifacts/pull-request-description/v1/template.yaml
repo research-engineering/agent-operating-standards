@@ -1,0 +1,21 @@
+schema_version: "agent-operating-standards.pull-request-description/v1"
+artifact_type: "pull_request_description"
+summary: "State what changed in one or two sentences."
+problem: "State the failure mode, missing standard, or governance gap."
+authority_links:
+  - type: "standard"
+    target: "standards.catalog.yaml"
+    note: "Catalog entry that admits the standard."
+changes:
+  - "List the changed owner surface."
+validation:
+  - command: "manual review"
+    result: "not_run"
+    note: "Replace with real validation before opening a PR."
+risk_and_rollback:
+  risk: "State residual risk."
+  rollback: "State the smallest revert or follow-up path."
+non_claims:
+  - "This pull request does not claim production readiness."
+review_focus:
+  - "Ask reviewers to inspect the owner surface and non-claims."
