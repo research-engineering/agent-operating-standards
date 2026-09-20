@@ -1,24 +1,14 @@
-schema_version: "agent-operating-standards.runtime-contract/v1"
-standard: "artifact.pull-request-description.v1"
-contract_type: "role_overlay"
-role: "producer"
-purpose: "Create or update PR descriptions using the shared core."
+schema_version: agent-operating-standards.runtime-contract/v1
+standard: artifact.pull-request-description.v1
+contract_type: role_overlay
+role: producer
 requires:
-  core: "standards/artifacts/pull-request-description/v1/runtime/core.contract.yaml"
-  renderer: "standards/artifacts/pull-request-description/v1/runtime/renderer.overlay.yaml"
-  schema: "standards/artifacts/pull-request-description/v1/schema.json"
-instruction: "Create a structured draft, validate it when possible, answer every applicable core question, and render the smallest accurate GitHub Markdown body."
+  core: standards/artifacts/pull-request-description/v1/runtime/core.contract.yaml
+  schema: standards/artifacts/pull-request-description/v1/schema.json
 workflow:
-  - "Inspect diff and owner surfaces."
-  - "Collect core.required_inputs."
-  - "Classify change_profiles and readiness_state."
-  - "Apply true core.decision_tree triggers."
-  - "Answer core.review_questions through sections, not as visible questions."
-  - "Render with renderer overlay."
-completion_gate:
-  - "Summary and Context present."
-  - "All true triggers handled."
-  - "Issue relationships classified."
-  - "No empty sections, placeholders, routine Validation, or false closing keywords."
+- Inspect diff and claim owners; collect the core required inputs.
+- Validate the draft against requires.schema and every core.semantic_rules entry.
+- Evaluate core.agent_contract.decision_tree with resolved facts; retain evidence metadata independently of display.
+- Render selected sections and answer applicable questions; report unresolved facts before claiming compliance.
 non_claims:
-  - "This overlay adds workflow only, not artifact-validity rules."
+- This overlay adds role workflow only. Artifact validity is owned by core and its referenced schema.

@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Scoped invariant justifications",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "standard",
+    "model_ref",
+    "proofs"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "agent-operating-standards.justifications/v1"
+    },
+    "standard": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "proofs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/proof"
+      }
+    }
+  },
+  "$defs": {
+    "proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "scope",
+        "definitions",
+        "premises",
+        "conclusion",
+        "derivation",
+        "countermodel",
+        "alternatives",
+        "non_claims"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "conditional_invariant",
+            "policy_choice"
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "definitions": {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 12,
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "premises": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "formula",
+              "basis",
+              "rationale"
+            ],
+            "properties": {
+              "formula": {
+                "$ref": "#/$defs/expression"
+              },
+              "basis": {
+                "enum": [
+                  "definition",
+                  "accepted_goal",
+                  "accepted_policy",
+                  "environment_assumption"
+                ]
+              },
+              "rationale": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "conclusion": {
+          "$ref": "#/$defs/expression"
+        },
+        "countermodel": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "removed_premise",
+            "assignment"
+          ],
+          "properties": {
+            "removed_premise": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "assignment": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "derivation": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "alternatives": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "non_claims": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "separation_witness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "left_world",
+            "right_world",
+            "omitted_information"
+          ],
+          "properties": {
+            "left_world": {
+              "type": "string",
+              "minLength": 1
+            },
+            "right_world": {
+              "type": "string",
+              "minLength": 1
+            },
+            "omitted_information": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "expression": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "not"
+          ],
+          "properties": {
+            "not": {
+              "$ref": "#/$defs/expression"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "all"
+          ],
+          "properties": {
+            "all": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/expression"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "any"
+          ],
+          "properties": {
+            "any": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/expression"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "implies"
+          ],
+          "properties": {
+            "implies": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "$ref": "#/$defs/expression"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -133,3 +133,10 @@ architecture, and false release expectations.
 
 This standard does not define a release process, product strategy, workflow
 gate, or downstream repository compliance model.
+
+## Scoped justification
+
+The goals, premises, alternatives, countermodels and conditional consequences for
+this package are owned by `standards/artifacts/roadmap/v1/proofs.yaml`.
+Read them using `docs/FORMAL_MODEL.md`. These are conditional justifications and
+explicit policy choices, not universal claims of necessity or external execution.

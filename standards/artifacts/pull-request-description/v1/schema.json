@@ -12,7 +12,9 @@
     "context",
     "review_scope",
     "change_profiles",
-    "readiness_state"
+    "readiness_state",
+    "urgency",
+    "review_facts"
   ],
   "properties": {
     "schema_version": {
@@ -59,13 +61,16 @@
           "security",
           "visual",
           "formatting",
-          "emergency",
           "other"
         ]
       }
     },
     "readiness_state": {
-      "enum": ["draft", "ready_for_review", "blocked", "emergency"]
+      "enum": [
+        "draft",
+        "ready_for_review",
+        "blocked"
+      ]
     },
     "impact": {
       "$ref": "#/$defs/impact"
@@ -95,7 +100,10 @@
     "risk_and_rollback": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["risk", "rollback"],
+      "required": [
+        "risk",
+        "rollback"
+      ],
       "properties": {
         "risk": {
           "type": "string",
@@ -137,6 +145,100 @@
         "type": "string",
         "minLength": 1
       }
+    },
+    "urgency": {
+      "enum": [
+        "normal",
+        "emergency"
+      ]
+    },
+    "review_facts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "impact",
+        "expanded_review",
+        "external_owner",
+        "visible_evidence",
+        "risk",
+        "rollout",
+        "security",
+        "visual",
+        "overclaim",
+        "review_focus"
+      ],
+      "properties": {
+        "impact": {
+          "enum": [
+            true,
+            false,
+            "unknown"
+          ]
+        },
+        "expanded_review": {
+          "enum": [
+            true,
+            false,
+            "unknown"
+          ]
+        },
+        "external_owner": {
+          "enum": [
+            true,
+            false,
+            "unknown"
+          ]
+        },
+        "visible_evidence": {
+          "enum": [
+            true,
+            false,
+            "unknown"
+          ]
+        },
+        "risk": {
+          "enum": [
+            true,
+            false,
+            "unknown"
+          ]
+        },
+        "rollout": {
+          "enum": [
+            true,
+            false,
+            "unknown"
+          ]
+        },
+        "security": {
+          "enum": [
+            true,
+            false,
+            "unknown"
+          ]
+        },
+        "visual": {
+          "enum": [
+            true,
+            false,
+            "unknown"
+          ]
+        },
+        "overclaim": {
+          "enum": [
+            true,
+            false,
+            "unknown"
+          ]
+        },
+        "review_focus": {
+          "enum": [
+            true,
+            false,
+            "unknown"
+          ]
+        }
+      }
     }
   },
   "allOf": [
@@ -149,10 +251,14 @@
             }
           }
         },
-        "required": ["change_profiles"]
+        "required": [
+          "change_profiles"
+        ]
       },
       "then": {
-        "required": ["security_privacy"]
+        "required": [
+          "security_privacy"
+        ]
       }
     },
     {
@@ -164,10 +270,27 @@
             }
           }
         },
-        "required": ["change_profiles"]
+        "required": [
+          "change_profiles"
+        ]
       },
       "then": {
-        "required": ["migration_rollout", "risk_and_rollback"]
+        "required": [
+          "migration_rollout",
+          "risk_and_rollback"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "evidence"
+            ]
+          },
+          {
+            "required": [
+              "non_claims"
+            ]
+          }
+        ]
       }
     },
     {
@@ -179,16 +302,25 @@
             }
           }
         },
-        "required": ["change_profiles"]
+        "required": [
+          "change_profiles"
+        ]
       },
       "then": {
-        "required": ["migration_rollout", "risk_and_rollback"],
+        "required": [
+          "migration_rollout",
+          "risk_and_rollback"
+        ],
         "anyOf": [
           {
-            "required": ["evidence"]
+            "required": [
+              "evidence"
+            ]
           },
           {
-            "required": ["non_claims"]
+            "required": [
+              "non_claims"
+            ]
           }
         ]
       }
@@ -202,16 +334,24 @@
             }
           }
         },
-        "required": ["change_profiles"]
+        "required": [
+          "change_profiles"
+        ]
       },
       "then": {
-        "required": ["links"],
+        "required": [
+          "links"
+        ],
         "anyOf": [
           {
-            "required": ["evidence"]
+            "required": [
+              "evidence"
+            ]
           },
           {
-            "required": ["non_claims"]
+            "required": [
+              "non_claims"
+            ]
           }
         ]
       }
@@ -223,10 +363,15 @@
             "const": "draft"
           }
         },
-        "required": ["readiness_state"]
+        "required": [
+          "readiness_state"
+        ]
       },
       "then": {
-        "required": ["review_focus", "non_claims"]
+        "required": [
+          "review_focus",
+          "non_claims"
+        ]
       }
     },
     {
@@ -236,29 +381,43 @@
             "const": "blocked"
           }
         },
-        "required": ["readiness_state"]
+        "required": [
+          "readiness_state"
+        ]
       },
       "then": {
-        "required": ["review_focus", "non_claims"]
+        "required": [
+          "review_focus",
+          "non_claims"
+        ]
       }
     },
     {
       "if": {
         "properties": {
-          "readiness_state": {
+          "urgency": {
             "const": "emergency"
           }
         },
-        "required": ["readiness_state"]
+        "required": [
+          "urgency"
+        ]
       },
       "then": {
-        "required": ["risk_and_rollback"],
+        "required": [
+          "risk_and_rollback",
+          "non_claims"
+        ],
         "anyOf": [
           {
-            "required": ["evidence"]
+            "required": [
+              "evidence"
+            ]
           },
           {
-            "required": ["non_claims"]
+            "required": [
+              "non_claims"
+            ]
           }
         ]
       }
@@ -268,7 +427,10 @@
     "review_surface": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["surface", "change_type"],
+      "required": [
+        "surface",
+        "change_type"
+      ],
       "properties": {
         "surface": {
           "type": "string",
@@ -296,14 +458,23 @@
     "impact": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["audience", "description"],
+      "required": [
+        "audience",
+        "description"
+      ],
       "properties": {
         "audience": {
           "type": "array",
           "minItems": 1,
           "uniqueItems": true,
           "items": {
-            "enum": ["users", "business", "operators", "developers", "support"]
+            "enum": [
+              "users",
+              "business",
+              "operators",
+              "developers",
+              "support"
+            ]
           }
         },
         "description": {
@@ -315,10 +486,23 @@
     "link": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["type", "target"],
+      "required": [
+        "type",
+        "target"
+      ],
       "properties": {
         "type": {
-          "enum": ["issue", "standard", "spec", "schema", "evidence", "policy", "incident", "design", "other"]
+          "enum": [
+            "issue",
+            "standard",
+            "spec",
+            "schema",
+            "evidence",
+            "policy",
+            "incident",
+            "design",
+            "other"
+          ]
         },
         "relationship": {
           "enum": [
@@ -349,14 +533,20 @@
                 "const": "issue"
               }
             },
-            "required": ["type"]
+            "required": [
+              "type"
+            ]
           },
           "then": {
-            "required": ["relationship"]
+            "required": [
+              "relationship"
+            ]
           },
           "else": {
             "not": {
-              "required": ["relationship"]
+              "required": [
+                "relationship"
+              ]
             }
           }
         }
@@ -365,21 +555,44 @@
     "evidence": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["gate_id", "evidence_class", "claim", "result", "scope", "display_policy"],
+      "required": [
+        "gate_id",
+        "evidence_class",
+        "claim",
+        "result",
+        "scope"
+      ],
       "properties": {
         "gate_id": {
           "type": "string",
           "minLength": 1
         },
         "evidence_class": {
-          "enum": ["platform_check", "local_command", "manual_review", "screenshot", "benchmark", "linked_report", "render_manifest", "not_available"]
+          "enum": [
+            "platform_check",
+            "local_command",
+            "manual_review",
+            "screenshot",
+            "benchmark",
+            "linked_report",
+            "render_manifest",
+            "not_available"
+          ]
         },
         "claim": {
           "type": "string",
           "minLength": 1
         },
         "result": {
-          "enum": ["passed", "failed", "observed", "linked", "skipped", "not_run", "not_available"]
+          "enum": [
+            "passed",
+            "failed",
+            "observed",
+            "linked",
+            "skipped",
+            "not_run",
+            "not_available"
+          ]
         },
         "scope": {
           "$ref": "#/$defs/evidence_scope"
@@ -390,7 +603,7 @@
         },
         "evidence_ref": {
           "type": "string",
-          "minLength": 1
+          "format": "uri"
         },
         "required_by": {
           "type": "array",
@@ -400,21 +613,49 @@
           },
           "uniqueItems": true
         },
-        "display_policy": {
-          "enum": ["hide_when_passed", "show_always", "show_when_failed_or_missing", "show_when_review_action_needed"]
-        },
         "blocker": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "note": {
           "type": "string"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "result": {
+                "enum": [
+                  "passed",
+                  "failed",
+                  "observed",
+                  "linked"
+                ]
+              }
+            },
+            "required": [
+              "result"
+            ]
+          },
+          "then": {
+            "required": [
+              "evidence_ref"
+            ]
+          }
+        }
+      ]
     },
     "evidence_scope": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["head_ref"],
+      "required": [
+        "repository",
+        "head_ref",
+        "head_sha"
+      ],
       "properties": {
         "head_ref": {
           "type": "string",
@@ -426,9 +667,31 @@
         },
         "head_sha": {
           "type": "string",
+          "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+        },
+        "repository": {
+          "type": "string",
           "minLength": 1
+        },
+        "base_sha": {
+          "type": "string",
+          "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "base_ref"
+            ]
+          },
+          "then": {
+            "required": [
+              "base_sha"
+            ]
+          }
+        }
+      ]
     }
   }
 }

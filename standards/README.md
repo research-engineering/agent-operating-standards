@@ -43,3 +43,9 @@ contracts under `runtime/`. Runtime contracts split routine model context into a
 shared normative `core` plus role overlays such as producer, reviewer, or
 renderer. Producer and reviewer roles MUST share the same core so creation and
 review use the same artifact-validity rules.
+
+Each admitted package also declares a proofs.yaml and exact invariant IDs in the
+catalog. meta.standard-package.v1 owns the justification schema and finite model
+boundary. Generated runtime core is an exact projection of the full operational
+contract and semantic rules; role overlays share its artifact schema. Packages
+with no machine entrypoint have an explicit prose-owner fallback.

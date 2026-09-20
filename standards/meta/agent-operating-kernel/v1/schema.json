@@ -4,7 +4,12 @@
   "title": "Agent Operating Kernel Invariant Ledger",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "artifact_type", "invariants", "non_claims"],
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "invariants",
+    "non_claims"
+  ],
   "properties": {
     "schema_version": {
       "const": "agent-operating-standards.agent-operating-kernel/v1"
@@ -47,7 +52,8 @@
         "enforcement",
         "applies_to",
         "agent_effect",
-        "failure_mode"
+        "failure_mode",
+        "proof_location"
       ],
       "properties": {
         "id": {
@@ -59,7 +65,13 @@
           "minItems": 1,
           "uniqueItems": true,
           "items": {
-            "enum": ["kernel", "artifact", "adoption", "validation", "semantic"]
+            "enum": [
+              "kernel",
+              "artifact",
+              "adoption",
+              "validation",
+              "semantic"
+            ]
           }
         },
         "statement": {
@@ -112,7 +124,11 @@
     "exception_reference": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "scope", "owner_surface"],
+      "required": [
+        "id",
+        "scope",
+        "owner_surface"
+      ],
       "properties": {
         "id": {
           "type": "string",

@@ -83,3 +83,19 @@ draft files, examples, or abandoned experiments.
 ## Non-Claims
 
 This standard does not define the content of any non-catalog standard.
+
+## Scoped justification
+
+The goals, premises, alternatives, countermodels and conditional consequences for
+this package are owned by `standards/meta/standards-catalog/v1/proofs.yaml`.
+Read them using `docs/FORMAL_MODEL.md`. These are conditional justifications and
+explicit policy choices, not universal claims of necessity or external execution.
+
+Routing mirrors use exact equality after normalizing an absent semantic_rules to
+null. A non-null manifest rule path cannot be mirrored by null or an absent value.
+The binding selects the catalog path; validators MUST read that path. An entry
+with no machine entrypoint uses its prose owner as the routine fallback. The
+`justifications` path and exact `invariant_ids` are required admission metadata.
+Status draft permits draft use only; repository adoption remains separately
+explicit. This repository's adoption decision, not self-reference in the catalog,
+is the bootstrap authority.

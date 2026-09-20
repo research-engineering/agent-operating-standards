@@ -36,9 +36,13 @@ An external agent MUST use this order:
 8. Use `schema.json` when creating or validating a structured draft. Adapters
    SHOULD apply schemas outside model context when deterministic validation is
    possible.
-9. Load `semantic-rules.yaml` only when semantic validation is needed.
+9. Apply every semantic rule named by the selected standard during production
+   and review. An exact copy embedded in the generated core satisfies loading;
+   a separate duplicate model-context copy is unnecessary.
 10. Load `template.*` only as a starter artifact.
-11. Load `standard.md` only for rationale, dispute, exception, or maintenance.
+11. If agent_entrypoint is absent or null, load standard.md as the routine
+    contract and the schema/rules named by the catalog. Otherwise load prose for
+    rationale, dispute, exception, or maintenance.
 
 ## Final Agent Instruction
 
@@ -54,7 +58,8 @@ mirror and MUST match `standard.yaml.validation.semantic_rules`.
 
 The agent MUST treat `agent_contract.final_instruction` as the executable
 instruction, `agent_contract.required_inputs` as the minimum context it must
-collect, `agent_contract.required_sections` as the output completeness gate, and
+collect, `agent_contract.required_sections` as the output completeness gate for the
+artifact currently being produced (not for global guardrails merely loaded), and
 `agent_contract.proof_policy` as the boundary between standard proof and
 artifact evidence.
 
@@ -66,10 +71,11 @@ their trigger is true.
 When `runtime_contracts` exists, producer and reviewer agents MUST both load the
 same `core` contract. A producer task then loads producer and renderer overlays.
 A reviewer task then loads the reviewer overlay and semantic rules when semantic
-validation is needed. Reviewer overlays MUST NOT introduce artifact-validity
-rules absent from `core` or the standard's semantic rules.
+validation is needed. Core MUST contain every canonical semantic rule. Reviewer overlays MUST NOT
+introduce artifact-validity rules absent from that complete core and its schema.
 
-Templates MUST NOT contain formal proofs. Templates are starter artifacts.
+Templates are starter artifacts, not proof authorities. A template for a proof
+artifact may contain a model example; it cannot establish its own factual premises.
 
 Formal proof, rationale, and dominance arguments belong in `standard.md`,
 `semantic-rules.yaml`, tests, validators, or evidence artifacts. The generated
@@ -119,3 +125,19 @@ standards/artifacts/pull-request-description/v1/semantic-rules.yaml
 - This document does not make any adopting repository compliant.
 - This document does not define a renderer implementation.
 - This document does not make generated Markdown authoritative.
+
+## Predicate and evidence boundary
+
+For PRs, evaluate `decision_tree.when` using the structured draft's `review_facts`,
+change_profiles, readiness_state and urgency. The grammar is Boolean constants,
+`fact`, `profile`, `readiness`, `urgency`, `absent`, `any` and `all`. Facts may be
+true, false or unknown. Any true disjunct resolves an OR; any false conjunct
+resolves an AND; otherwise unknown propagates. Union all selected sections.
+Omit a section only if every rule selecting it is false. An unresolved section
+blocks a compliance claim. Producer-supplied facts require independent review
+against the diff and owners; parsing a Boolean does not prove its truth.
+
+Stored evidence has its own evidence obligation and need not render a visible
+Evidence section. All other optional output fields map to their selected visible
+sections. The generated runtime core includes every semantic rule, so producer
+and reviewer cannot silently use different validity sets.

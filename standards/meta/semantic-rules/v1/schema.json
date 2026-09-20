@@ -4,7 +4,12 @@
   "title": "Semantic Rules",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "standard", "scope", "rules"],
+  "required": [
+    "schema_version",
+    "standard",
+    "scope",
+    "rules"
+  ],
   "properties": {
     "schema_version": {
       "const": "agent-operating-standards.semantic-rules/v1"
@@ -29,7 +34,14 @@
     "rule": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "invariant", "applies_to", "check", "failure_mode"],
+      "required": [
+        "id",
+        "invariant",
+        "applies_to",
+        "check",
+        "failure_mode",
+        "justification_ref"
+      ],
       "properties": {
         "id": {
           "type": "string",
@@ -52,6 +64,10 @@
           "minLength": 1
         },
         "failure_mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "justification_ref": {
           "type": "string",
           "minLength": 1
         }

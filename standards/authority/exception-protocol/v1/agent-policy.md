@@ -1,7 +1,9 @@
 # Agent Policy: Exception Protocol v1
 
-Agents MUST create an exception record when a standard cannot be followed and
-the work must still proceed.
+When an exception is needed, agents MUST first create a proposed record.
+They MUST verify independent approval, action scope, disjoint claim sets, finite
+expiry and review/revocation state before relying on it. A proposed record does
+not authorize proceeding. Unknown predicates grant no authority.
 
 Agents MUST stop and request clarification instead of inventing an exception
 when:

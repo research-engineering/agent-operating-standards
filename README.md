@@ -65,11 +65,14 @@ catalog.
 Badges describe implementation status in this repository, not downstream
 adoption status.
 
-| Artifact standard | Governs | Status | Agent runtime | Validation | Model context | Signal |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Pull request description](standards/artifacts/pull-request-description/v1/standard.md) | GitHub pull request title and body | ![runtime ready](https://img.shields.io/badge/status-runtime--ready-brightgreen) | Shared `core` plus producer, reviewer, and renderer overlays | JSON Schema, semantic rules, runtime-contract validator | ~2.1k producer / ~2.0k reviewer tokens | Review questions, issue-link semantics, no routine `Validation` noise |
-| [Roadmap](standards/artifacts/roadmap/v1/standard.md) | `docs/planning/roadmap.yaml` with `ROADMAP.md` projection | ![active](https://img.shields.io/badge/status-active-blue) | `standard.yaml` | JSON Schema | ~0.6k tokens | Planning authority only; links to stronger owner surfaces |
-| [Rendered view](standards/artifacts/rendered-view/v1/standard.md) | Generated Markdown, HTML, PDF, or other human-facing projections | ![active](https://img.shields.io/badge/status-active-blue) | `standard.yaml` | JSON Schema | ~0.6k tokens | Rendered views are projections, not authority |
+| Artifact standard | Governs | Contract and validation |
+| --- | --- | --- |
+| [Pull request description](standards/artifacts/pull-request-description/v1/standard.md) | PR title, draft and body | Complete generated core, shared schema/semantic rules, independent readiness and urgency, one section predicate model |
+| [Roadmap](standards/artifacts/roadmap/v1/standard.md) | Canonical roadmap and projection | JSON Schema plus explicit authority, scheduling and release-evidence rules |
+| [Rendered view](standards/artifacts/rendered-view/v1/standard.md) | Generated human-facing views | Three-state freshness, exact input/output/renderer/configuration identities and an external render-relation evidence obligation |
+
+These interfaces have local validation and regression coverage. No unmeasured
+model-context size, runtime-readiness or downstream compliance claim is made.
 
 Candidate rows below are intentionally non-normative until admitted through
 `standards.catalog.yaml`.
@@ -94,8 +97,9 @@ The repository starts with a minimal governance baseline:
 - secret scanning and push protection are enabled;
 - Dependabot is configured for GitHub Actions metadata.
 
-The initial workflow gate is `Validate`. Required status checks should be
-enabled after the first successful `Validate` run on `main`.
+The advisory `Validate` workflow is explicitly owned by
+`workflow.repository-validation.v1` and adopted by the repository binding.
+Required GitHub status checks remain a separate repository policy decision.
 
 ## Validation
 
@@ -103,8 +107,27 @@ enabled after the first successful `Validate` run on `main`.
 npm run validate
 ```
 
-The local validator checks catalog and binding references, standard entrypoint
-references, semantic-rules mirrors, semantic rule ids, and JSON/YAML syntax.
+The validator applies Draft 2020-12 schemas to all declared structured artifacts,
+validates binding/catalog identities, checks every semantic-rule proof reference,
+replays finite conditional proofs, and compares generated runtime core with its
+complete canonical instruction/rule inputs. YAML duplicate keys and aliases are
+rejected. JSON Schema validates actual values; there is no handwritten replacement
+for schema semantics.
 
-The `Validate` GitHub Actions workflow runs the same command for pull requests
-and pushes to `main`.
+```sh
+npm ci
+npm run generate  # after changing canonical PR runtime inputs
+npm run check     # validation and regression suite
+```
+
+[The formal model](docs/FORMAL_MODEL.md) distinguishes goals, policy choices and
+conditional consequences. Every admitted package declares its invariant IDs and
+an owner-bound `proofs.yaml`. Checked Boolean consequence is not proof that the
+premises describe the real world, that an external attestation is true, or that
+an agent executed the instructions. Schema truth, authority, evidence authenticity,
+semantic adequacy and runtime execution remain separate obligations.
+
+The initial v1 proposal now separates PR urgency from readiness and requires
+immutable target identities for evidence. Consumers of earlier unmerged snapshots
+must migrate their drafts and render manifests; no stable-release compatibility
+is asserted for those earlier proposal bytes.

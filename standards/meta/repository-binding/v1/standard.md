@@ -69,3 +69,10 @@ context. This creates inconsistent artifact structure and hidden authority.
 
 This standard does not make any downstream repository compliant. Compliance
 requires an actual binding file and artifact-level validation.
+
+## Scoped justification
+
+The goals, premises, alternatives, countermodels and conditional consequences for
+this package are owned by `standards/meta/repository-binding/v1/proofs.yaml`.
+Read them using `docs/FORMAL_MODEL.md`. These are conditional justifications and
+explicit policy choices, not universal claims of necessity or external execution.

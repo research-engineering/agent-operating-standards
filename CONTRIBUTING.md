@@ -23,3 +23,7 @@ Use squash merge for accepted pull requests. Merge commits and rebase merges are
 not part of this repository's normal history model. Do not add workflow
 requirements or release-style gates before the repository admits a workflow
 evidence standard.
+
+The repository now explicitly adopts workflow.repository-validation.v1 for its
+advisory validation job. Run npm ci and npm run check. Changes to required status
+check settings still require a separate explicit repository policy decision.

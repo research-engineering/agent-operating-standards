@@ -13,7 +13,11 @@
     "forbidden_claim_types",
     "promotion_gate",
     "owner",
-    "non_claims"
+    "non_claims",
+    "status",
+    "valid_until",
+    "approval_ref",
+    "approval_authority"
   ],
   "properties": {
     "id": {
@@ -71,14 +75,43 @@
         "type": "string",
         "minLength": 1
       }
+    },
+    "status": {
+      "enum": [
+        "proposed",
+        "approved",
+        "revoked",
+        "expired"
+      ]
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approval_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "approval_authority": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "anyOf": [
     {
-      "required": ["review_by"]
+      "required": [
+        "review_by"
+      ]
     },
     {
-      "required": ["review_trigger"]
+      "required": [
+        "review_trigger"
+      ]
     }
   ],
   "$defs": {
@@ -105,5 +138,31 @@
         "agent_instruction"
       ]
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "approval_ref": {
+            "type": "string",
+            "format": "uri"
+          },
+          "approval_authority": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
 }

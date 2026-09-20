@@ -52,3 +52,11 @@ When a catalog entry declares `agent_entrypoint`, agents must load that
 
 A pull request should describe the problem, the standard or governance surface
 changed, the validation performed, and what the change does not claim.
+
+## Validation workflow adoption
+
+This repository explicitly adopts workflow.repository-validation.v1 through
+docs/DOCS_CONTRACT.yaml. It authorizes the advisory Validate workflow and local
+checks described there; it does not enable GitHub required status checks.
+For catalog entries with no agent_entrypoint, use the prose owner as the routine
+contract, with its declared schema and semantic rules.

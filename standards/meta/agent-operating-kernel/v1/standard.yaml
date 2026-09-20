@@ -1,63 +1,111 @@
-schema_version: "agent-operating-standards.standard-package/v1"
-id: "meta.agent-operating-kernel.v1"
-title: "Agent Operating Kernel"
-lifecycle: "active"
-owner_surface: "standards/meta/agent-operating-kernel/v1/standard.md"
-agent_entrypoint: "standards/meta/agent-operating-kernel/v1/standard.yaml"
+schema_version: agent-operating-standards.standard-package/v1
+id: meta.agent-operating-kernel.v1
+title: Agent Operating Kernel
+lifecycle: active
+owner_surface: standards/meta/agent-operating-kernel/v1/standard.md
+agent_entrypoint: standards/meta/agent-operating-kernel/v1/standard.yaml
 artifact:
-  type: "agent_operating_kernel"
-  canonical_surface: "standards/meta/agent-operating-kernel/v1/standard.md"
+  type: agent_operating_kernel
+  canonical_surface: standards/meta/agent-operating-kernel/v1/standard.md
   generated_projection: null
-  scope: "repository-wide agent operating invariants"
+  scope: repository-wide agent operating invariants
 authority:
   owned_claim_types:
-    - "agent_instruction"
-    - "orientation"
+  - agent_instruction
+  - orientation
   forbidden_claim_types:
-    - "requirement"
-    - "architecture"
-    - "decision"
-    - "api_contract"
-    - "security"
-    - "runtime_fact"
-    - "release_fact"
-    - "release_guarantee"
-  precedence: "The kernel defines cross-standard operating invariants. Artifact standards define artifact-specific structures but must not violate the kernel."
+  - requirement
+  - architecture
+  - decision
+  - api_contract
+  - security
+  - runtime_fact
+  - release_fact
+  - release_guarantee
+  precedence: The kernel defines cross-standard operating invariants. Artifact standards define artifact-specific
+    structures but must not violate the kernel.
 agent_contract:
-  final_instruction: "Before applying an admitted standard, preserve the kernel invariants: use standard.yaml agent_contract for routine instructions, keep proof in owner standards and evidence artifacts, use deterministic gates for structure, use semantic review for meaning, reject hidden authority, and bound exceptions."
+  final_instruction: Apply each declared invariant for its stated scope and load the selected artifact contract.
+    If that contract has no machine entrypoint, use its prose owner and declared schema/rules. Preserve scoped authority,
+    evidence sufficiency, complete projections, and bounded approved exceptions. Do not infer semantic truth or
+    execution from structural proof.
   required_inputs:
-    - "repository_binding"
-    - "standards_catalog"
-    - "selected_standard"
-    - "target_artifact_or_operation"
+  - repository_binding
+  - standards_catalog
+  - selected_standard
+  - target_artifact_or_operation
   required_sections:
-    - "schema_version"
-    - "artifact_type"
-    - "invariants"
-    - "non_claims"
+  - schema_version
+  - artifact_type
+  - invariants
+  - non_claims
   optional_sections:
-    - "exceptions"
+  - exceptions
   decision_tree:
-    - trigger: "always"
-      include_sections:
-        - "invariants"
-        - "non_claims"
-      omit_when: "never"
-    - trigger: "standard_exception_requested"
-      include_sections:
-        - "exceptions"
-      omit_when: "the standard can be followed without exception"
-  output_format: "kernel_invariant_ledger"
+  - trigger: always
+    include_sections:
+    - invariants
+    - non_claims
+    omit_when: never
+  - trigger: standard_exception_requested
+    include_sections:
+    - exceptions
+    omit_when: the standard can be followed without exception
+  output_format: kernel_invariant_ledger
   proof_policy:
     include_standard_proof_in_output: false
-    include_artifact_evidence: "Generated artifacts should include only evidence required by the artifact's own claim type."
-    proof_location: "standards/meta/agent-operating-kernel/v1/standard.md and standards/meta/agent-operating-kernel/v1/semantic-rules.yaml"
+    include_artifact_evidence: Generated artifacts should include only evidence required by the artifact's own claim
+      type.
+    proof_location: standards/meta/agent-operating-kernel/v1/standard.md and standards/meta/agent-operating-kernel/v1/semantic-rules.yaml
+  invariants:
+  - id: KERNEL-001
+    statement: Use recurring instructions as durable authority only through a selected versioned owner or an independently
+      approved bounded exception.
+    justification_ref: standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-001
+  - id: KERNEL-002
+    statement: Use the declared machine entrypoint when present; otherwise load the prose owner. A routine projection
+      must preserve all applicable rules.
+    justification_ref: standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-002
+  - id: KERNEL-003
+    statement: Preserve evidence required by the artifact claim. Place standard rationale outside routine output
+      only when doing so preserves that evidence and access to its owner.
+    justification_ref: standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-003
+  - id: KERNEL-004
+    statement: Identify claim scope and verify delegated authority before relying on a surface. Unclassified claims
+      and conflicting owners remain unresolved.
+    justification_ref: standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-004
+  - id: KERNEL-005
+    statement: Classify evidence by the proposition it proves, not by its executor. A structural pass alone does
+      not prove unrelated semantics; deterministic semantic proofs are admissible.
+    justification_ref: standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-005
+  - id: KERNEL-006
+    statement: At an untrusted consumer boundary, validate exact artifact bytes unless a sufficient unchanged certificate
+      is independently reusable.
+    justification_ref: standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-006
+  - id: KERNEL-007
+    statement: Generated provenance grants no canonical authority. Use the bound source owner; change ownership
+      only through an explicit binding migration.
+    justification_ref: standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-007
+  - id: KERNEL-008
+    statement: Use an exception only with independent scope approval, disjoint allowed/forbidden claims and an unexpired
+      lifetime; missing facts do not grant authority.
+    justification_ref: standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-008
+  - id: KERNEL-009
+    statement: Render the sections selected by the agreed decision model; preserve all required answers. Unknown
+      relevance stays unresolved and no unique optimal wording is claimed.
+    justification_ref: standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-009
+  - id: KERNEL-010
+    statement: Do not override a claim outside delegated authority. Resolve incomparable-owner conflicts explicitly;
+      a convenient artifact never creates delegation.
+    justification_ref: standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-010
 validation:
-  schema: "standards/meta/agent-operating-kernel/v1/schema.json"
-  semantic_rules: "standards/meta/agent-operating-kernel/v1/semantic-rules.yaml"
-  template: "standards/meta/agent-operating-kernel/v1/template.yaml"
+  schema: standards/meta/agent-operating-kernel/v1/schema.json
+  semantic_rules: standards/meta/agent-operating-kernel/v1/semantic-rules.yaml
+  template: standards/meta/agent-operating-kernel/v1/template.yaml
+  justifications: standards/meta/agent-operating-kernel/v1/proofs.yaml
 non_claims:
-  - "The kernel does not define product requirements."
-  - "The kernel does not define application architecture, API contracts, security policy, runtime facts, release facts, or release guarantees."
-  - "The kernel does not make downstream repositories compliant."
-  - "The kernel does not define a CI, GitHub App, renderer, executable skill, or harness implementation."
+- The kernel does not define product requirements.
+- The kernel does not define application architecture, API contracts, security policy, runtime facts, release facts,
+  or release guarantees.
+- The kernel does not make downstream repositories compliant.
+- The kernel does not define a CI, GitHub App, renderer, executable skill, or harness implementation.

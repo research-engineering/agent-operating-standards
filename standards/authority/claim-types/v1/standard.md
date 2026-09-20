@@ -63,3 +63,10 @@ summary as proof of product behavior.
 
 This standard does not define the structure of any artifact. It only defines
 claim types and cross-artifact authority boundaries.
+
+## Scoped justification
+
+The goals, premises, alternatives, countermodels and conditional consequences for
+this package are owned by `standards/authority/claim-types/v1/proofs.yaml`.
+Read them using `docs/FORMAL_MODEL.md`. These are conditional justifications and
+explicit policy choices, not universal claims of necessity or external execution.

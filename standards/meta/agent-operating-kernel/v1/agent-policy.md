@@ -11,8 +11,9 @@ For routine work, agents MUST:
 3. Select the target artifact standard.
 4. Use the target standard's `agent_contract` as the task-specific instruction.
 5. Apply kernel invariants as global guardrails.
-6. Use schemas and CI for deterministic structure.
-7. Use semantic rules, review bots, or human review for truth and sufficiency.
+6. Use the sufficient evidence class for each assertion; deterministic tools can
+   prove both structural and semantic properties of explicit models.
+7. Review applicability, source facts and adequacy beyond the proved model.
 8. Keep standard proof out of generated artifacts unless artifact evidence
    requires a citation.
 

@@ -1,269 +1,151 @@
 # Pull Request Description Artifact Standard v1
 
-## Status
+## Status, scope and owners
 
-Active.
+Active when adopted. This package governs a PR title, structured draft and
+rendered body. The hosting platform owns the stored title/body. The draft is a
+prepublication representation; the GitHub template is a starter, not an owner.
 
-The key words `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, `MAY`, and
-`OPTIONAL` are to be interpreted as normative requirement levels for this
-standard.
+A PR description owns orientation, task detail, available evidence references,
+and reviewer guidance within the PR. It MUST NOT establish requirements,
+architecture, decisions, API contracts, security policy, runtime facts or release
+facts/guarantees. It may cite the owners of those claims. A non-claim cannot
+cancel a positive unsupported assertion about the same scope.
 
-## Purpose
+The executable artifact-validity contract is standard.yaml.agent_contract,
+schema.json and semantic-rules.yaml. standard.md owns their interpretation and
+justification. The exact runtime core is generated from those machine contracts;
+producer, reviewer and renderer load the same core and the same schema. Overlays
+add workflow only. The proof owner is
+`standards/artifacts/pull-request-description/v1/proofs.yaml`.
 
-This standard defines the pull request title and body shape agents MUST use when
-opening or updating pull requests for repositories that adopt this standard.
+## Information goal and chosen representation
 
-The standard optimizes for review decisions, future search, and bounded
-authority. It does not optimize for exhaustive status reporting.
+Reviewers need to identify the change, understand its purpose and inspect each
+material review obligation in this declared model. This is an adopted review
+goal, not a universal sufficiency theorem for every possible reviewer or change.
+If two changes have the same description but different review-relevant purposes,
+a reader cannot infer which purpose is intended from that description alone.
+Supplying the missing distinction, or an exact accessible owner reference, is
+necessary for that bounded information goal. It does not require a particular
+English heading or prove unique optimal prose.
 
-## Canonical Artifact
+This profile chooses Summary and Context as stable renderer/consumer names.
+Every final body MUST provide both sections. The title MUST identify the change
+when read separately in history; an imperative or noun phrase is recommended.
+These are explicit interoperability choices. Other formats can carry the same
+information under a different adopted profile. The Evidence heading is likewise
+the selected name for visible proof; Validation is not a second section name in
+this profile. No general cognitive benefit from this spelling is claimed.
 
-The canonical artifact is the pull request title and body stored by the hosting
-platform.
+## Structured inputs
 
-The recommended GitHub projection is:
+The draft MUST include schema_version, artifact_type, title, summary, context,
+review_scope, change_profiles, readiness_state, urgency and review_facts.
+review_scope identifies changed owners. It does not always require a visible
+Changes section when Summary and the diff already identify the surface.
 
-```text
-.github/pull_request_template.md
-```
+Profiles compose independently. Readiness is draft, blocked or ready_for_review;
+urgency is normal or emergency. Emergency is neither a profile nor a readiness
+state. A blocked emergency and a ready emergency both retain their emergency
+obligations. This change is within the initial unmerged v1 proposal; consumers of
+earlier draft snapshots must migrate the old emergency label into urgency.
 
-When agents draft a PR outside GitHub, they SHOULD use the structured draft
-model defined by `schema.json` before rendering Markdown.
+review_facts contains the following independently reviewed predicates:
 
-## Runtime Contracts
-
-Routine adapters SHOULD load runtime contracts instead of the full
-`standard.yaml` model context:
-
-- producer: `runtime/core.contract.yaml`, `runtime/producer.overlay.yaml`,
-  and `runtime/renderer.overlay.yaml`;
-- reviewer: `runtime/core.contract.yaml`, `runtime/reviewer.overlay.yaml`, and
-  `semantic-rules.yaml`;
-- renderer: `runtime/core.contract.yaml` and `runtime/renderer.overlay.yaml`.
-
-Adapters SHOULD use `schema.json` for deterministic validation outside model
-context when possible.
-
-Producer and reviewer roles MUST share the same `core` contract. Role overlays
-MUST NOT add artifact-validity rules absent from `core`, `standard.yaml`, or
-`semantic-rules.yaml`.
-
-## Theorem
-
-A pull request description is sufficient if and only if a reviewer can answer:
-
-1. What changed?
-2. Why should this change exist?
-3. Which optional review facts are needed because this specific change creates
-   impact, risk, dependency, evidence, rollout, security, or review-focus
-   obligations?
-
-Therefore only the first two answers are mandatory for every pull request. All
-other sections are conditional.
-
-## Reviewer Question Contract
-
-Reviewer agents MUST evaluate a pull request description by asking universal
-questions first and conditional questions only when their trigger is true.
-
-Universal reviewer questions:
-
-| Question | Answer surface |
+| Fact | Meaning |
 | --- | --- |
-| What changed? | `Summary`, `Changes`, `review_scope` |
-| Why does this change exist? | `Context`, `Links` |
-| Is the review surface explicit enough? | `review_scope`, `Changes` |
-| Which optional facts are triggered? | `change_profiles`, decision tree |
-| Is the pull request overstating what it proves? | `Non-Claims`, `Evidence`, owner links |
+| impact | A material user, business, operator, developer, cost, performance, accessibility, compliance or support effect changes review. |
+| expanded_review | Summary and platform diff alone do not identify the logical review surface. |
+| external_owner | An issue, spec, standard, incident, design, policy or evidence owner is needed for a review claim. |
+| visible_evidence | Evidence visibility changes review: a material failure, absence, manual result, security/runtime/release/freshness claim or reviewer action needs attention. Routine passing platform checks alone do not satisfy it. |
+| risk | Material failure or reversal context is not obvious from the ordinary review surface. User-facing or dependency classification alone does not imply it. |
+| rollout | Sequencing, versions, flags, deployment, migration or downstream adoption changes review. |
+| security | An auth, data, secrets, logging, permissions, abuse or disclosure boundary changes security/privacy review. |
+| visual | Review requires inspection of visual or rendered output. |
+| overclaim | A reader could reasonably infer an unsupported stronger claim. |
+| review_focus | A non-obvious review path needs guidance. |
 
-Conditional reviewer questions:
+Values are true, false or unknown. The producer MUST collect facts from the diff,
+owner surfaces and available evidence; a reviewer MUST assess their truth, not
+merely their presence. Unknown is not false and prevents a compliance claim for
+an unresolved section. Boolean validation does not prove these factual inputs.
 
-| Trigger | Question | Answer surface |
-| --- | --- | --- |
-| The change affects users, business behavior, operators, developers, cost, accessibility, compliance, or support. | What review-relevant impact or value follows from this change? | `Impact` |
-| A business, product, incident, policy, or requirement claim matters. | Which owner surface proves the cause, requirement, or priority? | `Links` |
-| The PR claims benefit, readiness, safety, freshness, performance, or equivalence. | What evidence supports the claim, or what non-claim bounds it? | `Evidence`, `Non-Claims` |
-| The change has non-obvious failure or reversal behavior. | What can fail and how is it rolled back or forward-fixed? | `Risk / Rollback` |
-| Merge order, migration, flags, versions, or downstream adoption matters. | What sequencing or rollout fact changes the review decision? | `Migration / Rollout` |
-| Security or privacy posture is touched. | What security or privacy review surface is relevant, without leaking sensitive details? | `Security / Privacy` |
-| Visual or rendered output matters. | What visual evidence lets the reviewer inspect the result? | `Visual Evidence` |
-| Review path is non-obvious. | Where should the reviewer focus first? | `Review Focus` |
+## Single section-selection rule
 
-`Why are we working on this?` is universal and belongs in `Context`.
-`What is the root business cause?` is conditional and belongs in `Links` or
-`Impact` only when a business owner surface or business effect exists.
-`What advantages do we have from this PR?` is conditional; agents SHOULD express
-it as review-relevant impact or expected effect, not promotional language.
+standard.yaml.agent_contract.decision_tree.when is the sole executable section
+selection model. It uses Boolean constants, fact/profile/readiness/urgency tests,
+field absence, any and all. any is true if a child is true; all is false if a
+child is false; otherwise an unknown child propagates unknown. Include the union
+of all sections selected by true rules. Omit a section only if every rule
+selecting it is false. Do not maintain a separate conflicting omit predicate.
 
-## Universal Mandatory Content
+The selected profile includes these explicit conservative defaults: migration
+and release require sequencing and reversal context; emergency requires reversal
+context and Non-Claims; draft/blocked readiness requires Non-Claims and Review
+Focus. These defaults are adopted review policy, not deductions that all such
+changes are inherently irreversible. They override an ordinary false risk/focus
+fact through disjunction, so there is one answer even for an obvious draft.
 
-Every pull request description MUST include:
+For a trivial reversible user-facing or dependency correction outside those
+profiles, risk=false means no Risk / Rollback section. A material risk sets it
+true. The former contradictory include-and-omit category rules do not apply.
 
-- `Summary`: the smallest accurate statement of what changed.
-- `Context`: the reason, problem, intent, or correction that makes the change
-  worth reviewing.
+For each section s in the fixed model, completeness requires Needed(s) ->
+Render(s). The chosen no-filler convention requires Render(s) -> Needed(s).
+Together these imply the biconditional, conditional on correct facts and the
+adopted convention. This does not prove a unique smallest body or completeness
+for unmodeled concerns. A newly discovered material concern requires revisiting
+the fact/model classification before declaring compliance.
 
-The structured draft MUST also include `review_scope`, which identifies the
-changed owner surfaces. The visible body SHOULD render this as `Changes` only
-when the review scope is not obvious from `Summary` and the platform diff.
+## Evidence retention and presentation
 
-The structured draft MUST include `change_profiles` and `readiness_state`.
-Profiles are composable: a pull request can be both `security`, `dependency`,
-`configuration`, and `emergency`.
+Required evidence MUST remain available in the structured draft or its exact
+owner reference, even when visible_evidence=false. The earlier per-record display_policy field is replaced by the single resolved
+visible_evidence predicate, so no independent rendering switch can disagree.
+Evidence metadata is the one
+optional draft field whose presence does not imply rendering. All other optional
+fields map to their selected visible sections. A material missing result should
+be recorded with an explicit unavailable/skipped/not-run status and limitation.
 
-The pull request title MUST be a short imperative or noun-phrase summary that
-can stand alone in history views.
+Every evidence scope MUST identify repository, head_ref and immutable head_sha;
+base_sha is needed when the claim depends on a comparison base. Positive or
+observed results (passed, failed, observed, linked) MUST include an evidence_ref
+URI. The consumer MUST verify that the reference identifies that exact target
+and supports the claimed result. A branch name, arbitrary URI or command string
+alone is not proof. No claim may move from an old SHA to a newer branch head.
 
-For trivial documentation, typo, formatting, or generated-only pull requests,
-`Context` MAY be short, but it MUST still state why the change exists or why no
-behavior claim is being made.
+The generated profile requires source owner Links and evidence or an explicit
+freshness non-claim. The migration/release profiles require evidence or explicit
+readiness non-claims. These alternatives bound absent assertions; they never
+allow retaining an unsupported positive freshness/readiness assertion.
 
-## Optional Triggered Sections
+## Issue relationships and questions
 
-Agents MUST include an optional section only when its trigger is true.
+Every issue link MUST classify its relationship. relates_to, references,
+depends_on, blocks, supersedes and duplicates are non-closing. fixes, closes and
+resolves are closing. Closing wording MUST be used only when the PR actually
+satisfies the issue, closure is intended and the platform target-branch semantics
+have been verified. A relationship label alone does not prove those predicates.
 
-| Section | Trigger |
-| --- | --- |
-| `Impact` | The change affects users, business behavior, operators, developers, cost, performance, accessibility, compliance, or support. |
-| `Changes` | The reviewer cannot understand the review surface from `Summary` and diff alone, or the PR touches multiple logical surfaces. |
-| `Links` | The PR depends on an issue, standard, spec, design, incident, policy, schema, or evidence artifact that owns a relevant claim. |
-| `Evidence` | Human review depends on proof that is not already obvious from platform checks, or a failed/skipped/missing/manual/runtime/security/release/generated-freshness claim needs attention. |
-| `Risk / Rollback` | The change is hard to revert, changes data, changes deployment, changes security posture, affects users, or has non-obvious failure modes. |
-| `Migration / Rollout` | Merge order, data migration, feature flags, version compatibility, deployment sequence, or downstream adoption matters. |
-| `Security / Privacy` | The change touches auth, authorization, secrets, sensitive data, logging, permissions, abuse controls, or disclosure surfaces. |
-| `Visual Evidence` | The change is UI, visual, document-rendering, or media-facing and reviewers need screenshots, recordings, or rendered output. |
-| `Non-Claims` | A reader could reasonably infer a stronger claim than the PR proves. |
-| `Review Focus` | The reviewer should inspect a specific risk, boundary, generated surface, migration, or design tradeoff. |
+Use the question set in agent_contract.review_questions as a finite review aid.
+Answer universal questions and applicable conditional questions via selected
+sections, platform evidence and exact owner references. Do not render a routine
+questionnaire. These questions do not create additional section requirements
+outside the decision tree or prove exhaustive review of arbitrary concerns.
 
-Agents MUST omit optional sections whose trigger is false.
+## Formatting and sensitive information
 
-Agents MUST NOT publish empty sections, placeholder prompts, or routine
-checklists in the final pull request body.
+Use the selected section names, concise accurate text and links to claim owners.
+Do not publish empty sections, placeholders, ceremonial checklists or promotional
+claims. Preserve material limitations. Security/privacy descriptions must respect
+the independently authorized disclosure boundary: do not include secrets,
+credentials or private incident details. The section name grants no disclosure
+permission. Templates accelerate drafting but do not add validity rules.
 
-Evidence MAY exist as structured metadata without rendering a visible
-`Evidence` section. Routine passing checks SHOULD stay out of the visible body
-when the hosting platform already displays them. Missing, failed, skipped,
-manual, security, runtime, release, migration, or reviewer-action evidence MUST
-be visible when it changes the review decision.
+## Non-claims
 
-## Issue Link Relationships
-
-Every structured `Links` entry with `type: issue` MUST classify the relationship
-between the pull request and the issue.
-
-Allowed issue relationships are:
-
-- `relates_to`: the issue provides context, but the PR does not claim to close
-  or resolve it.
-- `references`: the issue is a useful reference, but the PR has no lifecycle
-  effect on it.
-- `depends_on`: the PR depends on the issue or work tracked by it.
-- `blocks`: the PR blocks the issue or work tracked by it.
-- `supersedes`: the PR replaces the issue's proposed approach or tracked work.
-- `duplicates`: the PR identifies the issue as a duplicate context surface.
-- `fixes`: merging the PR is intended to fix the issue.
-- `closes`: merging the PR is intended to close the issue.
-- `resolves`: merging the PR is intended to resolve the issue.
-
-`fixes`, `closes`, and `resolves` are closing relationships. Agents MUST use
-platform closing keywords such as `Fixes #123`, `Closes #123`, or
-`Resolves #123` only when the relationship is closing, the PR actually satisfies
-the target issue, and the platform's target-branch semantics are intended.
-
-Agents MUST use neutral wording for non-closing issue relationships. A related
-issue is not the same claim as a resolved issue.
-
-## Variant Graph
-
-The decision tree starts from the universal core and adds triggered sections:
-
-```text
-all PRs
-  -> Summary + Context
-  -> if user/business/operator/developer effect: Impact
-  -> if multi-surface or non-obvious diff: Changes
-  -> if external owner surface matters: Links
-  -> if issue link matters: classify issue relationship
-  -> if proof-bearing claim changes human review: Evidence
-  -> if risk or hard rollback exists: Risk / Rollback
-  -> if sequencing matters: Migration / Rollout
-  -> if auth/data/secrets/security touched: Security / Privacy
-  -> if visual output matters: Visual Evidence
-  -> if predictable overclaim exists: Non-Claims
-  -> if reviewer path is non-obvious: Review Focus
-```
-
-Common variants:
-
-- draft or blocked: add `Non-Claims` and `Review Focus` so reviewers do not
-  mistake it for merge-ready work.
-- documentation-only: `Summary`, `Context`; add `Impact` only if reader,
-  support, legal, or docs-routing behavior changes.
-- code behavior: add `Impact` and `Evidence` when behavior is asserted.
-- refactor: add `Risk / Rollback` only if boundaries, generated contracts,
-  performance, or behavior equivalence are non-obvious.
-- dependency/config/CI: add `Impact`, `Risk / Rollback`, or `Evidence` when
-  runtime, deploy, supply-chain, or developer-workflow behavior changes.
-- generated artifacts: add `Links` to source and `Evidence` for freshness when
-  freshness is claimed.
-- security/privacy: add `Security / Privacy` and bounded non-claims; do not
-  include secrets, credentials, exploit instructions, sensitive repository data,
-  or disclosure details that belong in a private security channel.
-- release or migration: add `Migration / Rollout`, `Risk / Rollback`, and
-  evidence if readiness is claimed.
-- emergency hotfix: include the emergency context, risk, rollback, and evidence
-  that is actually available; do not imply full validation.
-
-## Owned Claim Types
-
-A pull request description MAY own only:
-
-- `orientation`;
-- `task_detail`;
-- `evidence` when tied to evidence actually available for the pull request;
-- `agent_instruction` only for reviewer focus inside the pull request.
-
-## Forbidden Claim Types
-
-A pull request description MUST NOT create or override:
-
-- `requirement`;
-- `architecture`;
-- `decision`;
-- `api_contract`;
-- `security`;
-- `runtime_fact`;
-- `release_fact`;
-- `release_guarantee`.
-
-A pull request MAY cite owner surfaces for these claim types, but it MUST NOT
-become the owner surface.
-
-## Formatting Rules
-
-- Use GitHub Markdown.
-- Use `##` headings for included body sections.
-- Keep `Summary` and `Context` concise.
-- Prefer bullets for lists of changes, links, risks, and evidence.
-- Do not include unchecked checklists as proof.
-- Do not include a visible `Validation` section by default.
-- Use `Evidence`, not `Validation`, when proof must be visible.
-- Do not use issue closing keywords unless the PR is intended to close or
-  resolve the referenced issue.
-- Do not list commands that were not run unless the absence of evidence changes
-  the review decision.
-- Do not use promotional language.
-
-## Failure Mode
-
-Mandatory templates with many sections create unreadable pull request bodies.
-Reviewers then skim past the description, agents fill placeholders, and the
-standard loses authority. The correct invariant is not "every PR has every
-section"; it is "every PR contains exactly the facts needed for the review
-decision, no fewer and no more."
-
-## Non-Claims
-
-This standard does not define merge approval, release approval, CI requirements,
-reviewer assignment policy, product requirements, architecture, or security
-policy.
+This package does not approve merges or releases, set required GitHub checks,
+prove production readiness, authorize disclosures, or install executable harness
+skills. Schema conformance, finite logical consequence, evidence authenticity
+and actual agent execution are separate claims.

@@ -89,3 +89,15 @@ style preference.
 
 This standard does not define a validator implementation, rule engine, or
 complete formal language.
+
+## Scoped justification
+
+The goals, premises, alternatives, countermodels and conditional consequences for
+this package are owned by `standards/meta/semantic-rules/v1/proofs.yaml`.
+Read them using `docs/FORMAL_MODEL.md`. These are conditional justifications and
+explicit policy choices, not universal claims of necessity or external execution.
+
+Each rule MUST also have justification_ref resolving to the selected package's
+proof bundle (or an explicitly delegated cross-rule proof within that standard).
+The proof is conditional on its declared premises; the rule's applicability and
+semantic sufficiency remain independent review obligations.

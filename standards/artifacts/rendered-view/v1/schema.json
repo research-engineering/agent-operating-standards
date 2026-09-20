@@ -34,17 +34,34 @@
     "renderer": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "version"],
+      "required": [
+        "name",
+        "version"
+      ],
       "properties": {
         "name": {
           "type": "string",
           "minLength": 1
         },
         "version": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "command": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "identity_digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "config_digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
         }
       }
     },
@@ -58,7 +75,12 @@
     "freshness": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["status", "checked_at", "source_digest", "output_digest"],
+      "required": [
+        "status",
+        "checked_at",
+        "source_digest",
+        "output_digest"
+      ],
       "allOf": [
         {
           "if": {
@@ -67,7 +89,9 @@
                 "const": "current"
               }
             },
-            "required": ["status"]
+            "required": [
+              "status"
+            ]
           },
           "then": {
             "properties": {
@@ -89,22 +113,90 @@
       ],
       "properties": {
         "status": {
-          "enum": ["current", "stale", "unknown"]
+          "enum": [
+            "current",
+            "stale",
+            "unknown"
+          ]
         },
         "checked_at": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "format": "date-time"
         },
         "source_digest": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "pattern": "^sha256:[a-f0-9]{64}$"
         },
         "output_digest": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "pattern": "^sha256:[a-f0-9]{64}$"
         },
         "note": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "verification": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "method",
+                "verifier",
+                "evidence_ref",
+                "source_digest",
+                "output_digest",
+                "renderer_digest",
+                "config_digest"
+              ],
+              "properties": {
+                "method": {
+                  "enum": [
+                    "independent_reproduction",
+                    "verified_attestation"
+                  ]
+                },
+                "verifier": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "evidence_ref": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "source_digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[a-f0-9]{64}$"
+                },
+                "output_digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[a-f0-9]{64}$"
+                },
+                "renderer_digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[a-f0-9]{64}$"
+                },
+                "config_digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[a-f0-9]{64}$"
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
@@ -121,17 +213,27 @@
     "source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["path", "role"],
+      "required": [
+        "path",
+        "role"
+      ],
       "properties": {
         "path": {
           "type": "string",
           "minLength": 1
         },
         "role": {
-          "enum": ["canonical", "supporting", "template"]
+          "enum": [
+            "canonical",
+            "supporting",
+            "template"
+          ]
         },
         "digest": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "pattern": "^sha256:[a-f0-9]{64}$"
         }
       }
@@ -139,20 +241,146 @@
     "output": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["path", "format"],
+      "required": [
+        "path",
+        "format"
+      ],
       "properties": {
         "path": {
           "type": "string",
           "minLength": 1
         },
         "format": {
-          "enum": ["markdown", "html", "pdf", "other"]
+          "enum": [
+            "markdown",
+            "html",
+            "pdf",
+            "other"
+          ]
         },
         "digest": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "pattern": "^sha256:[a-f0-9]{64}$"
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "freshness": {
+            "properties": {
+              "status": {
+                "const": "current"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          }
+        },
+        "required": [
+          "freshness"
+        ]
+      },
+      "then": {
+        "properties": {
+          "sources": {
+            "items": {
+              "required": [
+                "digest"
+              ],
+              "properties": {
+                "digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[a-f0-9]{64}$"
+                }
+              }
+            }
+          },
+          "outputs": {
+            "items": {
+              "required": [
+                "digest"
+              ],
+              "properties": {
+                "digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[a-f0-9]{64}$"
+                }
+              }
+            }
+          },
+          "renderer": {
+            "required": [
+              "identity_digest",
+              "config_digest"
+            ],
+            "properties": {
+              "version": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "freshness": {
+            "required": [
+              "verification"
+            ],
+            "properties": {
+              "verification": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "method",
+                  "verifier",
+                  "evidence_ref",
+                  "source_digest",
+                  "output_digest",
+                  "renderer_digest",
+                  "config_digest"
+                ],
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "independent_reproduction",
+                      "verified_attestation"
+                    ]
+                  },
+                  "verifier": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "evidence_ref": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "source_digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  },
+                  "output_digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  },
+                  "renderer_digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  },
+                  "config_digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

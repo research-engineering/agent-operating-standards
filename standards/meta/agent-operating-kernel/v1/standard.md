@@ -1,150 +1,96 @@
 # Agent Operating Kernel Standard v1
 
-## Status
+## Status and scope
 
-Active.
+Active when adopted by the repository binding. This kernel owns cross-standard
+loading, authority, evidence and exception boundaries. It does not own product
+requirements, runtime truth, security approval, merge approval or agent execution.
 
-The key words `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, `MAY`, and
-`OPTIONAL` are to be interpreted as normative requirement levels for this
-standard.
+## Conditional consistency claim
 
-## Purpose
+There is no universal equivalence between consistent agent behavior and the
+existence of this catalog protocol. A hard-coded procedure can behave consistently
+without a catalog; a correctly packaged instruction can be ignored at execution.
 
-This standard defines the repository-wide operating invariants that agents MUST
-use when applying admitted standards, creating governed artifacts, validating
-generated projections, or deciding whether an instruction belongs in a standard
-instead of chat history.
+For a fixed version, coherent owner model, complete applicable obligation set,
+semantics-preserving loaded representation, and an executor that actually obeys
+that representation, compliance with the loaded obligations implies compliance
+with the selected obligations. If A is the selected set and L the loaded set,
+A is a subset of L and satisfaction of every obligation in L entails satisfaction
+of every obligation in A. Preservation and execution are necessary premises of
+this implication, not consequences of owning YAML files. It proves no consistency
+between incompatible repository policies or stronger runtime behavior.
 
-The kernel is not a substitute for artifact-specific standards. It defines the
-load path, authority boundaries, proof placement, validation split, and
-exception discipline that every admitted standard MUST respect.
+The ten scoped rules and their premise-dependent proofs are recorded in
+`standards/meta/agent-operating-kernel/v1/proofs.yaml`. The machine entrypoint
+contains the exact operational statements; the ledger is checked against them.
 
-## Canonical Artifact
+## Invariants
 
-The canonical artifact for kernel invariants is this standard package:
+### KERNEL-001
 
-```text
-standards/meta/agent-operating-kernel/v1/
-```
+Use recurring instructions as durable authority only through a selected versioned owner or an independently approved bounded exception.
 
-Routine agents SHOULD load `standard.yaml`. Agents SHOULD load this
-`standard.md` only for proof, dispute, exception handling, or kernel
-maintenance.
+Justification: `standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-001`.
 
-## Theorem
+### KERNEL-002
 
-Agent behavior is consistent across repositories if and only if recurring
-instructions are:
+Use the declared machine entrypoint when present; otherwise load the prose owner. A routine projection must preserve all applicable rules.
 
-1. admitted through a versioned catalog entry;
-2. bound by a repository contract;
-3. exposed to agents through a machine-readable entrypoint;
-4. validated by deterministic gates where deterministic truth is possible;
-5. reviewed by semantic rules or agents where meaning cannot be reduced to
-   syntax; and
-6. bounded by explicit non-claims and exception scope.
+Justification: `standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-002`.
 
-Therefore durable agent instructions MUST be standards, not chat memory,
-template folklore, local filename inference, or generated projections.
+### KERNEL-003
 
-## Kernel Invariants
+Preserve evidence required by the artifact claim. Place standard rationale outside routine output only when doing so preserves that evidence and access to its owner.
 
-### KERNEL-001: Standards Own Durable Instructions
+Justification: `standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-003`.
 
-Recurring agent behavior MUST be defined by admitted, versioned standards.
-Agents MUST NOT treat chat history, filenames, directory names, templates, pull
-request bodies, issue comments, or generated views as durable authority unless
-an admitted standard names them as owner surfaces.
+### KERNEL-004
 
-### KERNEL-002: Machine Entrypoint First
+Identify claim scope and verify delegated authority before relying on a surface. Unclassified claims and conflicting owners remain unresolved.
 
-For routine artifact creation, the executable instruction is the selected
-standard's `agent_contract` in `standard.yaml`, applied with the schema and
-semantic rules named by that same entrypoint.
+Justification: `standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-004`.
 
-`standard.md` remains the normative prose owner and proof surface, but it is not
-the default token path for routine artifact creation.
+### KERNEL-005
 
-### KERNEL-003: Proof Is Not Output Boilerplate
+Classify evidence by the proposition it proves, not by its executor. A structural pass alone does not prove unrelated semantics; deterministic semantic proofs are admissible.
 
-Formal proof, rationale, and dominance arguments belong in standards, semantic
-rules, validators, tests, or evidence artifacts. Generated artifacts MUST
-include only the evidence needed for their own claim type.
+Justification: `standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-005`.
 
-### KERNEL-004: Claim Type Before Authority
+### KERNEL-006
 
-Agents MUST classify the claim type before selecting an owner surface. A
-convenient artifact MAY orient review, but it MUST NOT prove stronger claim
-types unless its standard explicitly owns them.
+At an untrusted consumer boundary, validate exact artifact bytes unless a sufficient unchanged certificate is independently reusable.
 
-### KERNEL-005: Deterministic Gates and Semantic Review Are Different
+Justification: `standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-006`.
 
-CI, schemas, parsers, and validators SHOULD enforce structure, allowed fields,
-required fields, projection freshness, and forbidden boilerplate.
+### KERNEL-007
 
-Semantic agents and human reviewers SHOULD evaluate sufficiency, truth,
-trigger correctness, missing context, misleading claims, and over-claims.
+Generated provenance grants no canonical authority. Use the bound source owner; change ownership only through an explicit binding migration.
 
-Neither layer replaces the other.
+Justification: `standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-007`.
 
-### KERNEL-006: Producer Prevention Plus Consumer Enforcement
+### KERNEL-008
 
-Agents that create artifacts SHOULD use skills, renderers, or harness adapters
-to produce compliant artifacts before review. Consumer repositories SHOULD still
-enforce deterministic checks so compliance does not depend on the producer path.
+Use an exception only with independent scope approval, disjoint allowed/forbidden claims and an unexpired lifetime; missing facts do not grant authority.
 
-Standards repositories own normative contracts. Executable skills, plugins,
-hooks, and harness adapters own execution behavior and SHOULD live in the
-appropriate harness or capability repository unless an admitted standard defines
-their package shape.
+Justification: `standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-008`.
 
-### KERNEL-007: Generated Projections Are Not Canonical By Default
+### KERNEL-009
 
-Markdown, HTML, PDF, GitHub templates, and other rendered outputs are generated
-projections unless a repository binding explicitly declares otherwise and
-freshness evidence exists.
+Render the sections selected by the agreed decision model; preserve all required answers. Unknown relevance stays unresolved and no unique optimal wording is claimed.
 
-### KERNEL-008: Exceptions Are Bounded
+Justification: `standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-009`.
 
-An exception MUST have explicit scope, reason, allowed claim types, forbidden
-claim types, review trigger or expiry, owner, and promotion or removal gate.
-Repeated exceptions SHOULD be promoted into a standard or removed.
+### KERNEL-010
 
-### KERNEL-009: Output Contains Exactly Review-Relevant Facts
+Do not override a claim outside delegated authority. Resolve incomparable-owner conflicts explicitly; a convenient artifact never creates delegation.
 
-Agents MUST NOT publish empty sections, placeholder prompts, ceremonial
-checklists, or proof-shaped text that does not affect the artifact's claim.
-Artifacts SHOULD contain no fewer and no more facts than the target decision
-requires.
+Justification: `standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-010`.
 
-### KERNEL-010: Stronger Owner Surfaces Win
+## Enforcement and non-claims
 
-Artifact standards and generated projections MUST NOT override requirements,
-architecture, API contracts, security policy, runtime facts, release facts, or
-release guarantees owned by stronger surfaces.
-
-## Invariant Classes
-
-Kernel invariants are classified as:
-
-- `kernel`: applies to the standards system itself;
-- `artifact`: applies to governed artifact creation;
-- `adoption`: applies to consumer repository bindings and harness loading;
-- `validation`: applies to deterministic gates and CI;
-- `semantic`: applies to meaning, truth, sufficiency, and over-claim review.
-
-An invariant MAY belong to more than one class when its enforcement spans both
-machine and semantic layers.
-
-## Failure Mode
-
-Without a kernel, each artifact standard redefines the same authority model.
-Agents then drift across projects, over-read templates, promote generated
-Markdown to truth, or treat prior chat decisions as durable policy.
-
-## Non-Claims
-
-This standard does not define product requirements, application architecture,
-API contracts, security policy, runtime facts, release facts, release
-guarantees, merge approval, CI implementation, GitHub App implementation,
-executable skill implementation, or downstream repository compliance.
+The classes kernel, artifact, adoption, validation and semantic are applicability
+labels, not disjoint proof capabilities. Every enforcement route must identify
+what proposition and target it establishes. These standards do not prove their
+own external adoption, universal necessity, token optimality, downstream compliance,
+or actual execution by a model, harness, validator or human.

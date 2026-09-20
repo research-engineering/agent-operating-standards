@@ -1,116 +1,201 @@
-schema_version: "agent-operating-standards.catalog/v1"
-name: "Agent Operating Standards"
+schema_version: agent-operating-standards.catalog/v1
+name: Agent Operating Standards
 canonical: true
-catalog_owner: "standards.catalog.yaml"
-admission_rule: "Only entries listed in this catalog are admitted standards."
+catalog_owner: standards.catalog.yaml
+admission_rule: Only entries listed in this catalog are admitted standards.
 non_claims:
-  - "The catalog does not make any adopting repository compliant by itself."
-  - "The catalog does not define workflow gates unless a workflow standard is admitted."
+- The catalog does not make any adopting repository compliant by itself.
+- The catalog does not define workflow gates unless a workflow standard is admitted.
 standards:
-  - id: "meta.standard-package.v1"
-    title: "Standard Package"
-    path: "standards/meta/standard-package/v1/standard.md"
-    status: "active"
-    owner_surface: "standards/meta/standard-package/v1/standard.md"
-    canonical_schema: "standards/meta/standard-package/v1/schema.json"
-    agent_entrypoint: "standards/meta/standard-package/v1/standard.yaml"
-    semantic_rules: null
-    applies_to:
-      - "standards/*/*/v*/"
-  - id: "meta.agent-operating-kernel.v1"
-    title: "Agent Operating Kernel"
-    path: "standards/meta/agent-operating-kernel/v1/standard.md"
-    status: "active"
-    owner_surface: "standards/meta/agent-operating-kernel/v1/standard.md"
-    canonical_schema: "standards/meta/agent-operating-kernel/v1/schema.json"
-    agent_entrypoint: "standards/meta/agent-operating-kernel/v1/standard.yaml"
-    semantic_rules: "standards/meta/agent-operating-kernel/v1/semantic-rules.yaml"
-    applies_to:
-      - "all admitted standards"
-      - "external agent consumption"
-      - "consumer repository bindings"
-  - id: "meta.semantic-rules.v1"
-    title: "Semantic Rules"
-    path: "standards/meta/semantic-rules/v1/standard.md"
-    status: "active"
-    owner_surface: "standards/meta/semantic-rules/v1/standard.md"
-    canonical_schema: "standards/meta/semantic-rules/v1/schema.json"
-    agent_entrypoint: "standards/meta/semantic-rules/v1/standard.yaml"
-    semantic_rules: null
-    applies_to:
-      - "standards/**/v*/semantic-rules.yaml"
-  - id: "meta.standards-catalog.v1"
-    title: "Standards Catalog"
-    path: "standards/meta/standards-catalog/v1/standard.md"
-    status: "active"
-    owner_surface: "standards/meta/standards-catalog/v1/standard.md"
-    canonical_schema: "standards/meta/standards-catalog/v1/schema.json"
-    agent_entrypoint: null
-    semantic_rules: null
-    applies_to:
-      - "standards.catalog.yaml"
-  - id: "authority.claim-types.v1"
-    title: "Claim Type Authority"
-    path: "standards/authority/claim-types/v1/standard.md"
-    status: "active"
-    owner_surface: "standards/authority/claim-types/v1/standard.md"
-    canonical_schema: null
-    agent_entrypoint: null
-    semantic_rules: null
-    applies_to:
-      - "all artifacts"
-  - id: "authority.exception-protocol.v1"
-    title: "Exception Protocol"
-    path: "standards/authority/exception-protocol/v1/standard.md"
-    status: "active"
-    owner_surface: "standards/authority/exception-protocol/v1/standard.md"
-    canonical_schema: "standards/authority/exception-protocol/v1/schema.json"
-    agent_entrypoint: null
-    semantic_rules: null
-    applies_to:
-      - "artifact standards"
-      - "repository bindings"
-  - id: "meta.repository-binding.v1"
-    title: "Repository Standards Binding"
-    path: "standards/meta/repository-binding/v1/standard.md"
-    status: "active"
-    owner_surface: "standards/meta/repository-binding/v1/standard.md"
-    canonical_schema: "standards/meta/repository-binding/v1/schema.json"
-    agent_entrypoint: null
-    semantic_rules: null
-    applies_to:
-      - "docs/DOCS_CONTRACT.yaml"
-  - id: "artifact.roadmap.v1"
-    title: "Roadmap Artifact"
-    path: "standards/artifacts/roadmap/v1/standard.md"
-    status: "active"
-    owner_surface: "standards/artifacts/roadmap/v1/standard.md"
-    canonical_schema: "standards/artifacts/roadmap/v1/schema.json"
-    agent_entrypoint: "standards/artifacts/roadmap/v1/standard.yaml"
-    semantic_rules: null
-    applies_to:
-      - "roadmap.yaml"
-      - "ROADMAP.md projections"
-  - id: "artifact.pull-request-description.v1"
-    title: "Pull Request Description Artifact"
-    path: "standards/artifacts/pull-request-description/v1/standard.md"
-    status: "active"
-    owner_surface: "standards/artifacts/pull-request-description/v1/standard.md"
-    canonical_schema: "standards/artifacts/pull-request-description/v1/schema.json"
-    agent_entrypoint: "standards/artifacts/pull-request-description/v1/standard.yaml"
-    semantic_rules: "standards/artifacts/pull-request-description/v1/semantic-rules.yaml"
-    applies_to:
-      - "pull request descriptions"
-      - ".github/pull_request_template.md projections"
-  - id: "artifact.rendered-view.v1"
-    title: "Rendered View Artifact"
-    path: "standards/artifacts/rendered-view/v1/standard.md"
-    status: "active"
-    owner_surface: "standards/artifacts/rendered-view/v1/standard.md"
-    canonical_schema: "standards/artifacts/rendered-view/v1/schema.json"
-    agent_entrypoint: "standards/artifacts/rendered-view/v1/standard.yaml"
-    semantic_rules: null
-    applies_to:
-      - "generated Markdown projections"
-      - "generated HTML projections"
-      - "rendered views"
+- id: meta.standard-package.v1
+  title: Standard Package
+  path: standards/meta/standard-package/v1/standard.md
+  status: active
+  owner_surface: standards/meta/standard-package/v1/standard.md
+  canonical_schema: standards/meta/standard-package/v1/schema.json
+  agent_entrypoint: standards/meta/standard-package/v1/standard.yaml
+  semantic_rules: null
+  applies_to:
+  - standards/*/*/v*/
+  justifications: standards/meta/standard-package/v1/proofs.yaml
+  invariant_ids:
+  - PKG-001
+  - PKG-POL-001
+- id: meta.agent-operating-kernel.v1
+  title: Agent Operating Kernel
+  path: standards/meta/agent-operating-kernel/v1/standard.md
+  status: active
+  owner_surface: standards/meta/agent-operating-kernel/v1/standard.md
+  canonical_schema: standards/meta/agent-operating-kernel/v1/schema.json
+  agent_entrypoint: standards/meta/agent-operating-kernel/v1/standard.yaml
+  semantic_rules: standards/meta/agent-operating-kernel/v1/semantic-rules.yaml
+  applies_to:
+  - all admitted standards
+  - external agent consumption
+  - consumer repository bindings
+  justifications: standards/meta/agent-operating-kernel/v1/proofs.yaml
+  invariant_ids:
+  - KERNEL-001
+  - KERNEL-002
+  - KERNEL-003
+  - KERNEL-004
+  - KERNEL-005
+  - KERNEL-006
+  - KERNEL-007
+  - KERNEL-008
+  - KERNEL-009
+  - KERNEL-010
+- id: meta.semantic-rules.v1
+  title: Semantic Rules
+  path: standards/meta/semantic-rules/v1/standard.md
+  status: active
+  owner_surface: standards/meta/semantic-rules/v1/standard.md
+  canonical_schema: standards/meta/semantic-rules/v1/schema.json
+  agent_entrypoint: standards/meta/semantic-rules/v1/standard.yaml
+  semantic_rules: null
+  applies_to:
+  - standards/**/v*/semantic-rules.yaml
+  justifications: standards/meta/semantic-rules/v1/proofs.yaml
+  invariant_ids:
+  - SEM-001
+  - SEM-POL-001
+- id: meta.standards-catalog.v1
+  title: Standards Catalog
+  path: standards/meta/standards-catalog/v1/standard.md
+  status: active
+  owner_surface: standards/meta/standards-catalog/v1/standard.md
+  canonical_schema: standards/meta/standards-catalog/v1/schema.json
+  agent_entrypoint: null
+  semantic_rules: null
+  applies_to:
+  - standards.catalog.yaml
+  justifications: standards/meta/standards-catalog/v1/proofs.yaml
+  invariant_ids:
+  - CAT-001
+  - CAT-POL-001
+- id: authority.claim-types.v1
+  title: Claim Type Authority
+  path: standards/authority/claim-types/v1/standard.md
+  status: active
+  owner_surface: standards/authority/claim-types/v1/standard.md
+  canonical_schema: null
+  agent_entrypoint: null
+  semantic_rules: null
+  applies_to:
+  - all artifacts
+  justifications: standards/authority/claim-types/v1/proofs.yaml
+  invariant_ids:
+  - CLAIM-001
+  - CLAIM-POL-001
+- id: authority.exception-protocol.v1
+  title: Exception Protocol
+  path: standards/authority/exception-protocol/v1/standard.md
+  status: active
+  owner_surface: standards/authority/exception-protocol/v1/standard.md
+  canonical_schema: standards/authority/exception-protocol/v1/schema.json
+  agent_entrypoint: null
+  semantic_rules: null
+  applies_to:
+  - artifact standards
+  - repository bindings
+  justifications: standards/authority/exception-protocol/v1/proofs.yaml
+  invariant_ids:
+  - EX-001
+  - EX-POL-001
+- id: meta.repository-binding.v1
+  title: Repository Standards Binding
+  path: standards/meta/repository-binding/v1/standard.md
+  status: active
+  owner_surface: standards/meta/repository-binding/v1/standard.md
+  canonical_schema: standards/meta/repository-binding/v1/schema.json
+  agent_entrypoint: null
+  semantic_rules: null
+  applies_to:
+  - docs/DOCS_CONTRACT.yaml
+  justifications: standards/meta/repository-binding/v1/proofs.yaml
+  invariant_ids:
+  - BIND-001
+  - BIND-POL-001
+- id: artifact.roadmap.v1
+  title: Roadmap Artifact
+  path: standards/artifacts/roadmap/v1/standard.md
+  status: active
+  owner_surface: standards/artifacts/roadmap/v1/standard.md
+  canonical_schema: standards/artifacts/roadmap/v1/schema.json
+  agent_entrypoint: standards/artifacts/roadmap/v1/standard.yaml
+  semantic_rules: standards/artifacts/roadmap/v1/semantic-rules.yaml
+  applies_to:
+  - roadmap.yaml
+  - ROADMAP.md projections
+  justifications: standards/artifacts/roadmap/v1/proofs.yaml
+  invariant_ids:
+  - RM-SEM-001
+  - RM-SEM-002
+  - RM-SEM-003
+  - RM-SEM-004
+  - RM-POL-001
+- id: artifact.pull-request-description.v1
+  title: Pull Request Description Artifact
+  path: standards/artifacts/pull-request-description/v1/standard.md
+  status: active
+  owner_surface: standards/artifacts/pull-request-description/v1/standard.md
+  canonical_schema: standards/artifacts/pull-request-description/v1/schema.json
+  agent_entrypoint: standards/artifacts/pull-request-description/v1/standard.yaml
+  semantic_rules: standards/artifacts/pull-request-description/v1/semantic-rules.yaml
+  applies_to:
+  - pull request descriptions
+  - .github/pull_request_template.md projections
+  justifications: standards/artifacts/pull-request-description/v1/proofs.yaml
+  invariant_ids:
+  - PRD-SEM-001
+  - PRD-SEM-002
+  - PRD-SEM-003
+  - PRD-SEM-004
+  - PRD-SEM-005
+  - PRD-SEM-006
+  - PRD-SEM-007
+  - PRD-SEM-008
+  - PRD-SEM-009
+  - PRD-SEM-010
+  - PRD-SEM-011
+  - PRD-SEM-012
+  - PRD-SEM-013
+  - PRD-SEM-014
+  - PRD-SEM-015
+  - PRD-SEM-016
+  - PRD-SEM-017
+  - PRD-SEM-018
+  - PRD-POL-001
+- id: artifact.rendered-view.v1
+  title: Rendered View Artifact
+  path: standards/artifacts/rendered-view/v1/standard.md
+  status: active
+  owner_surface: standards/artifacts/rendered-view/v1/standard.md
+  canonical_schema: standards/artifacts/rendered-view/v1/schema.json
+  agent_entrypoint: standards/artifacts/rendered-view/v1/standard.yaml
+  semantic_rules: standards/artifacts/rendered-view/v1/semantic-rules.yaml
+  applies_to:
+  - generated Markdown projections
+  - generated HTML projections
+  - rendered views
+  justifications: standards/artifacts/rendered-view/v1/proofs.yaml
+  invariant_ids:
+  - RV-SEM-001
+  - RV-SEM-002
+  - RV-POL-001
+- id: workflow.repository-validation.v1
+  title: Repository Validation Workflow
+  path: standards/workflows/repository-validation/v1/standard.md
+  status: active
+  owner_surface: standards/workflows/repository-validation/v1/standard.md
+  canonical_schema: null
+  agent_entrypoint: null
+  semantic_rules: null
+  justifications: standards/workflows/repository-validation/v1/proofs.yaml
+  applies_to:
+  - .github/workflows/validate.yml
+  - scripts/validate.mjs
+  - test/
+  invariant_ids:
+  - WF-001
+  - WF-POL-001

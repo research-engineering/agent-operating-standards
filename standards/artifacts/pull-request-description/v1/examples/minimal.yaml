@@ -1,15 +1,27 @@
-schema_version: "agent-operating-standards.pull-request-description/v1"
-artifact_type: "pull_request_description"
-title: "Clarify roadmap authority."
-summary: "Clarifies that roadmap artifacts own planning claims only."
-context: "Prevents agents from treating future intent as accepted requirements or release evidence."
+schema_version: agent-operating-standards.pull-request-description/v1
+artifact_type: pull_request_description
+title: Clarify roadmap authority.
+summary: Clarifies that roadmap artifacts own planning claims only.
+context: Prevents agents from treating future intent as accepted requirements or release evidence.
 review_scope:
-  - surface: "standards/artifacts/roadmap/v1/standard.md"
-    change_type: "documentation"
+- surface: standards/artifacts/roadmap/v1/standard.md
+  change_type: documentation
 change_profiles:
-  - "documentation"
-readiness_state: "ready_for_review"
+- documentation
+readiness_state: ready_for_review
 links:
-  - type: "standard"
-    target: "standards/artifacts/roadmap/v1/standard.md"
-    note: "Owner surface for roadmap authority."
+- type: standard
+  target: standards/artifacts/roadmap/v1/standard.md
+  note: Owner surface for roadmap authority.
+urgency: normal
+review_facts:
+  impact: false
+  expanded_review: false
+  external_owner: true
+  visible_evidence: false
+  risk: false
+  rollout: false
+  security: false
+  visual: false
+  overclaim: false
+  review_focus: false
