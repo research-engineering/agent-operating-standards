@@ -1,0 +1,14 @@
+schema_version: agent-operating-standards.runtime-contract/v1
+standard: artifact.pull-request-description.v1
+contract_type: role_overlay
+role: reviewer
+requires:
+  core: standards/artifacts/pull-request-description/v1/runtime/core.contract.yaml
+  schema: standards/artifacts/pull-request-description/v1/schema.json
+workflow:
+- Inspect the same diff and owners used for the claim.
+- Apply requires.schema and every core.semantic_rules entry.
+- Evaluate the identical decision tree; audit truth of supplied facts and cited evidence independently.
+- Report violations by the canonical rule ID; do not introduce validity rules through reviewer preference.
+non_claims:
+- This overlay adds role workflow only. Artifact validity is owned by core and its referenced schema.

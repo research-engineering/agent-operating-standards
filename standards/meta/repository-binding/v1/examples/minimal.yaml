@@ -1,0 +1,15 @@
+schema_version: "agent-operating-standards.repository-binding/v1"
+repository: "example-project"
+catalog: "standards.catalog.yaml"
+canonical: true
+binding_owner: "docs/DOCS_CONTRACT.yaml"
+default_policy:
+  canonical_artifacts_win_over_generated_projections: true
+  admitted_catalog_entries_only: true
+  generated_markdown_is_not_normative_unless_declared: true
+adopted_standards:
+  - standard: "artifact.pull-request-description.v1"
+    owner_surface: "standards/artifacts/pull-request-description/v1/standard.md"
+    generated_projection: ".github/pull_request_template.md"
+non_claims:
+  - "This binding does not define CI gates."

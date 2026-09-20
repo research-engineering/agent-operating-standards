@@ -1,0 +1,42 @@
+schema_version: agent-operating-standards.semantic-rules/v1
+standard: artifact.roadmap.v1
+scope: roadmap
+rules:
+- id: RM-SEM-001
+  invariant: A roadmap cannot establish non-planning truth.
+  applies_to:
+  - authority
+  - items
+  check: Reject requirement, architecture, security, runtime or release facts established only by roadmap text.
+    Follow typed owner links before implementation.
+  failure_mode: Future intent is mistaken for accepted truth.
+  justification_ref: standards/artifacts/roadmap/v1/proofs.yaml#RM-SEM-001
+- id: RM-SEM-002
+  invariant: An exact planning date has an explicit basis.
+  applies_to:
+  - items
+  - external_board
+  check: For an exact scheduling date in an item, require commitment_basis or external_board. last_reviewed is a
+    review timestamp, not a delivery promise. Validate dates and the relevance of the basis; arbitrary prose date
+    expressions still require semantic review.
+  failure_mode: An ungrounded plan is read as a commitment.
+  justification_ref: standards/artifacts/roadmap/v1/proofs.yaml#RM-SEM-002
+- id: RM-SEM-003
+  invariant: Missing implementation authority remains explicit.
+  applies_to:
+  - items
+  - exceptions
+  check: Before implementation, resolve each implementation-relevant authority_link to its owner. If a needed owner
+    is absent, require an approved applicable exception under authority.exception-protocol.v1; a roadmap exception
+    id alone does not approve work.
+  failure_mode: A missing specification is silently replaced by planning text.
+  justification_ref: standards/artifacts/roadmap/v1/proofs.yaml#RM-SEM-003
+- id: RM-SEM-004
+  invariant: Shipped status is not release evidence.
+  applies_to:
+  - items
+  - exit_evidence
+  check: Before citing shipped work as a release fact, follow a release/changelog owner link. A roadmap status alone
+    proves no release.
+  failure_mode: A planned or asserted status becomes release truth.
+  justification_ref: standards/artifacts/roadmap/v1/proofs.yaml#RM-SEM-004

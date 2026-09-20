@@ -1,0 +1,414 @@
+schema_version: agent-operating-standards.justifications/v1
+standard: meta.agent-operating-kernel.v1
+model_ref: docs/FORMAL_MODEL.md
+proofs:
+- id: KERNEL-001
+  kind: policy_choice
+  scope: A recurring instruction in a repository that adopted this catalog policy.
+  definitions:
+    use: The instruction is used as durable authority.
+    selected: Its owner is selected by the current binding.
+    versioned: The selected owner has an immutable/reviewable version.
+  premises:
+  - formula:
+      implies:
+      - use
+      - selected
+    basis: accepted_goal
+    rationale: Unselected material must not establish repository policy.
+  - formula:
+      implies:
+      - selected
+      - versioned
+    basis: accepted_policy
+    rationale: The adopted catalog model requires versioned owners, including a justified prose fallback.
+  conclusion:
+    implies:
+    - use
+    - versioned
+  derivation:
+  - Assume use. The authorization goal gives selected. The adopted version policy then gives versioned. Discharge
+    use.
+  - This proves a consequence of adoption, not that every consistent agent must use a catalog.
+  countermodel:
+    removed_premise: 1
+    assignment:
+      selected: true
+      use: true
+      versioned: false
+  alternatives:
+  - A built-in signed policy could provide the same property; catalog plus binding is chosen for reviewable reuse
+    across independently maintained repositories.
+  non_claims:
+  - No universal necessity of catalogs and no guarantee that an external agent obeys the loaded policy.
+  rule: Use recurring instructions as durable authority only through a selected versioned owner or an independently
+    approved bounded exception.
+- id: KERNEL-002
+  kind: conditional_invariant
+  scope: One routine application of a selected standard; A is its finite applicable obligation set.
+  definitions:
+    loaded: The routine representation is used.
+    same: It preserves every obligation in A.
+    safe: No obligation in A is lost due to the representation.
+  premises:
+  - formula:
+      implies:
+      - loaded
+      - same
+    basis: accepted_goal
+    rationale: A representation is admitted only with exact obligation preservation.
+  - formula:
+      implies:
+      - same
+      - safe
+    basis: definition
+    rationale: No lost obligation is precisely the set-inclusion direction from A to the loaded representation.
+  conclusion:
+    implies:
+    - loaded
+    - safe
+  derivation:
+  - Let any obligation belong to A. Preservation places it in the loaded representation. Thus representation choice
+    cannot omit it.
+  - With no machine entrypoint, load the prose owner and the named schema/rules instead.
+  countermodel:
+    removed_premise: 1
+    assignment:
+      loaded: true
+      safe: false
+      same: true
+  alternatives:
+  - Loading full prose avoids projection loss and is the fallback; a machine representation is chosen only when
+    it preserves the same rules.
+  non_claims:
+  - Does not claim YAML is intrinsically superior or that preserving instructions proves execution.
+  rule: Use the declared machine entrypoint when present; otherwise load the prose owner. A routine projection must
+    preserve all applicable rules.
+- id: KERNEL-003
+  kind: conditional_invariant
+  scope: A generated decision artifact with an agreed evidence obligation set.
+  definitions:
+    required: This evidence is required for the artifact claim.
+    available: The evidence remains available in the artifact or an exact owner reference.
+    valid: The artifact satisfies evidence completeness.
+  premises:
+  - formula:
+      implies:
+      - valid
+      - implies:
+        - required
+        - available
+    basis: definition
+    rationale: Completeness quantifies over every required evidence item.
+  conclusion:
+    implies:
+    - all:
+      - valid
+      - required
+    - available
+  derivation:
+  - Instantiate completeness for an arbitrary required item. Modus ponens yields its availability.
+  - Moving standard rationale out of routine output is permitted only if this property remains true.
+  countermodel:
+    removed_premise: 0
+    assignment:
+      available: false
+      required: true
+      valid: true
+  alternatives:
+  - Inline proof is appropriate for a proof artifact; linked owner rationale is chosen for ordinary PR descriptions
+    when equivalent access is preserved.
+  non_claims:
+  - No universal prohibition on proof-bearing outputs or proven token-cost benefit.
+  rule: Preserve evidence required by the artifact claim. Place standard rationale outside routine output only when
+    doing so preserves that evidence and access to its owner.
+- id: KERNEL-004
+  kind: conditional_invariant
+  scope: A claim c used as authority from a surface s.
+  definitions:
+    use: Surface s is used as authority for c.
+    delegated: An adopted owner delegates c to s.
+    classified: The claim scope is identified sufficiently to check that delegation.
+  premises:
+  - formula:
+      implies:
+      - use
+      - delegated
+    basis: accepted_goal
+    rationale: A surface cannot gain authority from convenience or filename.
+  - formula:
+      implies:
+      - delegated
+      - classified
+    basis: definition
+    rationale: Delegation is a relation to an identified claim scope, not an untyped global rank.
+  conclusion:
+    implies:
+    - use
+    - classified
+  derivation:
+  - Authority use entails delegation. A delegation decision requires identifying the claim scope. Therefore authoritative
+    use requires that classification.
+  countermodel:
+    removed_premise: 1
+    assignment:
+      classified: false
+      delegated: true
+      use: true
+  alternatives:
+  - Tags, typed references or explicit prose scopes are all possible; this taxonomy provides stable shared names,
+    not a proof that categories never overlap.
+  non_claims:
+  - Classification alone proves neither claim truth nor authority. Multiple incomparable owners remain a conflict.
+  rule: Identify claim scope and verify delegated authority before relying on a surface. Unclassified claims and
+    conflicting owners remain unresolved.
+- id: KERNEL-005
+  kind: conditional_invariant
+  scope: An assertion supported by a validator/review result for an explicit model.
+  definitions:
+    assert: The result is cited as proving the assertion.
+    covers: The result actually establishes the assertion in the declared model.
+    bounded: The assertion is not stronger than that result.
+  premises:
+  - formula:
+      implies:
+      - assert
+      - covers
+    basis: accepted_goal
+    rationale: Evidence must establish the claim being made, regardless of executor.
+  - formula:
+      implies:
+      - covers
+      - bounded
+    basis: definition
+    rationale: A supported assertion is within the result's proved scope.
+  conclusion:
+    implies:
+    - assert
+    - bounded
+  derivation:
+  - Apply the support requirement and then its scope definition.
+  - A deterministic reachability proof is semantic evidence; a parser pass is structural evidence. Neither executor
+    type determines proof scope.
+  countermodel:
+    removed_premise: 1
+    assignment:
+      assert: true
+      bounded: false
+      covers: true
+  alternatives:
+  - Human or machine checks may establish the same property; choose sufficient evidence at the lowest justified
+    cost without assuming universal interchangeability.
+  non_claims:
+  - Does not impose disjoint human and deterministic proof classes.
+  rule: Classify evidence by the proposition it proves, not by its executor. A structural pass alone does not prove
+    unrelated semantics; deterministic semantic proofs are admissible.
+- id: KERNEL-006
+  kind: conditional_invariant
+  scope: An artifact at a consumer boundary where alternative writers or intervening changes are possible.
+  definitions:
+    accept: The consumer accepts the artifact as structurally valid.
+    checked: A sound check covers these exact bytes.
+    reused: An existing verified certificate covers these same bytes.
+    new_check: The consumer performs a new sufficient check.
+  premises:
+  - formula:
+      implies:
+      - accept
+      - checked
+    basis: accepted_goal
+    rationale: No unchecked path should be admitted as checked.
+  - formula:
+      implies:
+      - checked
+      - any:
+        - reused
+        - new_check
+    basis: environment_assumption
+    rationale: The boundary has these two admitted evidence routes; a producer name is not a third route.
+  conclusion:
+    implies:
+    - all:
+      - accept
+      - not: reused
+    - new_check
+  derivation:
+  - Acceptance requires a check on exact bytes. If no reusable check exists, eliminate that disjunct; a new check
+    is necessary.
+  countermodel:
+    removed_premise: 1
+    assignment:
+      accept: true
+      checked: true
+      new_check: false
+      reused: false
+  alternatives:
+  - Reuse an unchanged verifiable certificate instead of redundant checking; separate harness packaging is organizational
+    guidance, not necessary to this proof.
+  non_claims:
+  - No unconditional duplicate consumer check or mandatory repository topology.
+  rule: At an untrusted consumer boundary, validate exact artifact bytes unless a sufficient unchanged certificate
+    is independently reusable.
+- id: KERNEL-007
+  kind: conditional_invariant
+  scope: A generated projection before an explicit owner migration.
+  definitions:
+    delegated: A binding explicitly delegates authority to this artifact.
+    canonical: This artifact may be edited as the canonical owner.
+  premises:
+  - formula:
+      implies:
+      - canonical
+      - delegated
+    basis: accepted_goal
+    rationale: Canonical authority requires explicit delegation, independent of format or freshness.
+  conclusion:
+    implies:
+    - not: delegated
+    - not: canonical
+  derivation:
+  - Take the contrapositive of the delegation requirement. The result is independent of whether the artifact is
+    Markdown, YAML or another format.
+  - A checked projection may be a faithful view without becoming a second editable owner.
+  countermodel:
+    removed_premise: 0
+    assignment:
+      canonical: true
+      delegated: false
+  alternatives:
+  - An explicit migration may retire the old owner and select a new one; merely regenerating a file cannot perform
+    that migration.
+  non_claims:
+  - Freshness does not grant authority; unknown freshness does not imply stale bytes.
+  rule: Generated provenance grants no canonical authority. Use the bound source owner; change ownership only through
+    an explicit binding migration.
+- id: KERNEL-008
+  kind: conditional_invariant
+  scope: An exception e used for action a at time t.
+  definitions:
+    use: The exception is relied on.
+    approved: Independent approval covers this scope and action.
+    within: The time is before every applicable bound and no revocation/review event occurred.
+  premises:
+  - formula:
+      implies:
+      - use
+      - all:
+        - approved
+        - within
+    basis: accepted_goal
+    rationale: An exception may waive only an independently approved obligation during its bounded lifetime.
+  conclusion:
+    implies:
+    - all:
+      - use
+      - not: within
+    - false
+  derivation:
+  - Conjunction elimination gives within from use. Combining within and its negation yields contradiction; expired
+    use is therefore not admissible.
+  countermodel:
+    removed_premise: 0
+    assignment:
+      approved: true
+      use: true
+      within: false
+  alternatives:
+  - A review event alone can be unreachable; this profile chooses a finite expiry plus optional earlier review as
+    a conservative lifetime policy.
+  non_claims:
+  - Record shape and repeated occurrence never approve an exception or a new standard.
+  rule: Use an exception only with independent scope approval, disjoint allowed/forbidden claims and an unexpired
+    lifetime; missing facts do not grant authority.
+- id: KERNEL-009
+  kind: policy_choice
+  scope: One visible section in the declared decision model, with a resolved relevance predicate.
+  definitions:
+    render: The section is rendered.
+    relevant: The section is required by at least one applicable trigger.
+    complete: All needed sections are present.
+    focused: No untriggered section is displayed.
+  premises:
+  - formula:
+      implies:
+      - complete
+      - implies:
+        - relevant
+        - render
+    basis: definition
+    rationale: Completeness is pointwise coverage of the selected section set.
+  - formula:
+      implies:
+      - focused
+      - implies:
+        - render
+        - relevant
+    basis: accepted_policy
+    rationale: This profile chooses to omit untriggered sections rather than add routine filler.
+  conclusion:
+    implies:
+    - all:
+      - complete
+      - focused
+    - all:
+      - implies:
+        - render
+        - relevant
+      - implies:
+        - relevant
+        - render
+  derivation:
+  - From complete derive relevant implies render. From focused derive render implies relevant. Conjoin both implications.
+  - Different sufficient factual summaries may still exist; no unique optimal prose is claimed.
+  countermodel:
+    removed_premise: 0
+    assignment:
+      complete: true
+      focused: true
+      relevant: true
+      render: false
+  alternatives:
+  - A verbose archive is appropriate for a different artifact goal. For review summaries the selected-section convention
+    prioritizes decision information.
+  non_claims:
+  - Does not assert a unique smallest set of facts or a universal cognitive-efficiency measurement.
+  rule: Render the sections selected by the agreed decision model; preserve all required answers. Unknown relevance
+    stays unresolved and no unique optimal wording is claimed.
+- id: KERNEL-010
+  kind: conditional_invariant
+  scope: A proposed change to a claim owned by another scope.
+  definitions:
+    change: This surface may change the claim.
+    delegation: The owning authority explicitly delegates that change.
+    conflict: An unresolved incomparable-owner conflict exists.
+  premises:
+  - formula:
+      implies:
+      - change
+      - all:
+        - delegation
+        - not: conflict
+    basis: accepted_goal
+    rationale: Changes require scoped delegation and resolution of relevant owner conflicts.
+  conclusion:
+    implies:
+    - any:
+      - not: delegation
+      - conflict
+    - not: change
+  derivation:
+  - Contrapose the change precondition. De Morgan's law gives the disjunction of missing delegation or unresolved
+    conflict.
+  countermodel:
+    removed_premise: 0
+    assignment:
+      change: true
+      conflict: true
+      delegation: true
+  alternatives:
+  - Claims may have incomparable typed owners; escalation to a selected owner is safer than inventing a total priority
+    order.
+  non_claims:
+  - No universal ranking by filename or artifact type and no self-authorized policy override.
+  rule: Do not override a claim outside delegated authority. Resolve incomparable-owner conflicts explicitly; a
+    convenient artifact never creates delegation.

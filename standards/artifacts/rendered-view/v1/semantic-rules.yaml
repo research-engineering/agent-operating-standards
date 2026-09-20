@@ -1,0 +1,26 @@
+schema_version: agent-operating-standards.semantic-rules/v1
+standard: artifact.rendered-view.v1
+scope: rendered_view
+rules:
+- id: RV-SEM-001
+  invariant: Unknown freshness is not stale.
+  applies_to:
+  - freshness
+  check: Use current only for verified matching evidence; use stale only for a demonstrated source, renderer/configuration
+    or output mismatch. Otherwise use unknown. Unknown and stale both prevent a current claim.
+  failure_mode: Absence of evidence is falsely reported as known staleness.
+  justification_ref: standards/artifacts/rendered-view/v1/proofs.yaml#RV-SEM-001
+- id: RV-SEM-002
+  invariant: Freshness requires a bound render relation.
+  applies_to:
+  - sources
+  - renderer
+  - outputs
+  - freshness
+  check: For current, bind all paths and per-file digests; aggregate sorted [path,digest] pairs as SHA-256 of compact
+    UTF-8 JSON with no trailing newline. Bind renderer identity and configuration digests. Require a matching independent
+    reproduction or verified attestation record and verify its evidence_ref. Compare live source, renderer/configuration
+    and output bytes before reliance. Shape and digest equality alone do not prove Output = Render(Source, Renderer,
+    Config).
+  failure_mode: Unrelated hashes are promoted to a freshness proof.
+  justification_ref: standards/artifacts/rendered-view/v1/proofs.yaml#RV-SEM-002

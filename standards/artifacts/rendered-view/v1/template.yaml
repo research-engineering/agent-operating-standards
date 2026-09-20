@@ -1,0 +1,23 @@
+schema_version: "agent-operating-standards.rendered-view/v1"
+artifact_type: "rendered_view"
+generated: true
+sources:
+  - path: "docs/source.yaml"
+    role: "canonical"
+    digest: null
+renderer:
+  name: "renderer-name"
+  version: null
+  command: null
+outputs:
+  - path: "docs/source.html"
+    format: "html"
+    digest: null
+freshness:
+  status: "unknown"
+  checked_at: null
+  source_digest: null
+  output_digest: null
+  note: "Replace with renderer evidence when available."
+non_claims:
+  - "This rendered view is not canonical."

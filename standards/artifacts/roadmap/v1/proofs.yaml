@@ -1,0 +1,314 @@
+schema_version: agent-operating-standards.justifications/v1
+standard: artifact.roadmap.v1
+model_ref: docs/FORMAL_MODEL.md
+proofs:
+- id: RM-SEM-001
+  kind: conditional_invariant
+  scope: Using roadmap claims.
+  definitions:
+    information: The omitted decision-relevant information is available by any adequate admitted route.
+    same_input: The decision procedure receives indistinguishable inputs in the two specified worlds.
+    left_accept: The procedure accepts the left-world claim/action.
+    right_accept: The procedure accepts the right-world claim/action.
+    correct_left: The procedure makes the stipulated correct acceptance in the left world.
+    correct_right: The procedure makes the stipulated correct rejection in the right world.
+  premises:
+  - formula:
+      implies:
+      - not: information
+      - same_input
+    basis: environment_assumption
+    rationale: In this bounded witness pair all other available decision inputs are identical. The identified information
+      is the distinguishing input; an equivalent owner/reference route counts as information.
+  - formula:
+      implies:
+      - same_input
+      - all:
+        - implies:
+          - left_accept
+          - right_accept
+        - implies:
+          - right_accept
+          - left_accept
+    basis: environment_assumption
+    rationale: A deterministic decision procedure must give the same result for the same input. Randomization cannot
+      guarantee opposite correct decisions on indistinguishable inputs either; the finite model fixes one procedure
+      outcome.
+  - formula:
+      implies:
+      - correct_left
+      - left_accept
+    basis: definition
+    rationale: The declared goal accepts the left-world case. This is the goal in scope, not an assertion that an
+      observed PR belongs to that world.
+  - formula:
+      implies:
+      - correct_right
+      - not: right_accept
+    basis: definition
+    rationale: The same goal rejects the right-world case because the named material condition differs.
+  conclusion:
+    implies:
+    - all:
+      - correct_left
+      - correct_right
+    - information
+  derivation:
+  - Assume both decisions are correct and the distinguishing information is absent. The observation premise gives
+    same_input, so the decision outcomes are equal.
+  - Correctness requires left_accept and not right_accept. These contradict equal outcomes. Therefore a procedure
+    guaranteeing both correct decisions needs the distinguishing information (or must withhold the unsupported decision).
+  - This proves the need for the semantic distinction in the specified two-world domain. It does not require one
+    specific heading, field name, serialization, or duplicate copy of the information.
+  countermodel:
+    removed_premise: 3
+    assignment:
+      correct_left: true
+      correct_right: true
+      information: false
+      left_accept: true
+      right_accept: true
+      same_input: true
+  alternatives:
+  - An exact owner reference, inline data or another independently verified route can carry the same distinction.
+    The selected artifact format chooses one route; necessity of the information does not prove uniqueness of that
+    encoding.
+  non_claims:
+  - The witness pair is an explicit bounded model, not an observed incident. Applicability of the decision goal,
+    availability of equivalent inputs and factual source truth require independent semantic review.
+  separation_witness:
+    left_world: A statement is an accepted product/runtime fact established by its owner.
+    right_world: The same words in the roadmap state only a desired future plan.
+    omitted_information: The typed owner and evidence boundary separating plan from established fact.
+- id: RM-SEM-002
+  kind: policy_choice
+  scope: Exact scheduling dates inside roadmap items.
+  definitions:
+    admissible: The operation is admitted under this scoped contract.
+    obligation: The stated owner requirement applies.
+    satisfied: The required evidence or condition is satisfied.
+  premises:
+  - formula:
+      implies:
+      - admissible
+      - implies:
+        - obligation
+        - satisfied
+    basis: accepted_policy
+    rationale: This profile requires an explicit commitment basis or scheduling owner to prevent ungrounded date
+      commitments.
+  conclusion:
+    implies:
+    - all:
+      - obligation
+      - not: satisfied
+    - not: admissible
+  derivation:
+  - Fix an arbitrary operation in the declared scope. Its applicable owner requirement is a necessary condition
+    of admission. If that condition fails, modus tollens rejects admission.
+  - last_reviewed is a historical review date and does not trigger the scheduling constraint.
+  countermodel:
+    removed_premise: 0
+    assignment:
+      admissible: true
+      obligation: true
+      satisfied: false
+  alternatives:
+  - Other profiles can choose different interfaces or conservative defaults through explicit adoption; the scoped
+    consequence remains conditional on the chosen goal.
+  non_claims:
+  - No evidence of external execution or factual applicability is inferred from this Boolean proof.
+- id: RM-SEM-003
+  kind: conditional_invariant
+  scope: Beginning implementation from a roadmap item.
+  definitions:
+    information: The omitted decision-relevant information is available by any adequate admitted route.
+    same_input: The decision procedure receives indistinguishable inputs in the two specified worlds.
+    left_accept: The procedure accepts the left-world claim/action.
+    right_accept: The procedure accepts the right-world claim/action.
+    correct_left: The procedure makes the stipulated correct acceptance in the left world.
+    correct_right: The procedure makes the stipulated correct rejection in the right world.
+  premises:
+  - formula:
+      implies:
+      - not: information
+      - same_input
+    basis: environment_assumption
+    rationale: In this bounded witness pair all other available decision inputs are identical. The identified information
+      is the distinguishing input; an equivalent owner/reference route counts as information.
+  - formula:
+      implies:
+      - same_input
+      - all:
+        - implies:
+          - left_accept
+          - right_accept
+        - implies:
+          - right_accept
+          - left_accept
+    basis: environment_assumption
+    rationale: A deterministic decision procedure must give the same result for the same input. Randomization cannot
+      guarantee opposite correct decisions on indistinguishable inputs either; the finite model fixes one procedure
+      outcome.
+  - formula:
+      implies:
+      - correct_left
+      - left_accept
+    basis: definition
+    rationale: The declared goal accepts the left-world case. This is the goal in scope, not an assertion that an
+      observed PR belongs to that world.
+  - formula:
+      implies:
+      - correct_right
+      - not: right_accept
+    basis: definition
+    rationale: The same goal rejects the right-world case because the named material condition differs.
+  conclusion:
+    implies:
+    - all:
+      - correct_left
+      - correct_right
+    - information
+  derivation:
+  - Assume both decisions are correct and the distinguishing information is absent. The observation premise gives
+    same_input, so the decision outcomes are equal.
+  - Correctness requires left_accept and not right_accept. These contradict equal outcomes. Therefore a procedure
+    guaranteeing both correct decisions needs the distinguishing information (or must withhold the unsupported decision).
+  - This proves the need for the semantic distinction in the specified two-world domain. It does not require one
+    specific heading, field name, serialization, or duplicate copy of the information.
+  countermodel:
+    removed_premise: 3
+    assignment:
+      correct_left: true
+      correct_right: true
+      information: false
+      left_accept: true
+      right_accept: true
+      same_input: true
+  alternatives:
+  - An exact owner reference, inline data or another independently verified route can carry the same distinction.
+    The selected artifact format chooses one route; necessity of the information does not prove uniqueness of that
+    encoding.
+  non_claims:
+  - The witness pair is an explicit bounded model, not an observed incident. Applicability of the decision goal,
+    availability of equivalent inputs and factual source truth require independent semantic review.
+  separation_witness:
+    left_world: Implementation is authorized by the required owner or an applicable approved exception.
+    right_world: The roadmap names an unresolved intent without that authorization.
+    omitted_information: The implementation-relevant authority links and actual approval.
+- id: RM-SEM-004
+  kind: conditional_invariant
+  scope: Citing shipped roadmap items as release facts.
+  definitions:
+    information: The omitted decision-relevant information is available by any adequate admitted route.
+    same_input: The decision procedure receives indistinguishable inputs in the two specified worlds.
+    left_accept: The procedure accepts the left-world claim/action.
+    right_accept: The procedure accepts the right-world claim/action.
+    correct_left: The procedure makes the stipulated correct acceptance in the left world.
+    correct_right: The procedure makes the stipulated correct rejection in the right world.
+  premises:
+  - formula:
+      implies:
+      - not: information
+      - same_input
+    basis: environment_assumption
+    rationale: In this bounded witness pair all other available decision inputs are identical. The identified information
+      is the distinguishing input; an equivalent owner/reference route counts as information.
+  - formula:
+      implies:
+      - same_input
+      - all:
+        - implies:
+          - left_accept
+          - right_accept
+        - implies:
+          - right_accept
+          - left_accept
+    basis: environment_assumption
+    rationale: A deterministic decision procedure must give the same result for the same input. Randomization cannot
+      guarantee opposite correct decisions on indistinguishable inputs either; the finite model fixes one procedure
+      outcome.
+  - formula:
+      implies:
+      - correct_left
+      - left_accept
+    basis: definition
+    rationale: The declared goal accepts the left-world case. This is the goal in scope, not an assertion that an
+      observed PR belongs to that world.
+  - formula:
+      implies:
+      - correct_right
+      - not: right_accept
+    basis: definition
+    rationale: The same goal rejects the right-world case because the named material condition differs.
+  conclusion:
+    implies:
+    - all:
+      - correct_left
+      - correct_right
+    - information
+  derivation:
+  - Assume both decisions are correct and the distinguishing information is absent. The observation premise gives
+    same_input, so the decision outcomes are equal.
+  - Correctness requires left_accept and not right_accept. These contradict equal outcomes. Therefore a procedure
+    guaranteeing both correct decisions needs the distinguishing information (or must withhold the unsupported decision).
+  - This proves the need for the semantic distinction in the specified two-world domain. It does not require one
+    specific heading, field name, serialization, or duplicate copy of the information.
+  countermodel:
+    removed_premise: 3
+    assignment:
+      correct_left: true
+      correct_right: true
+      information: false
+      left_accept: true
+      right_accept: true
+      same_input: true
+  alternatives:
+  - An exact owner reference, inline data or another independently verified route can carry the same distinction.
+    The selected artifact format chooses one route; necessity of the information does not prove uniqueness of that
+    encoding.
+  non_claims:
+  - The witness pair is an explicit bounded model, not an observed incident. Applicability of the decision goal,
+    availability of equivalent inputs and factual source truth require independent semantic review.
+  separation_witness:
+    left_world: A release/changelog owner proves that the work shipped.
+    right_world: A roadmap status was set to shipped without a release.
+    omitted_information: The release evidence independently of the planning status.
+- id: RM-POL-001
+  kind: policy_choice
+  scope: Structured roadmap fields.
+  definitions:
+    admissible: The operation is admitted under this scoped contract.
+    obligation: The stated owner requirement applies.
+    satisfied: The required evidence or condition is satisfied.
+  premises:
+  - formula:
+      implies:
+      - admissible
+      - implies:
+        - obligation
+        - satisfied
+    basis: accepted_policy
+    rationale: The selected schema must represent every field the package explicitly permits, and reject unknown
+      fields.
+  conclusion:
+    implies:
+    - all:
+      - obligation
+      - not: satisfied
+    - not: admissible
+  derivation:
+  - Fix an arbitrary operation in the declared scope. Its applicable owner requirement is a necessary condition
+    of admission. If that condition fails, modus tollens rejects admission.
+  - Permitted risks/dependencies/rendering with a rejecting closed schema is inconsistent.
+  countermodel:
+    removed_premise: 0
+    assignment:
+      admissible: true
+      obligation: true
+      satisfied: false
+  alternatives:
+  - Other profiles can choose different interfaces or conservative defaults through explicit adoption; the scoped
+    consequence remains conditional on the chosen goal.
+  non_claims:
+  - No evidence of external execution or factual applicability is inferred from this Boolean proof.

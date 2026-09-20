@@ -1,0 +1,19 @@
+schema_version: agent-operating-standards.agent-operating-kernel/v1
+artifact_type: agent_operating_kernel
+invariants:
+- id: KERNEL-001
+  class:
+  - kernel
+  statement: Use recurring instructions as durable authority only through a selected versioned owner or an independently
+    approved bounded exception.
+  owner_surface: standards/meta/agent-operating-kernel/v1/standard.md
+  enforcement:
+  - normative_standard
+  applies_to:
+  - all admitted standards
+  agent_effect: Use recurring instructions as durable authority only through a selected versioned owner or an independently
+    approved bounded exception.
+  failure_mode: Agents treat local convention as hidden authority.
+  proof_location: standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-001
+non_claims:
+- The kernel does not make downstream repositories compliant.

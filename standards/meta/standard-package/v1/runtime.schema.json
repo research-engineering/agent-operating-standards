@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Role workflow overlay",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "standard",
+    "contract_type",
+    "role",
+    "requires",
+    "workflow",
+    "non_claims"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "agent-operating-standards.runtime-contract/v1"
+    },
+    "standard": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contract_type": {
+      "const": "role_overlay"
+    },
+    "role": {
+      "enum": [
+        "producer",
+        "reviewer",
+        "renderer"
+      ]
+    },
+    "requires": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "core",
+        "schema"
+      ],
+      "properties": {
+        "core": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "workflow": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

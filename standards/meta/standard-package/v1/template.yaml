@@ -1,0 +1,40 @@
+schema_version: "agent-operating-standards.standard-package/v1"
+id: "namespace.standard-name.v1"
+title: "Standard Title"
+lifecycle: "draft"
+owner_surface: "standards/<category>/<name>/v1/standard.md"
+agent_entrypoint: "standards/<category>/<name>/v1/standard.yaml"
+artifact:
+  type: "artifact_type"
+  canonical_surface: "canonical/path/or/platform/surface"
+  generated_projection: null
+  scope: "repository"
+authority:
+  owned_claim_types:
+    - "orientation"
+  forbidden_claim_types: []
+  precedence: "State which stronger owner surfaces override this artifact."
+agent_contract:
+  final_instruction: "State the concise instruction an external agent must execute."
+  required_inputs: []
+  required_sections: []
+  optional_sections: []
+  decision_tree: []
+  output_format: "machine_readable_or_markdown"
+  proof_policy:
+    include_standard_proof_in_output: false
+    include_artifact_evidence: "State what evidence the generated artifact must include."
+    proof_location: "standard.md"
+runtime_contracts:
+  method: "shared_core_plus_role_overlays"
+  invariant: "Producer and reviewer roles load the same normative core; role overlays do not add artifact-validity rules absent from core."
+  core: "standards/<category>/<name>/v1/runtime/core.contract.yaml"
+  roles:
+    producer: "standards/<category>/<name>/v1/runtime/producer.overlay.yaml"
+    reviewer: "standards/<category>/<name>/v1/runtime/reviewer.overlay.yaml"
+validation:
+  schema: null
+  semantic_rules: null
+  template: null
+non_claims:
+  - "State what this standard does not prove."

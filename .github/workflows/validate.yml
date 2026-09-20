@@ -1,0 +1,31 @@
+name: Validate
+'on':
+  pull_request:
+    branches:
+    - main
+  push:
+    branches:
+    - main
+permissions:
+  contents: read
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: Install locked dependencies
+      run: npm ci
+    - name: Validate and test standards
+      run: npm run check

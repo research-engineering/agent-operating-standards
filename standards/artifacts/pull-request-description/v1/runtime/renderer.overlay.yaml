@@ -1,0 +1,15 @@
+schema_version: agent-operating-standards.runtime-contract/v1
+standard: artifact.pull-request-description.v1
+contract_type: role_overlay
+role: renderer
+requires:
+  core: standards/artifacts/pull-request-description/v1/runtime/core.contract.yaml
+  schema: standards/artifacts/pull-request-description/v1/schema.json
+workflow:
+- Use the same core decision tree and validated structured draft.
+- Render Summary and Context, then only the selected optional sections in declared order.
+- Retain underlying evidence metadata even when Evidence is not selected.
+- Use the selected headings, remove empty sections and placeholders; closing issue wording requires a verified matching
+  relationship.
+non_claims:
+- This overlay adds role workflow only. Artifact validity is owned by core and its referenced schema.

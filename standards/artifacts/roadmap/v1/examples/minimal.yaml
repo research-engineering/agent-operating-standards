@@ -1,0 +1,45 @@
+schema_version: "agent-operating-standards.roadmap/v1"
+doc_type: "roadmap"
+canonical: true
+scope: "repository"
+owner: "maintainer"
+last_reviewed: "2026-07-08"
+review_cadence: "monthly"
+generated_projection: "ROADMAP.md"
+authority:
+  owns_claim_types:
+    - "plan"
+    - "priority"
+    - "horizon"
+    - "intent"
+    - "sequencing"
+    - "uncertainty"
+  must_not_define:
+    - "requirement"
+    - "architecture"
+    - "decision"
+    - "api_contract"
+    - "security"
+    - "runtime_fact"
+    - "evidence"
+    - "release_fact"
+    - "release_guarantee"
+  conflict_rule: "typed authority wins over roadmap"
+items:
+  - id: "RM-001"
+    title: "Introduce issue body standard"
+    status: "planned"
+    horizon: "next"
+    confidence: "medium"
+    owner: "maintainer"
+    planning_claim: "Define an issue body artifact standard after the pull request description standard is admitted."
+    authority_links:
+      - relation: "depends_on"
+        target: "standards/artifacts/pull-request-description/v1/standard.md"
+        required_status: "active"
+    exit_evidence:
+      - type: "review"
+        target: "Pull request that admits artifact.issue-body.v1."
+        required: true
+non_claims:
+  - "This roadmap does not define issue triage workflow gates."
