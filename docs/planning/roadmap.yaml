@@ -3,7 +3,7 @@ doc_type: "roadmap"
 canonical: true
 scope: "repository"
 owner: "standards maintainer"
-last_reviewed: "2026-07-08"
+last_reviewed: "2026-09-20"
 review_cadence: "monthly"
 generated_projection: "ROADMAP.md"
 authority:
@@ -94,12 +94,12 @@ items:
         target: "Pull request admitting artifact.release-notes.v1."
         required: true
   - id: "RM-005"
-    title: "Add validator and renderer tooling"
+    title: "Explore additional renderer tooling"
     status: "exploring"
     horizon: "later"
     confidence: "low"
     owner: "standards maintainer"
-    planning_claim: "Explore generated Markdown and HTML projections plus schema validation tooling after initial standards stabilize."
+    planning_claim: "Explore additional Markdown and HTML renderers beyond the existing validator and PR runtime generator."
     authority_links:
       - relation: "depends_on"
         target: "standards/meta/repository-binding/v1/standard.md"
@@ -109,8 +109,29 @@ items:
         required_status: "active"
     exit_evidence:
       - type: "review"
-        target: "Pull request admitting validation tooling or explicitly deferring it."
+        target: "Pull request admitting additional renderer tooling or explicitly deferring it."
+        required: true
+  - id: "RM-006"
+    title: "Harden validation and artifact handling"
+    status: "planned"
+    horizon: "next"
+    confidence: "high"
+    owner: "standards maintainer"
+    planning_claim: "Deliver the scoped work packages in the validation hardening design, preserving the distinction between confirmed repairs, proposed contract changes, and retained manual review."
+    authority_links:
+      - relation: "planned_in"
+        target: "docs/design/validation-hardening.md"
+      - relation: "depends_on"
+        target: "standards/meta/standard-package/v1/standard.md"
+        required_status: "active"
+      - relation: "depends_on"
+        target: "standards/workflows/repository-validation/v1/standard.md"
+        required_status: "active"
+    exit_evidence:
+      - type: "review"
+        target: "Owner-bound implementation PRs and acceptance evidence for the selected work packages in docs/design/validation-hardening.md."
         required: true
 non_claims:
   - "This roadmap does not define requirements, release commitments, workflow gates, or downstream repository compliance."
   - "This roadmap does not prove that planned standards are accepted before their catalog entries exist."
+  - "A merged implementation plan does not mean its repairs or proposed contract changes are implemented."

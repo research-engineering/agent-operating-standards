@@ -26,15 +26,20 @@ runtime facts, release facts, release guarantees, or evidence.
 | --- | --- | --- | --- |
 | `RM-003` | Define issue body artifact standard | planned | medium |
 | `RM-004` | Define release notes artifact standard | planned | medium |
+| `RM-006` | Harden validation and artifact handling | planned | high |
+
+The [implementation design](docs/design/validation-hardening.md) describes the
+proposed work packages for `RM-006`. The plan does not change active standards
+or establish that the repairs have been delivered.
 
 ## Later / Exploring
 
 | ID | Initiative | Status | Confidence |
 | --- | --- | --- | --- |
-| `RM-005` | Add validator and renderer tooling | exploring | low |
+| `RM-005` | Explore additional renderer tooling | exploring | low |
 
-`RM-005` depends on `artifact.rendered-view.v1`; it remains exploratory until a
-validator or renderer is admitted.
+`RM-005` depends on `artifact.rendered-view.v1` and covers additional renderers
+beyond the existing validator and PR runtime generator.
 
 ## Non-Claims
 
@@ -42,3 +47,5 @@ validator or renderer is admitted.
   gates, or downstream repository compliance.
 - This roadmap does not prove that planned standards are accepted before their
   catalog entries exist.
+- A merged implementation plan does not mean its repairs or proposed contract
+  changes are implemented.

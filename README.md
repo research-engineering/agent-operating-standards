@@ -101,6 +101,14 @@ The advisory `Validate` workflow is explicitly owned by
 `workflow.repository-validation.v1` and adopted by the repository binding.
 Required GitHub status checks remain a separate repository policy decision.
 
+## Planned Hardening
+
+The [validation hardening design and implementation plan](docs/design/validation-hardening.md)
+maps the reviewed concerns to scoped repairs, proposed contract changes,
+acceptance experiments, and explicitly retained review boundaries. It is a
+non-normative proposal tracked by the [canonical roadmap](docs/planning/roadmap.yaml);
+merging the plan does not implement its changes or amend the active standards.
+
 ## Validation
 
 ```sh
