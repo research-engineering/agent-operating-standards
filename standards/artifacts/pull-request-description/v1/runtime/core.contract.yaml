@@ -8,8 +8,9 @@ artifact_schema: standards/artifacts/pull-request-description/v1/schema.json
 agent_contract:
   final_instruction: Create a PR title and structured draft. Use the selected schema and every semantic rule.
     Evaluate decision_tree.when with the declared review_facts, profiles, readiness and urgency. Render
-    Summary and Context plus exactly the selected optional sections. Unknown facts prevent a compliance claim.
-    Evidence metadata may be stored without a visible Evidence section.
+    Summary and Context plus exactly the selected optional sections. Unknown facts prevent a compliance claim
+    only when a section remains unresolved after all rules are combined. Evidence metadata may be stored
+    without a visible Evidence section.
   required_inputs:
     - pull_request_title
     - diff_summary
@@ -246,7 +247,30 @@ agent_contract:
   semantic_obligations:
     - Use every rule from validation.semantic_rules for both production and review.
     - Do not use a non-claim to cancel a positive unsupported assertion.
-    - Report unresolved factual predicates instead of treating unknown as false.
+    - Evaluate review_facts as true, false or unknown from the diff, owner surfaces and available evidence.
+      Review their truth independently; schema enum membership proves neither factual truth nor review
+      completeness.
+    - review_facts.impact means that a material user, business, operator, developer, cost, performance,
+      accessibility, compliance or support effect changes review.
+    - review_facts.expanded_review means that Summary and platform diff alone do not identify the logical
+      review surface. A detailed review_scope field alone does not establish their sufficiency.
+    - review_facts.external_owner means that an issue, spec, standard, incident, design, policy or evidence
+      owner is needed for a review claim.
+    - review_facts.visible_evidence means that evidence visibility changes review because a material failure,
+      absence, manual result, security, runtime, release or freshness claim, or reviewer action needs
+      attention. Routine passing platform checks alone do not satisfy it. This is the sole Evidence visibility
+      predicate.
+    - review_facts.risk means that material failure or reversal context is not obvious from the ordinary
+      review surface. User-facing or dependency classification alone does not imply it.
+    - review_facts.rollout means that sequencing, versions, flags, deployment, migration or downstream
+      adoption changes review.
+    - review_facts.security means that an auth, data, secrets, logging, permissions, abuse or disclosure
+      boundary changes security or privacy review.
+    - review_facts.visual means that review requires inspection of visual or rendered output.
+    - review_facts.overclaim means that a reader could reasonably infer an unsupported stronger claim.
+    - review_facts.review_focus means that a non-obvious review path needs guidance.
+    - Combine all rules for each section before reporting unresolved selection. A true disjunct resolves an OR
+      and a false conjunct resolves an AND despite an unknown sibling; otherwise unknown propagates.
 semantic_rules:
   - id: PRD-SEM-001
     invariant: Every pull request description must answer what changed and why it exists.
@@ -275,8 +299,9 @@ semantic_rules:
       - non_claims
       - review_focus
     check: Evaluate every decision_tree.when; union the sections selected by true rules. Omit a section only when
-      all its rules are false. An unknown applicable predicate is unresolved, not false. These constraints
-      apply to visible sections, not stored evidence metadata.
+      all its rules are false. A section remains unresolved only when no rule selects it as true and at least
+      one remains unknown after predicate composition. These constraints apply to visible sections, not stored
+      evidence metadata.
     failure_mode: The PR body becomes boilerplate that reviewers ignore.
     justification_ref: standards/artifacts/pull-request-description/v1/proofs.yaml#PRD-SEM-002
   - id: PRD-SEM-003

@@ -19,6 +19,7 @@ runtime facts, release facts, release guarantees, or evidence.
 | --- | --- | --- | --- |
 | `RM-001` | Admit roadmap artifact standard | active | high |
 | `RM-002` | Admit pull request description artifact standard | active | high |
+| `RM-006` | Harden validation and artifact handling | active | high |
 
 ## Next
 
@@ -26,11 +27,11 @@ runtime facts, release facts, release guarantees, or evidence.
 | --- | --- | --- | --- |
 | `RM-003` | Define issue body artifact standard | planned | medium |
 | `RM-004` | Define release notes artifact standard | planned | medium |
-| `RM-006` | Harden validation and artifact handling | planned | high |
 
 The [implementation design](docs/design/validation-hardening.md) describes the
-proposed work packages for `RM-006`. The plan does not change active standards
-or establish that the repairs have been delivered.
+implemented mechanisms and retained follow-ups for `RM-006`. The initiative is
+active while implementation review and qualification complete; the roadmap is
+not release or merge evidence.
 
 ## Later / Exploring
 

@@ -29,8 +29,8 @@ rules:
   - non_claims
   - review_focus
   check: Evaluate every decision_tree.when; union the sections selected by true rules. Omit a section only when
-    all its rules are false. An unknown applicable predicate is unresolved, not false. These constraints apply to
-    visible sections, not stored evidence metadata.
+    all its rules are false. A section remains unresolved only when no rule selects it as true and at least one
+    remains unknown after predicate composition. These constraints apply to visible sections, not stored evidence metadata.
   failure_mode: The PR body becomes boilerplate that reviewers ignore.
   justification_ref: standards/artifacts/pull-request-description/v1/proofs.yaml#PRD-SEM-002
 - id: PRD-SEM-003

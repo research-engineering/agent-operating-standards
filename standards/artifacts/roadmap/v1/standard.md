@@ -106,7 +106,7 @@ The canonical roadmap MAY define:
   lacks the stronger owner surface needed for implementation.
 - Agents MUST move shipped work to a release or changelog artifact before using
   it as a release fact.
-- Agents MUST NOT use exact dates unless the item declares a commitment basis
+- Agents MUST NOT use exact scheduling dates unless the item declares a commitment basis
   or uses an external board that owns scheduling detail.
 - Agents SHOULD use horizons such as `now`, `next`, `later`, and `exploring`
   when the roadmap is not a delivery commitment.

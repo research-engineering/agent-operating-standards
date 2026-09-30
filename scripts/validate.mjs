@@ -5,20 +5,45 @@ import { isDeepStrictEqual } from "node:util";
 import { readData, localPath, sourceFiles, unique } from "./lib/io.mjs";
 import { schemaRegistry } from "./lib/schema.mjs";
 import { checkProof } from "./lib/logic.mjs";
-import { validatePrd } from "./lib/prd.mjs";
+import { validatePrd, validatePrdModel } from "./lib/prd.mjs";
 import { validateRenderManifest } from "./lib/rendered.mjs";
 import { validateException } from "./lib/exception.mjs";
 import { prdPath, projectCore } from "./lib/runtime.mjs";
 
 const standardPackage = "standards/meta/standard-package/v1/";
 
+function validatePackageAuthority(data, path) {
+  const overlap = data.authority.owned_claim_types.filter((claim) =>
+    data.authority.forbidden_claim_types.includes(claim),
+  );
+  if (overlap.length)
+    throw new Error(`${path}: package authority owned/forbidden overlap: ${overlap.join(", ")}`);
+}
+
+function validateBindingPolicy(data, path) {
+  for (const [name, enabled] of Object.entries(data.default_policy))
+    if (enabled !== true)
+      throw new Error(`${path}: default_policy.${name} is a non-disableable declaration`);
+}
+
 export function validateRepository(root) {
   const schema = schemaRegistry(root),
     files = sourceFiles(root),
-    parsed = new Map();
-  for (const path of files.filter((x) => /\.(json|ya?ml)$/.test(x)))
-    parsed.set(path, readData(root, path));
-  const get = (path) => parsed.get(path) ?? readData(root, path);
+    parsed = new Map(),
+    schemaPairs = new Map();
+  const get = (path) => {
+    if (!parsed.has(path)) {
+      try {
+        parsed.set(path, readData(root, path));
+      } catch (error) {
+        const declarations = [...schemaPairs.values()].filter((row) => row.path === path);
+        if (declarations.length)
+          throw new Error(`${declarations.map(assignmentLabel).join("; ")}: ${error.message}`);
+        throw error;
+      }
+    }
+    return parsed.get(path);
+  };
   for (const path of files.filter(
     (x) => x.endsWith(".schema.json") || x.endsWith("/schema.json"),
   ))
@@ -30,6 +55,7 @@ export function validateRepository(root) {
     "standards/meta/repository-binding/v1/schema.json",
     bindingPath,
   );
+  validateBindingPolicy(binding, bindingPath);
   if (binding.binding_owner !== bindingPath)
     throw new Error("Binding owner differs from the selected binding");
   localPath(root, binding.catalog);
@@ -51,16 +77,31 @@ export function validateRepository(root) {
     "binding standard IDs",
   );
   const schemaByVersion = new Map(),
-    schemaPairs = [],
     proofIds = new Map(),
     proofBundles = new Map();
   let proofs = 0;
+  function assignSchema(path, targetSchema, standard, origin) {
+    const key = `${path}\0${targetSchema}`;
+    if (!schemaPairs.has(key))
+      schemaPairs.set(key, { path, targetSchema, origins: new Set() });
+    const assignment = schemaPairs.get(key);
+    assignment.origins.add(`${standard}: ${origin}`);
+    try {
+      localPath(root, path);
+    } catch (error) {
+      throw new Error(`${assignmentLabel(assignment)}: ${error.message}`);
+    }
+  }
+  function assignmentLabel({ path, targetSchema, origins }) {
+    return `${path} (schema ${targetSchema}; selected by ${[...origins].join("; ")})`;
+  }
   function reference(ref) {
     const [path, fragment, extra] = ref.split("#");
     if (extra !== undefined || !fragment || !proofIds.get(path)?.has(fragment))
       throw new Error(`Missing exact proof: ${ref}`);
   }
   for (const entry of catalog.standards) {
+    let manifest;
     for (const key of [
       "path",
       "owner_surface",
@@ -103,7 +144,7 @@ export function validateRepository(root) {
       proofs++;
     }
     if (entry.agent_entrypoint) {
-      const manifest = get(entry.agent_entrypoint);
+      manifest = get(entry.agent_entrypoint);
       schema.validate(
         manifest,
         standardPackage + "schema.json",
@@ -120,6 +161,7 @@ export function validateRepository(root) {
         entry.justifications !== manifest.validation.justifications
       )
         throw new Error(`${entry.id}: catalog validation mirror mismatch`);
+      validatePackageAuthority(manifest, entry.agent_entrypoint);
     }
     if (entry.canonical_schema) {
       const version = get(entry.canonical_schema).properties?.schema_version
@@ -133,12 +175,23 @@ export function validateRepository(root) {
         schemaByVersion.set(version, entry.canonical_schema);
       }
       const folder = entry.path.slice(0, entry.path.lastIndexOf("/") + 1);
+      const template = manifest
+        ? manifest.validation.template
+        : files.includes(folder + "template.yaml")
+          ? folder + "template.yaml"
+          : null;
+      if (template && /\.(json|ya?ml)$/.test(template))
+        assignSchema(
+          template,
+          entry.canonical_schema,
+          entry.id,
+          manifest ? `${entry.agent_entrypoint} validation.template` : "prose conventional template",
+        );
       for (const path of files.filter(
         (x) =>
-          x === folder + "template.yaml" ||
-          (x.startsWith(folder + "examples/") && /\.ya?ml$/.test(x)),
+          x.startsWith(folder + "examples/") && /\.(json|ya?ml)$/.test(x),
       ))
-        schemaPairs.push([path, entry.canonical_schema]);
+        assignSchema(path, entry.canonical_schema, entry.id, `${folder}examples/`);
     }
   }
   for (const adopted of binding.adopted_standards) {
@@ -150,15 +203,23 @@ export function validateRepository(root) {
         `Binding owner differs from catalog: ${adopted.standard}`,
       );
     if (adopted.canonical_artifact) {
-      localPath(root, adopted.canonical_artifact);
       if (entry.canonical_schema)
-        schemaPairs.push([adopted.canonical_artifact, entry.canonical_schema]);
+        assignSchema(
+          adopted.canonical_artifact,
+          entry.canonical_schema,
+          entry.id,
+          `${bindingPath} canonical_artifact`,
+        );
+      else localPath(root, adopted.canonical_artifact);
     }
     if (adopted.generated_projection)
       localPath(root, adopted.generated_projection);
   }
-  const prdManifest = get(prdPath + "standard.yaml");
-  for (const [path, data] of parsed) {
+  const prdEntry = byId.get("artifact.pull-request-description.v1"),
+    prdManifest = get(prdEntry.agent_entrypoint);
+  validatePrdModel(prdManifest.agent_contract, get(prdEntry.canonical_schema));
+  for (const path of files.filter((x) => /\.(json|ya?ml)$/.test(x))) {
+    const data = get(path);
     if (path.endsWith("/standard.yaml")) {
       schema.validate(data, standardPackage + "schema.json", path);
       const entry = byId.get(data.id);
@@ -238,14 +299,17 @@ export function validateRepository(root) {
       }
     }
     const targetSchema = schemaByVersion.get(data?.schema_version);
-    if (targetSchema) schemaPairs.push([path, targetSchema]);
+    if (targetSchema)
+      assignSchema(path, targetSchema, "schema_version", data.schema_version);
   }
-  const checked = new Set();
-  for (const [path, targetSchema] of schemaPairs) {
-    if (checked.has(`${path}\0${targetSchema}`)) continue;
-    checked.add(`${path}\0${targetSchema}`);
+  for (const assignment of schemaPairs.values()) {
+    const { path, targetSchema } = assignment;
     const data = get(path);
-    schema.validate(data, targetSchema, path);
+    schema.validate(data, targetSchema, assignmentLabel(assignment));
+    if (targetSchema === byId.get("meta.standard-package.v1").canonical_schema)
+      validatePackageAuthority(data, path);
+    if (targetSchema === byId.get("meta.repository-binding.v1").canonical_schema)
+      validateBindingPolicy(data, path);
     if (data.artifact_type === "pull_request_description")
       validatePrd(data, prdManifest.agent_contract);
     if (data.artifact_type === "rendered_view")
@@ -272,10 +336,11 @@ export function validateRepository(root) {
         data.invariants.map((x) => x.id),
         `${path} invariant IDs`,
       );
-      const canonical = get(
-        "standards/meta/agent-operating-kernel/v1/standard.yaml",
-      ).agent_contract.invariants;
+      const kernelEntry = byId.get("meta.agent-operating-kernel.v1"),
+        canonical = get(kernelEntry.agent_entrypoint).agent_contract.invariants;
       for (const invariant of data.invariants) {
+        if (invariant.owner_surface !== kernelEntry.owner_surface)
+          throw new Error(`${path}: kernel owner differs from selected catalog owner`);
         reference(invariant.proof_location);
         const rule = canonical.find((x) => x.id === invariant.id);
         if (
@@ -337,23 +402,48 @@ export function validateRepository(root) {
     })
   )
     throw new Error("Validation workflow trigger/permission drift");
+  const job = workflow.jobs.validate;
+  for (const [scope, value] of [
+    ["job", job],
+    ...job.steps.map((step, index) => [`step ${index + 1}`, step]),
+  ]) {
+    if (Object.hasOwn(value, "if"))
+      throw new Error(`Validation workflow conditional execution drift: ${scope}`);
+    if (Object.hasOwn(value, "continue-on-error"))
+      throw new Error(`Validation workflow result suppression drift: ${scope}`);
+  }
+  for (const [scope, value] of [
+    ["workflow", workflow],
+    ["job", job],
+    ...job.steps.map((step, index) => [`step ${index + 1}`, step]),
+  ])
+    for (const field of ["env", "defaults", "shell", "working-directory"])
+      if (Object.hasOwn(value, field))
+        throw new Error(`Validation workflow command environment drift: ${scope}.${field}`);
+  for (const field of ["ref", "repository", "path"])
+    if (Object.hasOwn(job.steps[0].with ?? {}, field))
+      throw new Error(`Validation workflow checkout target drift: ${field}`);
   if (
     !isDeepStrictEqual(
-      workflow.jobs.validate.steps.filter((x) => x.run).map((x) => x.run),
+      job.steps.filter((x) => x.run).map((x) => x.run),
       ["npm ci", "npm run check"],
     )
   )
     throw new Error("Validation workflow command drift");
-  const job = workflow.jobs.validate;
   if (
     Object.keys(workflow.jobs).length !== 1 ||
     job["runs-on"] !== "ubuntu-latest" ||
     job["timeout-minutes"] !== 10 ||
     job.steps.length !== 4 ||
-    job.steps[0].uses !== "actions/checkout@v4" ||
-    job.steps[0].with?.["persist-credentials"] !== false ||
-    job.steps[1].uses !== "actions/setup-node@v4" ||
-    job.steps[1].with?.["node-version"] !== "20" ||
+    !/^actions\/checkout@[0-9a-fA-F]{40}$/.test(job.steps[0].uses) ||
+    !isDeepStrictEqual(job.steps[0].with, { "persist-credentials": false }) ||
+    !/^actions\/setup-node@[0-9a-fA-F]{40}$/.test(job.steps[1].uses) ||
+    !isDeepStrictEqual(job.steps[1].with, {
+      "node-version": "24",
+      "package-manager-cache": false,
+    }) ||
+    job.steps.slice(0, 2).some((step) => step.run !== undefined) ||
+    job.steps.slice(2).some((step) => step.uses !== undefined) ||
     job.permissions !== undefined ||
     !isDeepStrictEqual(workflow.concurrency, {
       group: "validate-${{ github.workflow }}-${{ github.ref }}",
@@ -361,9 +451,28 @@ export function validateRepository(root) {
     })
   )
     throw new Error("Validation workflow execution profile drift");
+  const packageManifest = get("package.json");
+  for (const [name, expected] of Object.entries({
+    generate: "node scripts/generate-runtime.mjs",
+    validate: "node scripts/validate.mjs",
+    test: "node --test",
+    check: "npm run validate && npm test",
+  }))
+    if (packageManifest.scripts?.[name] !== expected)
+      throw new Error(`Validation package command drift: ${name}`);
+  for (const hook of [
+    "precheck", "postcheck", "prevalidate", "postvalidate", "pretest", "posttest",
+    "pregenerate", "postgenerate", "preinstall", "install", "postinstall",
+    "prepublish", "preprepare", "prepare", "postprepare",
+    "predependencies", "dependencies", "postdependencies",
+  ])
+    if (Object.hasOwn(packageManifest.scripts, hook))
+      throw new Error(`Validation package lifecycle hook drift: ${hook}`);
+  if (packageManifest.engines?.node !== ">=24")
+    throw new Error("Validation package Node engine drift");
   return {
     standards: catalog.standards.length,
-    schemaPairs: checked.size,
+    schemaPairs: schemaPairs.size,
     conditionalProofs: proofs,
     nonClaims: [
       "Finite models do not prove their factual premises or natural-language adequacy.",

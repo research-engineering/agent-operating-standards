@@ -24,8 +24,10 @@ Conditional questions apply only when their trigger is true.
 
 Agents MUST NOT include a visible `Validation` section by default.
 
-Agents MUST include `Evidence` only when the pull request makes a proof-bearing
-claim that changes the review decision.
+Agents MUST render `Evidence` exactly when `review_facts.visible_evidence` is
+true, using its definition in `agent_contract.semantic_obligations` and
+PRD-SEM-003. Material failures, missing results and reviewer actions can make
+evidence visible even without a positive proof claim.
 
 Agents MUST NOT use filler text, hidden assumptions, generated praise, or
 evidence-shaped statements for checks that were not run.

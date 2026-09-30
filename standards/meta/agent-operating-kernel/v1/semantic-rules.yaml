@@ -21,7 +21,8 @@ rules:
   - agent_contract
   - standard.md
   check: Use the declared machine entrypoint when present; otherwise load the prose owner. A routine projection
-    must preserve all applicable rules.
+    must preserve all applicable rules. In a kernel invariant ledger, every owner_surface must equal the actual
+    selected kernel catalog entry's owner_surface; statement and proof identity remain independently required.
   failure_mode: Agents spend tokens on rationale or miss the executable contract.
   justification_ref: standards/meta/agent-operating-kernel/v1/proofs.yaml#KERNEL-002
 - id: AOK-SEM-003

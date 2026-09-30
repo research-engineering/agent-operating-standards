@@ -1,6 +1,7 @@
 # Agent Policy: Standards Catalog v1
 
-Agents MUST treat `standards.catalog.yaml` as the admission list for standards.
+Agents MUST treat the catalog named by the repository binding as the admission
+list for standards. `standards.catalog.yaml` is the default path.
 
 When adding a standards package, agents MUST:
 

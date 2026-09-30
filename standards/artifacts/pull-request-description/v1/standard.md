@@ -48,23 +48,13 @@ Changes section when Summary and the diff already identify the surface.
 Profiles compose independently. Readiness is draft, blocked or ready_for_review;
 urgency is normal or emergency. Emergency is neither a profile nor a readiness
 state. A blocked emergency and a ready emergency both retain their emergency
-obligations. This change is within the initial unmerged v1 proposal; consumers of
-earlier draft snapshots must migrate the old emergency label into urgency.
+obligations.
 
-review_facts contains the following independently reviewed predicates:
-
-| Fact | Meaning |
-| --- | --- |
-| impact | A material user, business, operator, developer, cost, performance, accessibility, compliance or support effect changes review. |
-| expanded_review | Summary and platform diff alone do not identify the logical review surface. |
-| external_owner | An issue, spec, standard, incident, design, policy or evidence owner is needed for a review claim. |
-| visible_evidence | Evidence visibility changes review: a material failure, absence, manual result, security/runtime/release/freshness claim or reviewer action needs attention. Routine passing platform checks alone do not satisfy it. |
-| risk | Material failure or reversal context is not obvious from the ordinary review surface. User-facing or dependency classification alone does not imply it. |
-| rollout | Sequencing, versions, flags, deployment, migration or downstream adoption changes review. |
-| security | An auth, data, secrets, logging, permissions, abuse or disclosure boundary changes security/privacy review. |
-| visual | Review requires inspection of visual or rendered output. |
-| overclaim | A reader could reasonably infer an unsupported stronger claim. |
-| review_focus | A non-obvious review path needs guidance. |
+The exact meanings of every `review_facts` member are defined in
+`standard.yaml.agent_contract.semantic_obligations`, so routine and compact
+consumers receive the same independently reviewed predicates. In particular,
+the expanded-review predicate assesses Summary and the platform diff; private
+draft metadata cannot establish that those visible surfaces are sufficient.
 
 Values are true, false or unknown. The producer MUST collect facts from the diff,
 owner surfaces and available evidence; a reviewer MUST assess their truth, not
@@ -79,6 +69,26 @@ field absence, any and all. any is true if a child is true; all is false if a
 child is false; otherwise an unknown child propagates unknown. Include the union
 of all sections selected by true rules. Omit a section only if every rule
 selecting it is false. Do not maintain a separate conflicting omit predicate.
+
+Before validating drafts, the PR model validator MUST check every predicate,
+including branches that evaluation could short-circuit. A predicate is a Boolean
+or an object with exactly one of `fact`, `profile`, `readiness`, `urgency`,
+`absent`, `any`, or `all`. Composite predicates have nonempty arrays of valid
+children. Leaves MUST belong to the selected artifact schema's corresponding
+fact, profile, readiness, urgency, or top-level field domain. Every selected
+section MUST be declared, every declared section MUST have a decision rule,
+and the required/optional section sets MUST be disjoint and map uniquely to
+existing artifact fields.
+
+The local vocabulary-extraction profile reads direct top-level `properties`,
+direct `review_facts.properties` with exactly the existing true/false/unknown
+value domain, `change_profiles.items.enum`, `readiness_state.enum`, and
+`urgency.enum`. It rejects unsupported vocabulary layouts with a profile
+diagnostic instead of silently omitting their members. This profile is not a
+general JSON Schema equivalence analyzer: artifact admission independently
+evaluates the complete selected schema, including its conditional constraints.
+Equivalent layouts outside this extraction profile require an explicit adapter
+update before PR model validation can use them.
 
 The selected profile includes these explicit conservative defaults: migration
 and release require sequencing and reversal context; emergency requires reversal
@@ -101,9 +111,8 @@ the fact/model classification before declaring compliance.
 ## Evidence retention and presentation
 
 Required evidence MUST remain available in the structured draft or its exact
-owner reference, even when visible_evidence=false. The earlier per-record display_policy field is replaced by the single resolved
-visible_evidence predicate, so no independent rendering switch can disagree.
-Evidence metadata is the one
+owner reference, even when visible_evidence=false. The single resolved
+visible_evidence predicate controls Evidence rendering. Evidence metadata is the one
 optional draft field whose presence does not imply rendering. All other optional
 fields map to their selected visible sections. A material missing result should
 be recorded with an explicit unavailable/skipped/not-run status and limitation.
@@ -114,6 +123,13 @@ observed results (passed, failed, observed, linked) MUST include an evidence_ref
 URI. The consumer MUST verify that the reference identifies that exact target
 and supports the claimed result. A branch name, arbitrary URI or command string
 alone is not proof. No claim may move from an old SHA to a newer branch head.
+
+The v1 schema admits `evidence_class` and `result` as independent domains,
+subject to its existing scope and reference requirements. Enum membership does
+not prove a claim or establish an unstated class/result cross-product policy.
+Whether a pair supports its claim remains evidence review. A new rejection
+rule for currently admitted pairs requires an explicit versioned owner change;
+this standard does not silently narrow v1 by inference from enum names.
 
 The generated profile requires source owner Links and evidence or an explicit
 freshness non-claim. The migration/release profiles require evidence or explicit

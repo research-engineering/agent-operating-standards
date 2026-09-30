@@ -74,12 +74,21 @@ A reviewer task then loads the reviewer overlay and semantic rules when semantic
 validation is needed. Core MUST contain every canonical semantic rule. Reviewer overlays MUST NOT
 introduce artifact-validity rules absent from that complete core and its schema.
 
+Before an authority-sensitive decision, a compact consumer MUST resolve
+`core.source_manifest` through the selected catalog and repository binding,
+then use that manifest's authority declaration. Loading core and overlays alone
+does not establish this authority context. The package owner defines this
+resolution requirement; core equality and schemas do not demonstrate that a
+real adapter executes it.
+
 Templates are starter artifacts, not proof authorities. A template for a proof
 artifact may contain a model example; it cannot establish its own factual premises.
 
-Formal proof, rationale, and dominance arguments belong in `standard.md`,
-`semantic-rules.yaml`, tests, validators, or evidence artifacts. The generated
-artifact should contain only the evidence needed for its own claim type.
+Formal proof, rationale, and dominance arguments normally belong in
+`standard.md`, `semantic-rules.yaml`, tests, validators, or evidence artifacts.
+Keep them outside routine output only when doing so preserves the evidence
+required by that artifact and access to its owner. A proof artifact may include
+the proof itself.
 
 ## Example
 
@@ -136,6 +145,12 @@ resolves an AND; otherwise unknown propagates. Union all selected sections.
 Omit a section only if every rule selecting it is false. An unresolved section
 blocks a compliance claim. Producer-supplied facts require independent review
 against the diff and owners; parsing a Boolean does not prove its truth.
+The exact fact meanings are part of the PR entrypoint's
+`agent_contract.semantic_obligations` and therefore its generated core. Before
+validating drafts, validate the complete PR model against the selected artifact
+schema using the extraction profile declared by the PR owner. Unsupported
+schema vocabulary layouts fail explicitly; this does not claim arbitrary
+JSON Schema introspection.
 
 Stored evidence has its own evidence obligation and need not render a visible
 Evidence section. All other optional output fields map to their selected visible
