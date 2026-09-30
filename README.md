@@ -101,15 +101,18 @@ The advisory `Validate` workflow is explicitly owned by
 `workflow.repository-validation.v1` and adopted by the repository binding.
 Required GitHub status checks remain a separate repository policy decision.
 
-## Planned Hardening
+## Validation Hardening
 
 The [validation hardening design and implementation plan](docs/design/validation-hardening.md)
-maps the reviewed concerns to scoped repairs, proposed contract changes,
-acceptance experiments, and explicitly retained review boundaries. It is a
-non-normative proposal tracked by the [canonical roadmap](docs/planning/roadmap.yaml);
-merging the plan does not implement its changes or amend the active standards.
+maps each reviewed concern to its implementation, regression witness, retained
+review boundary or conditional follow-up. It is a non-normative design tracked
+by the [canonical roadmap](docs/planning/roadmap.yaml); the linked standards own
+the current contracts.
 
 ## Validation
+
+Use Node 24 or newer. CI qualifies the Node 24 runtime; Node 20 is no longer
+supported. Install from the committed lockfile before running the checks.
 
 ```sh
 npm run validate
@@ -120,13 +123,23 @@ validates binding/catalog identities, checks every semantic-rule proof reference
 replays finite conditional proofs, and compares generated runtime core with its
 complete canonical instruction/rule inputs. YAML duplicate keys and aliases are
 rejected. JSON Schema validates actual values; there is no handwritten replacement
-for schema semantics.
+for schema semantics. Declared templates and recursive YAML/YML/JSON examples
+receive their selected schema even when a required version marker is missing.
+The PR decision model is checked before drafts; external evidence and the truth
+of supplied review facts still require independent review.
 
 ```sh
 npm ci
 npm run generate  # after changing canonical PR runtime inputs
 npm run check     # validation and regression suite
 ```
+
+Generation validates its inputs before atomically replacing one confined output
+file. It supports an absent or stale core and preserves an existing output on
+prepublication failure. Its cooperative single-writer filesystem boundary and
+mode/cleanup guarantees are defined by the
+[package owner](standards/meta/standard-package/v1/standard.md); this is not a
+concurrent-writer or crash-durability guarantee.
 
 [The formal model](docs/FORMAL_MODEL.md) distinguishes goals, policy choices and
 conditional consequences. Every admitted package declares its invariant IDs and
@@ -135,7 +148,8 @@ premises describe the real world, that an external attestation is true, or that
 an agent executed the instructions. Schema truth, authority, evidence authenticity,
 semantic adequacy and runtime execution remain separate obligations.
 
-The initial v1 proposal now separates PR urgency from readiness and requires
-immutable target identities for evidence. Consumers of earlier unmerged snapshots
-must migrate their drafts and render manifests; no stable-release compatibility
-is asserted for those earlier proposal bytes.
+The existing v1 wire schemas are retained. New diagnostics enforce existing
+owner rules and clarify the supported PR vocabulary profile; they do not infer
+fact truth, add a second claim-type registry, or introduce a new evidence
+class/result acceptance matrix. A future change to valid supported inputs or
+strict consumer formats needs an explicit versioned compatibility decision.

@@ -3,7 +3,7 @@ doc_type: "roadmap"
 canonical: true
 scope: "repository"
 owner: "standards maintainer"
-last_reviewed: "2026-09-20"
+last_reviewed: "2026-09-30"
 review_cadence: "monthly"
 generated_projection: "ROADMAP.md"
 authority:
@@ -113,11 +113,11 @@ items:
         required: true
   - id: "RM-006"
     title: "Harden validation and artifact handling"
-    status: "planned"
-    horizon: "next"
+    status: "active"
+    horizon: "now"
     confidence: "high"
     owner: "standards maintainer"
-    planning_claim: "Deliver the scoped work packages in the validation hardening design, preserving the distinction between confirmed repairs, proposed contract changes, and retained manual review."
+    planning_claim: "Review and qualify the implemented validation, generation, contract and CI hardening; retain the versioned-policy and external-consumer follow-ups identified by the design."
     authority_links:
       - relation: "planned_in"
         target: "docs/design/validation-hardening.md"

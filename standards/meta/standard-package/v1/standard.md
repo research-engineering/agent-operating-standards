@@ -75,6 +75,12 @@ Adapters MAY parse `standard.yaml` outside the model context to select runtime
 contracts. The model context for routine use SHOULD contain `core` plus the
 minimum role overlays required for the task.
 
+Before an authority-sensitive decision, a compact consumer MUST resolve the
+core's `source_manifest` through the selected catalog and repository binding
+and use that manifest's authority declaration. Equality of the generated core
+does not prove that a real consumer performs this resolution or preserves
+authority in execution.
+
 `template.*` files are starter artifacts only. They MUST NOT introduce rules
 that are absent from `standard.md`, `standard.yaml`, `schema.json`, or
 `semantic-rules.yaml`.
@@ -88,6 +94,21 @@ override `standard.yaml`.
 
 `examples/` MAY contain valid minimal or representative artifacts. Examples
 MUST NOT be treated as exhaustive.
+
+For a package with an artifact schema, validation MUST cover its non-null
+structured `validation.template` (`.yaml`, `.yml`, or `.json`) and every file of
+these formats recursively
+under `examples/`. A prose-only package uses its declared conventional template
+route. A missing version marker never removes a declared template or example
+from validation. Each assignment MUST apply the complete selected schema,
+including equivalent schema representations, rather than infer validity from
+a particular discriminator layout. Multiple schema obligations for one path
+remain independent. Packages without an artifact schema remain explicitly
+schemaless.
+
+Supplemental discovery by `schema_version` may use a declared extraction
+convention; it does not replace the declaration-driven coverage above. The
+repository workflow owns that discovery profile and its limits.
 
 ## Required Fields For `standard.yaml`
 
@@ -104,6 +125,10 @@ An agent entrypoint MUST define:
 - `agent_contract`;
 - `validation`;
 - `non_claims`.
+
+The `authority.owned_claim_types` and `authority.forbidden_claim_types` sets
+MUST be disjoint. Their names remain subject to the selected claim-type owner;
+disjointness does not establish that every name is classified or delegated.
 
 ## Final Agent Instruction
 
@@ -122,7 +147,8 @@ type.
 
 ## Rules
 
-- Agents MUST select standard packages through `standards.catalog.yaml`.
+- Agents MUST select standard packages through the catalog named by the
+  repository binding; `standards.catalog.yaml` is the default path.
 - Agents MUST load `standard.yaml` before `standard.md` when the catalog entry
   declares `agent_entrypoint`.
 - Agents MAY load declared runtime contracts instead of the full `agent_contract`
@@ -171,3 +197,29 @@ complete data equality with the selected agent_contract and semantic rules.
 Overlays conform to runtime.schema.json and contain workflow only. All roles
 use the same schema; the shorter representation is admitted only if no normative
 obligation is lost. No unmeasured token-efficiency claim is made.
+
+## Runtime generation boundary
+
+The local generator operates in a cooperative, single-writer checkout. Before
+opening its output, it MUST validate the canonical manifest, semantic rules,
+and selected schema, and resolve the declared inputs and destination. The
+destination MUST be repository-relative, with no absolute, traversal, empty,
+dot, backslash, or symlink component. Its parent MUST already exist; its leaf
+MAY be absent or a regular file. The output MUST NOT alias a canonical input
+or a declared owner, validation artifact, or role overlay, including an existing
+hard-link alias.
+
+After constructing complete output bytes, the generator MUST create an
+exclusive sibling temporary file, verify its bytes, and atomically replace the
+destination. Existing output modes MUST be preserved; a new file uses mode
+`0666` subject to the process umask. Failures before replacement MUST preserve
+the previous destination's bytes and mode and clean only the temporary file
+owned by that attempt. Report success only after replacement. A stale or absent
+core is a supported input state, so validating the entire repository before
+generation is not a prerequisite.
+
+This contract covers single-file publication under the stated filesystem
+semantics. It does not prove crash durability, a coherent concurrent-input
+snapshot, protection against hostile same-UID filesystem changes, or atomic
+publication of a multi-file migration. Unsupported replacement semantics MUST
+fail explicitly.

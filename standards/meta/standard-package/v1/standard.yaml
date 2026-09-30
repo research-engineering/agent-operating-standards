@@ -48,6 +48,14 @@ agent_contract:
     include_standard_proof_in_output: false
     include_artifact_evidence: Only include evidence required by the artifact being produced.
     proof_location: standard.md and semantic-rules.yaml
+  semantic_obligations:
+  - Package authority.owned_claim_types and authority.forbidden_claim_types must be disjoint. Classification
+    of claim names still requires the selected claim-type owner; this check does not create a vocabulary registry.
+  - Validate each non-null declared structured validation.template (.yaml, .yml or .json) and every recursive .yaml, .yml and .json example against
+    the complete selected artifact schema. Missing version markers do not remove these declared obligations.
+  - Before an authority-sensitive compact-contract decision, resolve source_manifest through the selected catalog
+    and repository binding and use its authority declaration. Core equality alone does not establish execution
+    by a real consumer.
 validation:
   schema: standards/meta/standard-package/v1/schema.json
   semantic_rules: null

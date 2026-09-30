@@ -24,6 +24,8 @@ between incompatible repository policies or stronger runtime behavior.
 The ten scoped rules and their premise-dependent proofs are recorded in
 `standards/meta/agent-operating-kernel/v1/proofs.yaml`. The machine entrypoint
 contains the exact operational statements; the ledger is checked against them.
+Ledger owner identity follows AOK-SEM-002: each entry names the actual selected
+kernel owner, rather than a fixed conventional path or another admitted owner.
 
 ## Invariants
 

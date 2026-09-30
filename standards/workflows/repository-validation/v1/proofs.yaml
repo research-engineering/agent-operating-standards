@@ -95,7 +95,7 @@ proofs:
         - obligation
         - satisfied
     basis: accepted_policy
-    rationale: Read-only permissions, PR/main triggers and Node 20 npm-ci/check steps are the explicitly admitted
+    rationale: Read-only permissions, PR/main triggers and Node 24 npm-ci/check steps are the explicitly admitted
       local workflow model.
   conclusion:
     implies:

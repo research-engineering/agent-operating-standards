@@ -60,6 +60,15 @@ Each adopted standard MUST identify:
 - Agents SHOULD keep the binding small and point to owner surfaces instead of
   restating rules.
 
+The three v1 `default_policy` values declare unconditional rules:
+`canonical_artifacts_win_over_generated_projections`,
+`admitted_catalog_entries_only`, and
+`generated_markdown_is_not_normative_unless_declared`. Each MUST be `true`.
+They are declarations, not switches: `false` is semantically inconsistent and
+does not disable the corresponding rule. This is a semantic check; the v1
+Boolean wire schema remains unchanged. Generated Markdown gains normative
+authority only through an explicit owner declaration, not a policy flag.
+
 ## Failure Mode
 
 Without a repository binding, agents infer governance from filenames and stale

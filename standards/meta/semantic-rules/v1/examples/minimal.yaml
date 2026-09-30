@@ -3,9 +3,15 @@ standard: artifact.pull-request-description.v1
 scope: pull_request_description
 rules:
 - id: PRD-SEM-001
-  invariant: Validation claims must match checks actually run.
+  invariant: Every pull request description must answer what changed and why it exists.
   applies_to:
-  - validation
-  check: Every validation entry must identify the command and result.
-  failure_mode: The artifact claims evidence that does not exist.
-  justification_ref: standard-owner/proofs.yaml#PRD-SEM-001
+  - title
+  - summary
+  - context
+  - review_scope
+  - change_profiles
+  - readiness_state
+  check: Title, Summary, Context, review_scope, change_profiles, and readiness_state must be non-empty, factual,
+    and specific enough to distinguish this PR from nearby changes.
+  failure_mode: Reviewers cannot decide whether the change should exist.
+  justification_ref: standards/artifacts/pull-request-description/v1/proofs.yaml#PRD-SEM-001
